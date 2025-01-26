@@ -10,7 +10,9 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/ts/admin/index.ts',
-                'resources/ts/site/index.ts'
+                'resources/ts/site/index.ts',
+                'resources/scss/site/index.scss',
+                'resources/scss/admin/index.scss'
             ],
             refresh: true,
         }),
