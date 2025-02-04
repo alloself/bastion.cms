@@ -6,14 +6,20 @@
         "module": "ESNext",
         "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "target": "esnext",
-        "moduleResolution": "Node",
+        "moduleResolution": "bundler",
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
+        "allowImportingTsExtensions": true,
         "noEmit": true,
+        "resolveJsonModule": true,
         "isolatedModules": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
         "paths": {
-            "@/*": ["resources/ts/*"]
+            "@/*": ["resources/*"],
+            "@admin/*": ["resources/ts/admin/*"]
         },
         "types": ["vite/client"]
     },
