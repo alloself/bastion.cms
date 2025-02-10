@@ -1,9 +1,9 @@
 
 import router from "@admin/app/router";
-import { useUserStore } from "@admin/entities/user/store";
+import { useUserStore } from "@admin/entities/user";
 import axios from "axios";
 import { ref } from "vue";
-import { useNotificationsStore } from "@admin/features/notifications/store/notificationsStore";
+import { useNotificationsStore } from "@admin/features/notifications";
 
 
 export const loading = ref(false)

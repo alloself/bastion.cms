@@ -21,7 +21,6 @@ class UserSeeder extends Seeder
             'email_verified_at' => null,
             'email' => 'root@example.com',
             'password' => Hash::make('password'),
-            'phone' => '+79111234567'
         ]);
 
         $root->assignRole('root');

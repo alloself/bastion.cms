@@ -1,21 +1,29 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
-
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
     content: [
-        './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
-        './storage/framework/views/*.php',
-        './resources/**/*.blade.php',
-        './resources/ts/site/*.js',
-        './resources/ts/site/*.ts',
-        './resources/ts/site/*.vue',
+        "./resources/**/*.blade.php",
+        "./resources/**/*.js",
+        "./resources/**/*.vue",
+        "./storage/framework/views/*.blade.php",
+        "./storage/framework/views/*.php",
     ],
     theme: {
         extend: {
+            colors: {
+                dark: "#1E1E1E",
+                brand: "#A47B5B",
+                neutral: "#C7C7C7",
+                "neutral-100": "#EFEFEF",
+                "neutral-alpha": "rgba(126, 126, 126, 0.40)",
+                stone: "#BCBCBC",
+                accent: "#005954",
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                base: "Montserrat, sans-serif",
             },
         },
     },
-    plugins: [],
+    plugins: [
+
+    ],
 };

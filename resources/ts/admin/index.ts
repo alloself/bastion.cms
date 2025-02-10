@@ -1,20 +1,20 @@
 import { createApp } from "vue";
 import App from '@admin/app/App.vue';
 import { registerPlugins } from "@admin/shared/plugins";
-import { useUserStore } from "@admin/entities/user/store";
+import { useUserStore } from "@admin/entities/user";
 import { client } from "@admin/shared/api/axios";
 
 
 try {
-    await client.get("/sanctum/csrf-cookie");
+  await client.get("/sanctum/csrf-cookie");
 
-    const app = createApp(App);
-    registerPlugins(app);
-    const userStore = useUserStore();
+  const app = createApp(App);
+  registerPlugins(app);
+  const { getUser } = useUserStore();
 
-    await userStore.getUser();
+  await getUser();
 
-    app.mount("#admin");
+  app.mount("#admin");
 } catch (e) {
-   location.href = "/"
+  //location.href = "/"
 }

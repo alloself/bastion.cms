@@ -9,7 +9,7 @@
                 :key="index"
                 :notification="notification"
                 :style="getOffsetStyle(index)"
-                @onCancel="closeAlert(index)"
+                @onCancel="notificationStore.closeAlert(index)"
             >
             </notification>
         </v-app>
@@ -17,10 +17,12 @@
 </template>
 
 <script setup lang="ts">
-import Notification from '@admin/features/notifications/components/Notification.vue';
-import { useNotificationsStore } from "@admin/features/notifications/store/notificationsStore";
+import { Notification } from "@admin/features/notifications";
+import { useNotificationsStore } from "@admin/features/notifications";
+import { storeToRefs } from "pinia";
 
-const { notifications, closeAlert } = useNotificationsStore();
+const notificationStore = useNotificationsStore();
+const { notifications } = storeToRefs(notificationStore);
 
 const getOffsetStyle = (index: number) => {
     return {

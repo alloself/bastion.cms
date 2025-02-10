@@ -28,15 +28,14 @@
   </section>
 </template>
 <script lang="ts" setup>
-import { useUserStore } from '@admin/entities/user/store';
+import { useUserStore } from '@admin/entities/user';
 import type { FormContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
-import { createFields } from '@admin/entities/user/forms/login';
+import { createFields } from '@admin/entities/user';
 import { ref } from 'vue';
-import { useFormSubmit } from '@admin/shared/composables/useFormSubmit';
 import { loading } from "@admin/shared/api/axios";
-import Logo from '@admin/shared/components/Logo.vue';
-import SmartForm from '@admin/shared/components/SmartForm.vue';
+import { Logo, SmartForm } from '@admin/shared/components';
+import { useFormSubmit } from '@admin/shared/composables';
 
 const userStore = useUserStore();
 const router = useRouter();
