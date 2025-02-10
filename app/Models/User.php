@@ -7,13 +7,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 
 /** @typescript */
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
 
-    use HasUuids, Notifiable, HasRoles;
+    use HasUuids, Notifiable, HasRoles, Auditable;
 
     /**
      * The attributes that are mass assignable.
