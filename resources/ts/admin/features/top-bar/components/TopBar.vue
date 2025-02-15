@@ -1,12 +1,12 @@
 <template>
     <v-app-bar order="-1" :elevation="0" :border="true" class="app-bar" flat density="compact">
-        <v-app-bar-nav-icon size="small" @click="toggle" />
+        <v-app-bar-nav-icon class="ml-2" size="small" @click="toggle" />
         <Logo />
         <v-app-bar-title>Bastion.CMS</v-app-bar-title>
         <template #append>
             <v-menu v-if="user" v-model="userMenu" :close-on-content-click="false" location="bottom">
                 <template #activator="{ props }">
-                    <v-btn icon v-bind="props" size="small">
+                    <v-btn icon v-bind="props" size="small" >
                         <v-icon>mdi-account-circle</v-icon>
                     </v-btn>
                 </template>

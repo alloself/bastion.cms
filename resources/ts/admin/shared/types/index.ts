@@ -25,5 +25,19 @@ export interface IServerDataList<T> {
   last_page: number;
   per_page: number;
   total: number;
-  items: T[]
+  data: T[],
+  sortBy?: Array<Record<string,string>>
+  search?: string;
+}
+
+export interface ISortBy {
+  key: string;
+  order: "asc" | "desc";
+}
+
+export interface ITableProps {
+  page: number;
+  itemsPerPage: number;
+  sortBy: ISortBy[];
+  search: string;
 }
