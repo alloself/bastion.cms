@@ -4,8 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
+use App\Traits\HasCRUDMethods;
 use App\Traits\HasList;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use OwenIt\Auditing\Auditable;
@@ -16,7 +18,7 @@ use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 class User extends Authenticatable implements AuditableContract
 {
 
-    use HasUuids, Notifiable, HasRoles, Auditable, HasList;
+    use HasUuids, Notifiable, HasRoles, Auditable, HasList, HasCRUDMethods, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -76,6 +78,7 @@ class User extends Authenticatable implements AuditableContract
         'model_fields' => ['first_name', 'last_name', 'middle_name'],
         'full_text' => true
     ];
+
     protected array $sortable = [
         'first_name',
         'last_name',

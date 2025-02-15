@@ -2,94 +2,100 @@
 
 namespace App\Traits;
 
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 trait HasCRUD
 {
-  abstract public function model();
+    /**
+     * Абстрактный метод для получения класса модели
+     */
+    abstract public function model(): string;
 
+    /**
+     * Получение списка сущностей
+     */
+    public function index(Request $request)
+    {
+        $request->validate([
+            'with' => 'sometimes|array',
+            'with.*' => 'string|in:' . implode(',', $this->allowedRelations()),
+            'items_per_page' => 'sometimes|integer|min:1|max:100',
+            'page' => 'sometimes|integer|min:1'
+        ]);
 
-  public function index(Request $request)
-  {
-    $with = $request->has('with') ? $request->input('with') : [];
-    if ($request->has('items_per_page') && $request->has('page')) {
-      return $this->model()::getPaginateList($request->all(), $with);
+        $with = $request->input('with', []);
+        
+        return $request->has(['items_per_page', 'page'])
+            ? $this->model()::getPaginateList($request->all(), $with)
+            : $this->model()::getList($request->all(), $with);
     }
 
-    return $this->model()::getList($request->all(), $with);
-  }
-
-  public function store(Request $request)
-  {
-    $with = $request->with ?? [];
-    $values = $request->all();
-
-    DB::beginTransaction();
-
-    try {
-      $entity = $this->model()::createEntity($values);
-      DB::commit();
-      return $entity->load($with);
-    } catch (Exception $error) {
-      DB::rollback();
-
-      return $error;
+    /**
+     * Создание новой сущности
+     */
+    public function store(Request $request)
+    {
+        return DB::transaction(function () use ($request) {
+            $entity = $this->model()::createEntity($request->all());
+            return $entity->load($request->input('with', []));
+        });
     }
-  }
 
-  public function show(string $id, Request $request)
-  {
-    return $this->model()::showEntity($id, $request->with ?? []);
-  }
+    /**
+     * Просмотр конкретной сущности
+     */
+    public function show(string $id, Request $request)
+    {
+        $request->validate([
+            'with' => 'sometimes|array',
+            'with.*' => 'string|in:' . implode(',', $this->allowedRelations())
+        ]);
 
-  public function update(Request $request, string $id)
-  {
-    $with = $request->with ?? [];
-    $values = $request->all();
-    DB::beginTransaction();
-
-    try {
-      $entity = $this->model()::findOrFail($id);
-      $entity->updateEntity($values);
-      DB::commit();
-      return $entity->load($with);
-    } catch (Exception $error) {
-      DB::rollback();
-
-      return $error;
+        return $this->model()::showEntity(
+            $id, 
+            $request->input('with', [])
+        ) ?? throw new ModelNotFoundException();
     }
-  }
 
-  public function destroy(string $id)
-  {
-    DB::beginTransaction();
-
-    try {
-      $entity = $this->model()::findOrFail($id);
-      $entity->deleteEntity();
-      DB::commit();
-      return;
-    } catch (Exception $error) {
-      DB::rollback();
-
-      return $error;
+    /**
+     * Обновление сущности
+     */
+    public function update(Request $request, string $id)
+    {
+        return DB::transaction(function () use ($id, $request) {
+            $entity = $this->model()::findOrFail($id);
+            $entity->updateEntity($request->all());
+            return $entity->load($request->input('with', []));
+        });
     }
-  }
 
-  public function deleteMany(Request $request)
-  {
-    DB::beginTransaction();
-
-    try {
-      $this->model()::destroy($request->toArray());
-      DB::commit();
-      return;
-    } catch (Exception $error) {
-      DB::rollback();
-
-      return $error;
+    /**
+     * Удаление сущности
+     */
+    public function destroy(string $id)
+    {
+        return DB::transaction(function () use ($id) {
+            $entity = $this->model()::findOrFail($id);
+            $entity->deleteEntity();
+            return response()->noContent();
+        });
     }
-  }
+
+    /**
+     * Массовое удаление сущностей
+     */
+    public function deleteMany(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'integer'
+        ]);
+
+        return DB::transaction(function () use ($validated) {
+            $this->model()::destroy($validated['ids']);
+            return response()->noContent();
+        });
+    }
 }

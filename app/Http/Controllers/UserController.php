@@ -3,15 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Traits\HasCRUD;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
 
-    use HasCRUD;
-
-    public function model()
+    public function model(): string
     {
         return User::class;
     }
