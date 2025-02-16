@@ -58,3 +58,15 @@ export interface IOptionsFieldsFabric<T> {
 export type TCreateFields<T> = (context?: IOptionsFieldsFabric<T>) => Promise<{
   fields: Ref<ISmartFormField[]>
 }>
+
+export interface IRelationFieldConfig {
+  type: 'relation-table' | 'relation-tree' | 'file' | 'autocomplete' | 'json-editor'
+  moduleKey?: string
+  title?: string
+  morphRelation?: boolean
+  propHeaders?: Array<{ title: string; key: string }>
+  initialValues?: Record<string, any>
+  itemValue?: string
+  itemTitle?: string
+  fileType?: 'image' | 'file'
+}

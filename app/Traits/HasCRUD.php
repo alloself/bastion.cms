@@ -20,7 +20,6 @@ trait HasCRUD
     {
         $request->validate([
             'with' => 'sometimes|array',
-            'with.*' => 'string|in:' . implode(',', $this->allowedRelations()),
             'items_per_page' => 'sometimes|integer|min:1|max:100',
             'page' => 'sometimes|integer|min:1'
         ]);
@@ -49,8 +48,7 @@ trait HasCRUD
     public function show(string $id, Request $request)
     {
         $request->validate([
-            'with' => 'sometimes|array',
-            'with.*' => 'string|in:' . implode(',', $this->allowedRelations())
+            'with' => 'sometimes|array'
         ]);
 
         return $this->model()::showEntity(
