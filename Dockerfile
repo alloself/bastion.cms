@@ -38,6 +38,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN composer self-update
 RUN composer install
 RUN php artisan storage:link
+
 EXPOSE 9000
 
 CMD ["php-fpm"]

@@ -1,8 +1,8 @@
 import type { RouteRecordRaw } from "vue-router";
 import { capitalize } from "lodash";
 import { type RouteLocation } from "vue-router";
-import type { ISmartFormField } from "../types";
-//import { defineAsyncComponent, type Component } from "vue";
+import type { IRelationFieldConfig, ISmartFormField } from "../types";
+import { defineAsyncComponent, type Component } from "vue";
 
 export interface IModule {
   key: string;
@@ -109,38 +109,35 @@ export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
   }, [] as RouteRecordRaw[]);
 };
 
-//type ComponentCache = Record<string, Component>
+type ComponentCache = Record<string, Component>
 
-//const componentCache: ComponentCache = {}
-/*
+const componentCache: ComponentCache = {}
+
 const getAsyncComponent = async (loader: () => Promise<Component>): Promise<Component> => {
   const cacheKey = loader.toString()
   if (!componentCache[cacheKey]) {
     componentCache[cacheKey] = defineAsyncComponent(loader)
   }
   return componentCache[cacheKey]
-}*/
+}
 
-//export const formComponents: ComponentCache = {
-  //'relation-table': () => getAsyncComponent(() => import("@/shared/components/MultipleRelationTable.vue")),
-  //'relation-tree': () => getAsyncComponent(() => import("@/shared/components/MultipleRelationTree.vue")),
-  //'file': () => getAsyncComponent(() => import("@/shared/components/FilesTable.vue")),
-  //'autocomplete': () => getAsyncComponent(() => import("@/shared/components/SingleRelationAutocomplete.vue")),
-  //'json-editor': () => getAsyncComponent(() => import("@/shared/components/JSONEditor.vue"))
-//}
+export const formComponents: ComponentCache = {
+  'relation-table': () => getAsyncComponent(() => import("@admin/shared/components/RelationsTable.vue")),
+  'relation-tree': () => getAsyncComponent(() => import("@admin/shared/components/RelationTree.vue")),
+  'autocomplete': () => getAsyncComponent(() => import("@admin/shared/components/RelationAutocomplete.vue")),
+}
 
 
 export const createField = {
-  // Базовое текстовое поле
   text: (key: string, label: string): ISmartFormField => ({
     component: "v-text-field",
     key,
     props: { label, name: key, type: "text" }
   }),
 
-  /*
-  relation: async (key: string, config: IRelationFieldConfig): Promise<ISmartFormField> => {
-    const component = await formComponents[config.type]()
+  relation: (key: string, config: IRelationFieldConfig): ISmartFormField => {
+  
+    const component = formComponents[config.type]
 
     return {
       component,
@@ -156,5 +153,5 @@ export const createField = {
         type: config.fileType
       }
     }
-  },*/
+  },
 }

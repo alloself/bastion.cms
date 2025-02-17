@@ -60,7 +60,7 @@ export type TCreateFields<T> = (context?: IOptionsFieldsFabric<T>) => Promise<{
 }>
 
 export interface IRelationFieldConfig {
-  type: 'relation-table' | 'relation-tree' | 'file' | 'autocomplete' | 'json-editor'
+  type: 'relation-table' | 'relation-tree' | 'autocomplete'
   moduleKey?: string
   title?: string
   morphRelation?: boolean

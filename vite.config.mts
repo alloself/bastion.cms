@@ -66,5 +66,14 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['monaco-editor']
-  }
+  },
+  server: {
+    host: '0.0.0.0', // Позволяет принимать подключения извне контейнера
+    port: 5173,
+    hmr: {
+      host: 'localhost', // Или ваш домен
+      protocol: 'ws',
+      port: 5173,
+    },
+  },
 });

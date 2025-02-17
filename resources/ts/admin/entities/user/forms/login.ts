@@ -10,7 +10,7 @@ export const useLoginFormFields = () => {
     };
 
     const fields = computed<ISmartFormField[]>(() => [
-        {
+        /*{
             component: "v-text-field",
             key: "email",
             props: {
@@ -41,7 +41,7 @@ export const useLoginFormFields = () => {
             rule: yup.string()
                 .required("Поле обязательно для заполнения")
                 .min(8, "Пароль должен содержать минимум 8 символов")
-        },
+        },*/
     ]);
 
     return {
