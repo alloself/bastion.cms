@@ -1,4 +1,4 @@
-.PHONY: app mysql logs
+.PHONY: app mysql logs clear-log
 
 # Получение интерактивной оболочки в контейнере приложения (название сервиса «app»)
 app:
@@ -11,3 +11,6 @@ mysql:
 # Просмотр логов контейнера приложения
 logs:
 	docker-compose logs -f app
+
+clear-log:
+	docker-compose exec app sh -c "rm -f storage/logs/laravel.log && touch storage/logs/laravel.log"
