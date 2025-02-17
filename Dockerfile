@@ -1,7 +1,7 @@
 FROM php:8.3-fpm
 
 # Установка необходимых пакетов и расширений
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y procps \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \

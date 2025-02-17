@@ -44,6 +44,6 @@ const onAddClick = () => {
 }
 
 const selectedTab = ref(null);
-
+//@ts-ignore
 const slots = useSlots();
 </script>
