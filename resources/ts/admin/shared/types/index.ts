@@ -8,6 +8,7 @@ export interface ISmartFormField {
   props?: Record<string, unknown>;
   events?: Record<string, Function>;
   rule?: unknown;
+  readonly?: boolean;
 }
 
 export interface ISmartFormProps {
@@ -15,6 +16,7 @@ export interface ISmartFormProps {
   form: FormContext | undefined | null;
   initialValues?: Record<string, unknown>;
   loading?: boolean;
+  readonly?: boolean;
 }
 
 export interface IBaseEntity {
@@ -57,6 +59,7 @@ export interface IOptionsFieldsFabric<T> {
 
 export type TCreateFields<T> = (context?: IOptionsFieldsFabric<T>) => Promise<{
   fields: Ref<ISmartFormField[]>
+  readonly?: boolean;
 }>
 
 export interface IRelationFieldConfig {

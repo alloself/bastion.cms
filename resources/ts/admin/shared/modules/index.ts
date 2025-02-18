@@ -49,11 +49,11 @@ export const modules: IModule[] = [
       },
       {
         title: "Фамилия",
-        key: "middle_name",
+        key: "last_name",
       },
       {
         title: "Отчество",
-        key: "last_name",
+        key: "middle_name",
       },
     ],
     relations: ['audits']

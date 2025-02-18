@@ -14,6 +14,7 @@
                     :is="schemeField.component"                  
                     :model-value="value"
                     :loading="loading"
+                    :readonly="readonly || schemeField.readonly"
                     @update:modelValue="handleChange"
                     :error-messages="errors"
                     v-bind="schemeField.props"
@@ -32,6 +33,7 @@ const {
     fields = [],
     loading = false,
     initialValues = {},
+    readonly = false
 } = defineProps<ISmartFormProps>();
 
 const emits = defineEmits<{

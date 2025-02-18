@@ -11,6 +11,7 @@
             <smart-form
                 :loading="loading"
                 :fields="fields"
+                :readonly="readonly"
                 v-model:form="form"
                 :initial-values="initialValues"
             ></smart-form>
@@ -78,14 +79,15 @@ const form = ref<FormContext>();
 const createFields = ref<TCreateFields<T>>();
 const fields = ref<ISmartFormField[]>([]);
 const showConfirmDelete = ref(false);
+const readonly = ref(false)
 
 const onReset = () => form.value?.resetForm(initialValues);
 const onClose = () => emit("close");
 
 const setupFieldsConstructor = async (key: string) => {
     const module = await import(`@admin/entities/${key}/index.ts`);
-
     createFields.value = module.createFields || module.default;
+
 };
 
 const initializeFields = async (data?: T) => {
@@ -95,7 +97,7 @@ const initializeFields = async (data?: T) => {
         : { initialValues: initialValues };
 
     const cratedFields = await createFields.value(context);
-
+    readonly.value = cratedFields.readonly || false
     fields.value = cratedFields.fields?.value || [];
 };
 
@@ -162,13 +164,13 @@ const onConfirmDelete = () => {
 const allActions = ref([
     {
         title: "Сбросить",
-        condition: true,
+        condition: () => !!id && !readonly.value,
         action: onReset,
         props: { color: "warning" },
     },
     {
         title: "Обновить",
-        condition: () => !!id,
+        condition: () => !!id && !readonly.value,
         action: onUpdate,
         props: { color: "primary" },
     },
