@@ -72,6 +72,7 @@ const formContext = useForm({
   validationSchema: mergedValidationSchema,
   initialValues: initialValues,
   keepValuesOnUnmount: true,
+  validateOnMount: false
 })
 
 watchEffect(() => {

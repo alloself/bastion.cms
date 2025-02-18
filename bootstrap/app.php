@@ -6,7 +6,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -93,18 +92,15 @@ return Application::configure(basePath: dirname(__DIR__))
     });
 
     // Общая обработка ошибок
-    $exceptions->renderable(function (Throwable $e, $request) {
+    $exceptions->render(function (Throwable $e, $request) {
       if ($request->expectsJson()) {
-        try {
-          $status = getStatusCodeFromException($e);
+        $status = getStatusCodeFromException($e);
 
-          return response()->json([
-            'message' => config('app.debug') ? $e->getMessage() : 'Произошла ошибка',
-            'error_code' => $status
-          ], $status);
-        } catch (Exception $e) {
-          Log::alert($e);
-        }
+        return response()->json([
+          'message' => config('app.debug') ? $e->getMessage() : 'Произошла ошибка',
+          'error_code' => $status,
+        ], $status);
       }
+      return null; // Использовать стандартную обработку для не JSON-запросов
     });
   })->create();

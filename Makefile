@@ -1,4 +1,4 @@
-.PHONY: app mysql logs clear-log
+.PHONY: app mysql logs clear-log node
 
 # Получение интерактивной оболочки в контейнере приложения (название сервиса «app»)
 app:
@@ -17,3 +17,6 @@ clear-log:
 
 init: 
 	docker-compose exec app bash && php artisan migrate:fresh --seed
+
+node:
+	docker-compose exec node bash

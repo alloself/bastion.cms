@@ -1,8 +1,6 @@
 import type { RouteRecordRaw } from "vue-router";
 import { capitalize } from "lodash";
 import { type RouteLocation } from "vue-router";
-import type { IRelationFieldConfig, ISmartFormField } from "../types";
-import { defineAsyncComponent, type Component } from "vue";
 
 export interface IModule {
   key: string;
@@ -108,50 +106,3 @@ export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
     return acc;
   }, [] as RouteRecordRaw[]);
 };
-
-type ComponentCache = Record<string, Component>
-
-const componentCache: ComponentCache = {}
-
-const getAsyncComponent = async (loader: () => Promise<Component>): Promise<Component> => {
-  const cacheKey = loader.toString()
-  if (!componentCache[cacheKey]) {
-    componentCache[cacheKey] = defineAsyncComponent(loader)
-  }
-  return componentCache[cacheKey]
-}
-
-export const formComponents: ComponentCache = {
-  'relation-table': () => getAsyncComponent(() => import("@admin/shared/components/RelationsTable.vue")),
-  'relation-tree': () => getAsyncComponent(() => import("@admin/shared/components/RelationTree.vue")),
-  'autocomplete': () => getAsyncComponent(() => import("@admin/shared/components/RelationAutocomplete.vue")),
-}
-
-
-export const createField = {
-  text: (key: string, label: string): ISmartFormField => ({
-    component: "v-text-field",
-    key,
-    props: { label, name: key, type: "text" }
-  }),
-
-  relation: (key: string, config: IRelationFieldConfig): ISmartFormField => {
-  
-    const component = formComponents[config.type]
-
-    return {
-      component,
-      key,
-      props: {
-        title: config.title || key,
-        moduleKey: config.moduleKey || key,
-        morphRelation: config.morphRelation,
-        propHeaders: config.propHeaders,
-        initialValues: config.initialValues,
-        itemValue: config.itemValue,
-        itemTitle: config.itemTitle,
-        type: config.fileType
-      }
-    }
-  },
-}
