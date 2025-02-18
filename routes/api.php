@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -8,6 +9,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(functio
 
     Route::apiResources([
         'user' => UserController::class,      
+        'page' => PageController::class,      
     ]);
 
 });

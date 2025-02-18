@@ -44,6 +44,7 @@ export default defineConfig({
     target: 'esnext',
     sourcemap: true,
     rollupOptions: {
+      external: ['vuetify/components'],
       output: {
         manualChunks: {
           'monaco-editor': ['monaco-editor'],

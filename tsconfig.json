@@ -18,8 +18,8 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "paths": {
-            "@/*": ["resources/*"],
-            "@admin/*": ["resources/ts/admin/*"]
+            "@/*": ["./resources/*"],
+            "@admin/*": ["./resources/ts/admin/*"]
         },
         "types": ["vite/client"]
     },
