@@ -12,8 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pages', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->json('meta')->nullable();
+            $table->boolean('index')->default(false);
+            $table->unsignedInteger('_lft')->default(0);
+            $table->unsignedInteger('_rgt')->default(0);
+            $table->uuid('parent_id')->nullable();
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreignUuid('template_id')->nullable()->constrained();
+            $table->foreign('parent_id')->references('id')->on('pages')->onDelete('cascade');
         });
     }
 

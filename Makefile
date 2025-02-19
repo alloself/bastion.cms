@@ -1,4 +1,4 @@
-.PHONY: app mysql logs clear-log node start
+.PHONY: app mysql logs clear-log node start stop
 
 # Получение интерактивной оболочки в контейнере приложения (название сервиса «app»)
 app:
@@ -23,3 +23,6 @@ node:
 
 start: 
 	docker-compose up -d
+
+stop: 
+	docker-compose down
