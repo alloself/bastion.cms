@@ -29,7 +29,7 @@
                     @click="action.action"
                     >{{ action.title }}</v-btn
                 >
-                <v-badge color="info" :content="history.length">
+                <v-badge color="info" :content="history.length" v-if="id">
                     <v-btn :loading="loading" @click="openHistoryBottomSheet">
                         История
                     </v-btn>

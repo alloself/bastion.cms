@@ -25,7 +25,7 @@ export const modules: IModule[] = [
             },
             {
                 title: "Ссылка",
-                key: "link.path",
+                key: "link.url",
             },
             {
                 title: "Язык",

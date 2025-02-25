@@ -16,7 +16,7 @@ clear-log:
 	docker-compose exec app sh -c "rm -f storage/logs/laravel.log && touch storage/logs/laravel.log"
 
 init: 
-	docker-compose exec app bash && php artisan migrate:fresh --seed
+	docker-compose exec app sh -c "php artisan migrate:fresh --seed"
 
 node:
 	docker-compose exec node bash

@@ -130,7 +130,6 @@ class Link extends Model implements AuditableContract
 
     private function saveWithEvents(): self
     {
-        // Сохраняем с обработкой событий
         $this->save();
         return $this;
     }

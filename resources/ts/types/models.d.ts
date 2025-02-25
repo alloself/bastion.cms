@@ -52,10 +52,10 @@ export interface Page {
   template_id: string | null
   // relations
   template?: Template
+  link?: Link
   audits?: AuditModel[]
   parent?: Page
   children?: Page[]
-  link?: Link
 }
 export type Pagefillable = Pick<Page, 'index' | 'meta' | 'parent_id' | 'template_id'>
 

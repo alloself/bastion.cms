@@ -20,6 +20,11 @@ return new class extends Migration
             $table->uuidMorphs('linkable');
             $table->softDeletes();
             $table->timestamps();
+
+            $table->index('title', 'title_index');
+            $table->index('url', 'url_index');
+            $table->index(['linkable_id', 'linkable_type'], 'linkable_index');
+            $table->fullText(['title', 'url'], 'fulltext_title_url');
         });
     }
 
