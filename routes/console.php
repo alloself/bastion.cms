@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('telescope:clear')->weekly();
+
+//* * * * * cd /путь/к/вашему/проекту && php artisan schedule:run >> /dev/null 2>&1
