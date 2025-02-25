@@ -5,7 +5,7 @@ import { ref } from "vue";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref<User | null>(null)
-
+  
   const getUser = async () => {
     try {
       const { data } = await client.get("/api/admin/me");

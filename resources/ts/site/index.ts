@@ -1,6 +1,5 @@
 import { createApp } from 'vue';
 
-// Динамическая регистрация виджетов
 const initWidgets = () => {
   document.querySelectorAll('[data-vue-widget]').forEach(el => {
     const widgetName = el.getAttribute('data-vue-widget');

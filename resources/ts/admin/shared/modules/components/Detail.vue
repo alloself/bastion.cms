@@ -3,11 +3,12 @@
         outlined
         rounded="0"
         flat
+        :class="detailClass"
         :max-height="`calc(100svh - ${mainRect.top}px)`"
         :loading="loading"
         class="h-100 d-flex flex-column overflow-auto w-100"
     >
-        <v-card-text>
+        <v-card-text class="form-wrapper">
             <smart-form
                 :loading="loading"
                 :fields="fields"
@@ -16,7 +17,7 @@
                 :initial-values="initialValues"
             ></smart-form>
         </v-card-text>
-        <v-spacer></v-spacer>
+
         <div class="actions-wrapper">
             <v-divider></v-divider>
             <v-card-actions>
@@ -24,16 +25,26 @@
                     v-for="(action, index) in filteredActions"
                     :key="index"
                     v-bind="action.props"
+                    :loading="loading"
                     @click="action.action"
                     >{{ action.title }}</v-btn
                 >
+                <v-badge color="info" :content="history.length">
+                    <v-btn :loading="loading" @click="openHistoryBottomSheet">
+                        История
+                    </v-btn>
+                </v-badge>
+
                 <v-spacer></v-spacer>
                 <v-btn @click="router.go(-1)" v-if="!modal">Назад</v-btn>
             </v-card-actions>
         </div>
     </v-card>
     <v-dialog v-model="showConfirmDelete" max-width="450" persistent>
-        <v-card prepend-icon="mdi-alert" title="Вы действительно хотите удалить?">
+        <v-card
+            prepend-icon="mdi-alert"
+            title="Вы действительно хотите удалить?"
+        >
             <template v-slot:actions>
                 <v-spacer></v-spacer>
 
@@ -43,6 +54,7 @@
             </template>
         </v-card>
     </v-dialog>
+    <history-bottom-sheet v-model="showHistory" :history="history" @restore="onRestore" />
 </template>
 <script setup lang="ts" generic="T extends IBaseEntity">
 import type {
@@ -50,13 +62,14 @@ import type {
     IDetailProps,
     ISmartFormField,
     TCreateFields,
+    THistoryItem,
 } from "@admin/shared/types";
 import { loading, client } from "@admin/shared/api/axios";
 import { useRouter } from "vue-router";
 import { useLayout } from "vuetify";
 import { capitalize, computed, onMounted, ref, watch } from "vue";
 import type { FormContext } from "vee-validate";
-import { SmartForm } from "@admin/shared/components";
+import { SmartForm, HistoryBottomSheet } from "@admin/shared/components";
 
 const { mainRect } = useLayout();
 const router = useRouter();
@@ -66,6 +79,7 @@ const {
     id = undefined,
     initialValues = {},
     module,
+    detailClass,
 } = defineProps<IDetailProps<T>>();
 
 const emit = defineEmits<{
@@ -79,7 +93,8 @@ const form = ref<FormContext>();
 const createFields = ref<TCreateFields<T>>();
 const fields = ref<ISmartFormField[]>([]);
 const showConfirmDelete = ref(false);
-const readonly = ref(false)
+const showHistory = ref(false);
+const readonly = ref(false);
 
 const onReset = () => form.value?.resetForm(initialValues);
 const onClose = () => emit("close");
@@ -87,7 +102,6 @@ const onClose = () => emit("close");
 const setupFieldsConstructor = async (key: string) => {
     const module = await import(`@admin/entities/${key}/index.ts`);
     createFields.value = module.createFields || module.default;
-
 };
 
 const initializeFields = async (data?: T) => {
@@ -97,7 +111,7 @@ const initializeFields = async (data?: T) => {
         : { initialValues: initialValues };
 
     const cratedFields = await createFields.value(context);
-    readonly.value = cratedFields.readonly || false
+    readonly.value = cratedFields.readonly || false;
     fields.value = cratedFields.fields?.value || [];
 };
 
@@ -177,7 +191,7 @@ const allActions = ref([
     {
         title: "Удалить",
         condition: () => !!id,
-        action: () => showConfirmDelete.value = true,
+        action: () => (showConfirmDelete.value = true),
         props: { color: "red" },
     },
     {
@@ -201,6 +215,19 @@ const filteredActions = computed(() =>
             : action.condition
     )
 );
+
+const history = computed<THistoryItem[]>(
+    () => form.value?.values.audits || []
+);
+
+const openHistoryBottomSheet = () => {
+    showHistory.value = true
+};
+
+const onRestore = (values: Partial<T>) => {
+    form.value?.resetForm({ values });
+    onUpdate()
+}
 
 onMounted(async () => {
     await setupFieldsConstructor(module.key);
@@ -230,5 +257,10 @@ watch(
     .v-card-actions {
         padding: 12px 16px;
     }
+}
+
+.form-wrapper {
+    overflow: hidden;
+    padding: 0;
 }
 </style>

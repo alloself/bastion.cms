@@ -4,7 +4,6 @@ import { registerPlugins } from "@admin/shared/plugins";
 import { useUserStore } from "@admin/entities/user";
 import { client } from "@admin/shared/api/axios";
 
-
 try {
   await client.get("/sanctum/csrf-cookie");
 

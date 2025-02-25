@@ -42,7 +42,6 @@ services:
       MYSQL_PASSWORD: secret
     volumes:
       - mysql_data:/var/lib/mysql
-       ./docker/sql:/docker-entrypoint-initdb.d
     networks:
       - laravel_net
 

@@ -25,7 +25,7 @@ trait HasCRUD
         ]);
 
         $with = $request->input('with', []);
-        
+
         return $request->has(['items_per_page', 'page'])
             ? $this->model()::getPaginateList($request->all(), $with)
             : $this->model()::getList($request->all(), $with);
@@ -52,7 +52,7 @@ trait HasCRUD
         ]);
 
         return $this->model()::showEntity(
-            $id, 
+            $id,
             $request->input('with', [])
         ) ?? throw new ModelNotFoundException();
     }
@@ -88,7 +88,7 @@ trait HasCRUD
     {
         $validated = $request->validate([
             'ids' => 'required|array',
-            'ids.*' => 'integer'
+            'ids.*' => 'string'
         ]);
 
         return DB::transaction(function () use ($validated) {

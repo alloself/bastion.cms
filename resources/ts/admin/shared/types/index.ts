@@ -1,6 +1,7 @@
 import type { FormContext } from "vee-validate";
 import type { Component, Ref } from "vue";
 import type { IModule } from "../modules";
+import type { AuditModel, User } from "@/ts/types/models";
 
 export interface ISmartFormField {
   component: Component | string;
@@ -21,6 +22,11 @@ export interface ISmartFormProps {
 
 export interface IBaseEntity {
   id: string;
+}
+
+export interface INestedSet<T> {
+  children: T[];
+  parent_id: string;
 }
 
 export interface IServerDataList<T> {
@@ -50,6 +56,7 @@ export interface IDetailProps<T> {
   modal?: boolean;
   initialValues?: Partial<T>;
   module: IModule;
+  detailClass?: string;
 }
 
 export interface IOptionsFieldsFabric<T> {
@@ -62,14 +69,34 @@ export type TCreateFields<T> = (context?: IOptionsFieldsFabric<T>) => Promise<{
   readonly?: boolean;
 }>
 
-export interface IRelationFieldConfig {
-  type: 'relation-table' | 'relation-tree' | 'autocomplete'
-  moduleKey?: string
-  title?: string
-  morphRelation?: boolean
-  propHeaders?: Array<{ title: string; key: string }>
-  initialValues?: Record<string, any>
-  itemValue?: string
-  itemTitle?: string
-  fileType?: 'image' | 'file'
+export interface IRelationAutocompleteProps<T extends IBaseEntity> extends IItems<T> {
+  readonly?: boolean;
+  moduleKey: string;
+  modelValue?: keyof T;
+  loading?: boolean;
+  initialItems?: T[];
+}
+
+export interface IItems<T> {
+  itemValue?: keyof T | ((item: T) => string);
+  itemTitle?: keyof T | ((item: T) => string);
+}
+
+export interface IRelationTreeProps<T> extends IItems<T> {
+  moduleKey: string;
+  modelValue: T[];
+  initialValues: T[];
+}
+
+export interface IRelationCardProps {
+  loading?: boolean;
+  title?: string;
+  icon?: string;
+}
+
+export type THistoryItem =  AuditModel & { user: User }
+
+export interface IHistoryBottomSheetProps {
+  modelValue: boolean;
+  history: THistoryItem[]
 }

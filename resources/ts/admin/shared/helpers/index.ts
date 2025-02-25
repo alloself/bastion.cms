@@ -1,7 +1,7 @@
 import type { LocationQuery } from "vue-router";
 
 // Утилиты для преобразования camelCase ↔ snake_case
-export const camelToSnakeCase = (str: string) => 
+export const camelToSnakeCase = (str: string) =>
   str.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
 
 export const snakeToCamelCase = (str: string) =>
@@ -19,7 +19,7 @@ export function toQueryString<T extends Record<string, unknown>>(
 
   for (const [key, value] of Object.entries(obj)) {
     const currentKey = prefix + camelToSnakeCase(key);
-    
+
     if (Array.isArray(value)) {
       for (const [index, item] of value.entries()) {
         if (item && typeof item === "object") {
@@ -52,8 +52,8 @@ export function parseKeyParts(key: string): (string | number)[] {
     .filter(Boolean)
     .map((part, index) => {
       const camelPart = snakeToCamelCase(part);
-      return index > 0 && /^\d+$/.test(camelPart) 
-        ? parseInt(camelPart, 10) 
+      return index > 0 && /^\d+$/.test(camelPart)
+        ? parseInt(camelPart, 10)
         : camelPart;
     });
 }
@@ -68,14 +68,14 @@ export function assignDeep(
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
     const nextKey = keys[i + 1];
-    
+
     if (current[key] === undefined) {
       current[key] = typeof nextKey === "number" ? [] : {};
     }
-    
+
     current = current[key] as Record<string, unknown>;
   }
-  
+
   const lastKey = keys[keys.length - 1];
   current[lastKey] = value;
 }
@@ -86,7 +86,7 @@ export function parseQueryParams(query: LocationQuery): Record<string, unknown> 
 
   for (const [rawKey, rawValue] of Object.entries(query)) {
     if (rawValue === null || rawValue === undefined) continue;
-    
+
     const keys = parseKeyParts(rawKey);
     const value = Array.isArray(rawValue)
       ? rawValue.filter((v): v is string => v !== null).map(parseValue)
@@ -106,7 +106,7 @@ export function prepareQueryParams<T extends Record<string, unknown>>(
 
   const processValue = (key: string, value: unknown, parentKey = "") => {
     const fullKey = parentKey ? `${parentKey}[${key}]` : camelToSnakeCase(key);
-    
+
     if (Array.isArray(value)) {
       value.forEach((item, index) => {
         if (typeof item === "object" && item !== null) {
@@ -121,7 +121,7 @@ export function prepareQueryParams<T extends Record<string, unknown>>(
       for (const [subKey, subValue] of Object.entries(value)) {
         processValue(subKey, subValue, fullKey);
       }
-    } else if(value) {
+    } else if (value) {
       prepared[fullKey] = String(value);
     }
   };
@@ -131,4 +131,52 @@ export function prepareQueryParams<T extends Record<string, unknown>>(
   }
 
   return prepared;
+}
+
+function parseMargin(value: string): number {
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? 0 : parsed;
+}
+
+export function getFreeSpace(parentElement: HTMLElement) {
+  const parentWidth = parentElement.clientWidth;
+  const parentHeight = parentElement.clientHeight;
+
+  let usedWidth = 0;
+  let usedHeight = 0;
+
+  Array.from(parentElement.children).forEach(child => {
+    // Проверка типа элемента
+    if (!(child instanceof HTMLElement)) return;
+
+    const style = window.getComputedStyle(child);
+
+    // Пропускаем скрытые элементы
+    if (style.display === 'none' || style.visibility === 'hidden') return;
+
+    // Расчет margin
+    const marginX = parseMargin(style.marginLeft) + parseMargin(style.marginRight);
+    const marginY = parseMargin(style.marginTop) + parseMargin(style.marginBottom);
+
+    // Расчет размеров элемента
+    const width = style.display === 'flex'
+      ? child.scrollWidth
+      : child.offsetWidth;
+
+    const height = style.display === 'flex'
+      ? child.scrollHeight
+      : child.offsetHeight;
+
+    usedWidth += width + marginX;
+    usedHeight += height + marginY;
+  });
+
+  return {
+    freeWidth: Math.max(0, parentWidth - usedWidth),
+    freeHeight: Math.max(0, parentHeight - usedHeight),
+    parentWidth,
+    parentHeight,
+    usedWidth,
+    usedHeight
+  };
 }

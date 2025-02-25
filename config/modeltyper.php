@@ -12,7 +12,7 @@ return [
     |
     | Requires output-file set to true
     */
-    'run-after-migrate' => false,
+    'run-after-migrate' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -33,7 +33,7 @@ return [
     |
     | Requires output-file set to true
     */
-    'output-file-path' => './resources/ts/types/models.d.ts',
+    'output-file-path' =>  './resources/ts/types/models.d.ts',
 
     /*
     |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ return [
     |
     | Requires global set to true
     */
-    'global-namespace' => 'Models',
+    'global-namespace' => 'models',
 
     /*
     |--------------------------------------------------------------------------
@@ -114,7 +114,7 @@ return [
     | definitions. This allows for more flexibility in handling models that may
     | or may not have related data.
     */
-    'optional-relations' => false,
+    'optional-relations' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -125,7 +125,7 @@ return [
     | definitions. Hidden attributes are typically not needed in the client-side
     | code.
     */
-    'no-hidden' => false,
+    'no-hidden' => true,
 
     /*
     |--------------------------------------------------------------------------
@@ -166,7 +166,7 @@ return [
     | Specifies whether to output fillable model attributes in the TypeScript
     | definitions. Fillable attributes are those that can be mass-assigned.
     */
-    'fillables' => false,
+    'fillables' => true,
 
     /*
     |--------------------------------------------------------------------------

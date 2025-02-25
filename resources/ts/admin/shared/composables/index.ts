@@ -1,5 +1,7 @@
 import { useFormSubmit } from "./useFormSubmit";
+import { useModule } from "./useModule";
 
 export {
-    useFormSubmit
+    useFormSubmit,
+    useModule
 }

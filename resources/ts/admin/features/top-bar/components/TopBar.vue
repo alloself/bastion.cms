@@ -13,7 +13,7 @@
                 <v-card min-width="300">
                     <v-list>
                         <v-list-subheader>Пользователь</v-list-subheader>
-                        <v-list-item :title="user?.name" :subtitle="user?.email">
+                        <v-list-item :title="user.first_name" :subtitle="user?.email">
                         </v-list-item>
                     </v-list>
                     <v-divider></v-divider>

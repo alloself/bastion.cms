@@ -14,7 +14,6 @@ use OwenIt\Auditing\Auditable;
 use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-/** @typescript */
 class User extends Authenticatable implements AuditableContract
 {
 
@@ -25,7 +24,6 @@ class User extends Authenticatable implements AuditableContract
      *
      * @var list<string>
      */
-    /** @typescript */
     protected $fillable = [
         'first_name',
         'last_name',

@@ -90,17 +90,4 @@ return Application::configure(basePath: dirname(__DIR__))
         ], 422);
       }
     });
-
-    // Общая обработка ошибок
-    $exceptions->render(function (Throwable $e, $request) {
-      if ($request->expectsJson()) {
-        $status = getStatusCodeFromException($e);
-
-        return response()->json([
-          'message' => config('app.debug') ? $e->getMessage() : 'Произошла ошибка',
-          'error_code' => $status,
-        ], $status);
-      }
-      return null; // Использовать стандартную обработку для не JSON-запросов
-    });
   })->create();

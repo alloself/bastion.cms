@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Log;
-
 trait HasCRUDMethods
 {
     /**
@@ -11,7 +9,15 @@ trait HasCRUDMethods
      */
     public static function createEntity(array $data): self
     {
-        return self::create($data);
+
+        $entity = self::create($data);
+
+        if ($entity->isRelation('link') && $data['link']) {
+            $entity->addLink($data['link']);
+        }
+
+
+        return $entity;
     }
 
     public static function showEntity($id, array $with = [])
@@ -24,8 +30,13 @@ trait HasCRUDMethods
      */
     public function updateEntity(array $data): self
     {
-        Log::alert($data);
         $this->update($data);
+
+
+        if ($this->isRelation('link') && $data['link']) {
+            $this->updateLink($data['link']);
+        }
+
         return $this;
     }
 

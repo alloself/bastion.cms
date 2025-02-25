@@ -8,11 +8,10 @@
         class="modals-wrapper"
     >
         <component
-            class="modal"
             v-for="(modal, index) in modals"
             :is="modal.component"
-            v-bind="modal.props"
-            v-on="modal.actions"
+            detailClass="modal"
+            v-bind="{ ...$attrs, ...modal.props, ...modal.actions }"
             :key="index"
         ></component>
     </v-navigation-drawer>
