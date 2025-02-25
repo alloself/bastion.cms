@@ -120,9 +120,9 @@ const addRelation = () => {
             onCreate: (item: T) => {
                 search.value = "";
                 items.value.push(item);
-                const value = getItemValue(item)
-                if(value) {
-                  emit("update:model-value", value);
+                const value = getItemValue(item);
+                if (value) {
+                    emit("update:model-value", value);
                 }
 
                 getItems();
@@ -145,7 +145,8 @@ const editRelation = () => {
             onClose: modalDrawerStore.onModalClose,
             onUpdate: (updatedItem: T) => {
                 const index = items.value.findIndex(
-                    (item: T) => getItemValue(item) === getItemValue(updatedItem)
+                    (item: T) =>
+                        getItemValue(item) === getItemValue(updatedItem)
                 );
                 if (index > -1) items.value.splice(index, 1, updatedItem);
             },
@@ -161,11 +162,11 @@ const onClick = (e: Event) => {
     }
 };
 
-watch(search, (newVal) => {
-    if (!newVal) {
+watch([search, modelValue], ([newSearchVal]) => {
+    if (!newSearchVal) {
         handleSearch();
     } else {
-        handleSearch({ search: newVal });
+        handleSearch({ search: newSearchVal });
     }
 });
 
