@@ -100,6 +100,7 @@
                         icon
                         large
                         :loading="loading"
+                        :disabled="!selected.length"
                         v-bind="props"
                         flat
                         @click="removeSelected"
