@@ -38,7 +38,6 @@ trait HasLink
     }
     Validator::make($values, [
       'title' => 'required|string',
-      'subtitle' => 'string'
     ])->validate();
 
     $link = $this->link;

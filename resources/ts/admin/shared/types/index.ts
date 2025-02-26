@@ -5,7 +5,7 @@ import type { AuditModel, User } from "@/ts/types/models";
 
 export interface ISmartFormField {
   component: Component | string;
-  key: string | (() => string);
+  key: string;
   props?: Record<string, unknown>;
   events?: Record<string, Function>;
   rule?: unknown;
@@ -94,9 +94,16 @@ export interface IRelationCardProps {
   icon?: string;
 }
 
-export type THistoryItem =  AuditModel & { user: User }
+export type THistoryItem = AuditModel & { user: User }
 
 export interface IHistoryBottomSheetProps {
   modelValue: boolean;
   history: THistoryItem[]
+}
+
+export interface IJSONEditorProps {
+  loading?: boolean;
+  title: string;
+  icon?: string;
+  modelValue?: Record<string, string>;
 }

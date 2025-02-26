@@ -1,24 +1,24 @@
 <template>
     <form class="smart-form">
         <slot
-            v-for="(schemeField, index) in normalizedFields"
+            v-for="schemeField in normalizedFields"
             :name="schemeField.key"
-            :key="`${index}-${schemeField.key}`"
+            :key="schemeField.uniqueKey"
         >
             <Field
-                :name="getFieldKey(schemeField)"
+                :name="schemeField.key"
                 :validateOnBlur="false"
                 ,
-                v-slot="{ value, handleChange, errors }"
+                v-slot="{ value, handleChange }"
             >
                 <component
                     :is="schemeField.component"
                     :model-value="value"
                     :readonly="readonly || schemeField.readonly"
                     @update:modelValue="handleChange"
-                    :error-messages="errors"
+                    :error-messages="getFieldErrors(schemeField)"
                     v-bind="schemeField.props"
-                    v-on="schemeField.events"
+                    v-on="schemeField.events || {}"
                 ></component>
             </Field>
         </slot>
@@ -44,14 +44,10 @@ const emits = defineEmits<{
     "update:form": [value: FormContext];
 }>();
 
-const getFieldKey = (field: ISmartFormField) => {
-    return typeof field.key === "function" ? field.key() : field.key;
-};
-
 const mergedValidationSchema = computed(() => {
     const fieldRules = fields.reduce((schema, field) => {
         if (field.rule) {
-            schema[getFieldKey(field)] = field.rule;
+            schema[field.key] = field.rule;
         }
         return schema;
     }, {} as GenericObject);
@@ -59,11 +55,31 @@ const mergedValidationSchema = computed(() => {
     return fieldRules;
 });
 
+const formContext = useForm({
+    validationSchema: mergedValidationSchema,
+    initialValues: initialValues,
+    keepValuesOnUnmount: true,
+    validateOnMount: false,
+});
+
+const formErrors = computed(() => {
+    const errors = {} as Record<string, string>;
+
+    for (const key in formContext.errors.value) {
+        const field = fields.find((field) => field.key.includes(`.${key}`));
+        if (field) {
+            errors[field.key] = formContext.errors.value[key] || '';
+        }
+    }
+
+    return errors;
+});
+
 const normalizedFields = computed(() => {
     return fields.map((field, index) => ({
         ...field,
         uniqueKey: `${field.key}-${index}`,
-        name: typeof field.key === "function" ? field.key() : field.key,
+        name: field,
         props: {
             ...field.props,
         },
@@ -73,12 +89,9 @@ const normalizedFields = computed(() => {
     }));
 });
 
-const formContext = useForm({
-    validationSchema: mergedValidationSchema,
-    initialValues: initialValues,
-    keepValuesOnUnmount: true,
-    validateOnMount: false,
-});
+const getFieldErrors = (field: ISmartFormField) => {
+    return field.key in formErrors.value ? formErrors.value[field.key] : "";
+};
 
 watchEffect(() => {
     emits("update:form", formContext);
@@ -100,7 +113,7 @@ watchEffect(() => {
     padding: 1rem;
 
     & > * {
-      flex: none;
+        flex: none;
     }
 }
 </style>
