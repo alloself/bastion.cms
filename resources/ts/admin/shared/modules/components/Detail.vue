@@ -221,7 +221,7 @@ const onRestore = (values: Partial<T>) => {
     }
   };
 
-  const deepProcessObject = (obj: any): any => {
+  const deepProcessObject = (obj: Record<string, any>): Record<string, any> => {
     if (!obj || typeof obj !== 'object') return obj;
 
     return Object.entries(obj).reduce((acc, [key, value]) => {
