@@ -18,7 +18,7 @@
                     @update:modelValue="handleChange"
                     :error-messages="getFieldErrors(schemeField)"
                     v-bind="schemeField.props"
-                    v-on="schemeField.events || {}"
+                    v-on="schemeField.events"
                 ></component>
             </Field>
         </slot>
