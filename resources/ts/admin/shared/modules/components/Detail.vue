@@ -210,9 +210,40 @@ const openHistoryBottomSheet = () => {
 };
 
 const onRestore = (values: Partial<T>) => {
-  form.value?.resetForm({ values });
+  const tryParseJson = (value: unknown): unknown => {
+    if (typeof value !== 'string') return value;
+    
+    try {
+      const parsed = JSON.parse(value);
+      return typeof parsed === 'object' ? parsed : value;
+    } catch {
+      return value;
+    }
+  };
+
+  const deepProcessObject = (obj: any): any => {
+    if (!obj || typeof obj !== 'object') return obj;
+
+    return Object.entries(obj).reduce((acc, [key, value]) => {
+      const processedValue = Array.isArray(value)
+        ? value.map(item => typeof item === 'object' ? deepProcessObject(item) : tryParseJson(item))
+        : typeof value === 'object'
+          ? deepProcessObject(value)
+          : tryParseJson(value);
+
+      return { ...acc, [key]: processedValue };
+    }, {});
+  };
+
+  try {
+    const processedValues = deepProcessObject(values);
+    form.value?.resetForm({ values: processedValues });
+  } catch (e) {
+    form.value?.resetForm({ values });
+  }
+
   onUpdate();
-};
+}
 
 onMounted(async () => {
   await setupFieldsConstructor(module.key);

@@ -8,6 +8,7 @@
                 :headers="headers"
                 :items="items"
                 :loading="loading"
+                :items-per-page="1000"
             >
                 <template #bottom>
                     <div></div>
