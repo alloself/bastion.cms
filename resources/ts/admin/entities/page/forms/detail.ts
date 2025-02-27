@@ -52,7 +52,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
             },
         },
     ]);
-    /*
+    
     if (options?.entity?.id) {
         fields.value.push({
             component: markRaw(RelationTree),
@@ -64,7 +64,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                 itemTitle: "link.title",
             },
         });
-    }*/
+    }
     return {
         fields,
     };
