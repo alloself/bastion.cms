@@ -57,7 +57,7 @@ import {
     type IBaseEntity,
     type IRelationAutocompleteProps,
 } from "@admin/shared/types";
-import { onBeforeMount, ref, watch, onUnmounted, type Ref } from "vue";
+import { ref, watch, onUnmounted, type Ref } from "vue";
 import { client } from "@admin/shared/api/axios";
 import { debounce } from "lodash";
 import { Detail } from "@admin/shared/modules";
@@ -162,13 +162,20 @@ const onClick = (e: Event) => {
     }
 };
 
-watch([search, modelValue], ([newSearchVal]) => {
-    if (!newSearchVal) {
-        handleSearch();
-    } else {
-        handleSearch({ search: newSearchVal });
-    }
-});
+watch(
+    [search, modelValue],
+    ([newSearchVal,newmodelValue]) => {
+        if(!newmodelValue && !newSearchVal) {
+            return;
+        }
+        if (!newSearchVal) {
+            handleSearch();
+        } else {
+            handleSearch({ search: newSearchVal });
+        }
+    },
+    { immediate: true}
+);
 
 watch(
     () => initialItems,
@@ -177,8 +184,6 @@ watch(
     },
     { immediate: true, deep: true }
 );
-
-onBeforeMount(async () => getItems());
 
 onUnmounted(() => {
     handleSearch.cancel();
