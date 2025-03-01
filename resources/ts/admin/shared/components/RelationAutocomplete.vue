@@ -60,7 +60,6 @@ import {
 import { ref, watch, onUnmounted, type Ref } from "vue";
 import { client } from "@admin/shared/api/axios";
 import { debounce } from "lodash";
-import { Detail } from "@admin/shared/modules";
 import { useModalDrawerStore } from "@admin//features/modal-drawer";
 import { useModule } from "../composables";
 import { useItems } from "../composables/useItems";
@@ -109,14 +108,11 @@ const getItems = async (options: Record<string, string> = {}) => {
 const handleSearch = debounce(getItems, 300);
 
 const addRelation = () => {
-    modalDrawerStore.addModal({
-        component: Detail,
-        props: {
-            modal: true,
+    modalDrawerStore.addDetailModal(
+        {
             module: module.value,
         },
-        actions: {
-            onClose: modalDrawerStore.onModalClose,
+        {
             onCreate: (item: T) => {
                 search.value = "";
                 items.value.push(item);
@@ -128,31 +124,28 @@ const addRelation = () => {
                 getItems();
                 modalDrawerStore.onModalClose();
             },
-        },
-    });
-    modalDrawerStore.show = true;
+        }
+    );
 };
 
 const editRelation = () => {
-    modalDrawerStore.addModal({
-        component: Detail,
-        props: {
-            modal: true,
+    modalDrawerStore.addDetailModal(
+        {
             module: module.value,
             id: modelValue,
         },
-        actions: {
-            onClose: modalDrawerStore.onModalClose,
+        {
             onUpdate: (updatedItem: T) => {
                 const index = items.value.findIndex(
                     (item: T) =>
                         getItemValue(item) === getItemValue(updatedItem)
                 );
-                if (index > -1) items.value.splice(index, 1, updatedItem);
+                if (index > -1) {
+                    items.value.splice(index, 1, updatedItem);
+                }
             },
-        },
-    });
-    modalDrawerStore.show = true;
+        }
+    );
 };
 
 const onClick = (e: Event) => {
@@ -164,8 +157,8 @@ const onClick = (e: Event) => {
 
 watch(
     [search, modelValue],
-    ([newSearchVal,newmodelValue]) => {
-        if(!newmodelValue && !newSearchVal) {
+    ([newSearchVal, newmodelValue]) => {
+        if (!newmodelValue && !newSearchVal) {
             return;
         }
         if (!newSearchVal) {
@@ -174,7 +167,7 @@ watch(
             handleSearch({ search: newSearchVal });
         }
     },
-    { immediate: true}
+    { immediate: true }
 );
 
 watch(

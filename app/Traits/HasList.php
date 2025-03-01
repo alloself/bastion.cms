@@ -241,13 +241,12 @@ trait HasList
    */
   public static function getList(array $params = [], array $with = [])
   {
+    
     try {
       $params = self::validateParams($params);
-      $limit = Arr::get($params, 'limit', 100);
+      Log::alert(self::buildBaseQuery($params, $with)->get());
 
-      return self::buildBaseQuery($params, $with)
-        ->limit($limit)
-        ->get();
+      return self::buildBaseQuery($params, $with)->get();
     } catch (QueryException $e) {
       Log::error('List error: ' . $e->getMessage());
       throw new \RuntimeException('Data retrieval error');

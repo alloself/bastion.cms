@@ -116,16 +116,23 @@ class Link extends Model implements AuditableContract
     {
         $segments = [];
         $current = $startFrom;
-
-        while ($current && $current->link) {
-            array_unshift($segments, trim($current->link->url, '/'));
+    
+        while ($current) {
+            if ($current->link) {
+                // Используем только slug родителя, а не его уже собранный URL
+                $segments[] = trim($current->link->slug, '/');
+            }
             $current = $current->parent ?? $current->page ?? null;
         }
-
+    
+        // Полученные сегменты переворачиваем для правильного порядка (от корня к текущему элементу)
+        $segments = array_reverse($segments);
+        // Добавляем slug текущего элемента
         $segments[] = $slug;
+        
         $url = implode('/', array_filter($segments));
-
-        return $url === '/' ? '/' : "/{$url}";
+    
+        return $url === '' ? '/' : "/{$url}";
     }
 
     private function saveWithEvents(): self

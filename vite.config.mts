@@ -33,10 +33,7 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./resources", import.meta.url)),
       "@admin": fileURLToPath(
         new URL("./resources/ts/admin", import.meta.url)
-      ),
-      '@monaco': fileURLToPath(
-        new URL("./node_modules/monaco-editor/esm/vs", import.meta.url)
-      ),
+      )
     },
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
@@ -45,11 +42,6 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       external: ['vuetify/components'],
-      output: {
-        manualChunks: {
-          'monaco-editor': ['monaco-editor'],
-        },
-      },
     },
   },
   define: {
@@ -64,9 +56,6 @@ export default defineConfig({
         api: "modern-compiler",
       },
     },
-  },
-  optimizeDeps: {
-    include: ['monaco-editor']
   },
   server: {
     host: '0.0.0.0', // Позволяет принимать подключения извне контейнера
