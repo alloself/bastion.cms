@@ -4,47 +4,83 @@ namespace App\Traits;
 
 trait HasCRUDMethods
 {
-    /**
-     * Создать сущность
-     */
-    public static function createEntity(array $data): self
-    {
+  public function createEntity(array $data): self
+  {
 
-        $entity = self::create($data);
+    $entity = self::create($data);
 
-        if ($entity->isRelation('link') && $data['link']) {
-            $entity->addLink($data['link']);
-        }
-
-
-        return $entity;
+    if ($entity->isRelation('link') && $data['link']) {
+      $entity->addLink($data['link']);
     }
 
-    public static function showEntity($id, array $with = [])
-    {
-        return self::with($with)->findOrFail($id);
+
+    return $entity;
+  }
+
+
+  public static function getChildrenRelations($relations = [])
+  {
+    $with = [];
+
+    foreach ($relations as $relation) {
+      if ($relation === 'children') {
+        $with[] = 'children';
+      } elseif (strpos($relation, 'children.') === 0) {
+        $with[] = 'descendants.' . substr($relation, strlen('children.'));
+      }
     }
 
-    /**
-     * Обновить сущность
-     */
-    public function updateEntity(array $data): self
-    {
-        $this->update($data);
+    return $with;
+  }
+
+  public function loadChildrenTree(): self
+  {
+    if (!$this->relationLoaded('descendants')) {
+      $this->load('descendants');
+    }
+    $childrenTree = $this->descendants->toTree($this->id);
+    $this->setRelation('children', $childrenTree);
 
 
-        if ($this->isRelation('link') && $data['link']) {
-            $this->updateLink($data['link']);
-        }
+    $this->unsetRelation('descendants');
 
-        return $this;
+    return $this;
+  }
+
+  public static function showEntity($id, array $with = [])
+  {
+
+    $childrenRelations = self::getChildrenRelations($with);
+
+    $isChildtenRelationsNeeded = count($childrenRelations);
+
+    if ($isChildtenRelationsNeeded) {
+      $with = array_merge($with, $childrenRelations);
     }
 
-    /**
-     * Удалить сущность
-     */
-    public function deleteEntity(): bool
-    {
-        return $this->delete();
+    $entity = self::with($with)->findOrFail($id);
+
+    if ($isChildtenRelationsNeeded) {
+      $entity->loadChildrenTree();
     }
+
+    return $entity;
+  }
+
+  public function updateEntity(array $data): self
+  {
+    $this->update($data);
+
+
+    if ($this->isRelation('link') && $data['link']) {
+      $this->updateLink($data['link']);
+    }
+
+    return $this;
+  }
+
+  public function deleteEntity(): bool
+  {
+    return $this->delete();
+  }
 }
