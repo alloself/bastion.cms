@@ -97,10 +97,6 @@ trait HasList
     [$relationName, $relationColumn] = explode('.', $column, 2);
     $model = $query->getModel();
 
-    if (!method_exists($model, $relationName)) {
-      throw new \InvalidArgumentException("Relation {$relationName} not found");
-    }
-
     $relation = $model->{$relationName}();
     $relatedModel = $relation->getRelated();
 
@@ -244,7 +240,6 @@ trait HasList
     
     try {
       $params = self::validateParams($params);
-      Log::alert(self::buildBaseQuery($params, $with)->get());
 
       return self::buildBaseQuery($params, $with)->get();
     } catch (QueryException $e) {

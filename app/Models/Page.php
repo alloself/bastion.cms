@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasCRUDMethods;
 use App\Traits\HasLink;
 use App\Traits\HasList;
+use App\Traits\HasTree;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,14 +13,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Kalnoy\Nestedset\NodeTrait;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
 class Page extends Model implements AuditableContract
 {
     /** @use HasFactory<\Database\Factories\PageFactory> */
-    use HasFactory, HasUuids, HasList, Auditable, HasCRUDMethods, SoftDeletes, NodeTrait, HasLink;
+    use HasFactory, HasUuids, HasList, Auditable, HasCRUDMethods, SoftDeletes, HasTree, HasLink {
+        HasTree::showEntity insteadof HasCRUDMethods;
+    }
 
     protected $fillable = ['index', 'meta', 'parent_id', 'template_id'];
 

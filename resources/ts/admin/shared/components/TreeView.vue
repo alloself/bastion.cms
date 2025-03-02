@@ -1,85 +1,52 @@
+<!-- TreeView.vue -->
 <template>
-  <div>
-    <!-- Поле ввода для поиска по дереву -->
-    <v-text-field v-model="search" label="Поиск..." clearable hide-details></v-text-field>
+  <div class="tree-view-container">
+    <v-text-field v-model="searchQuery" density="compact" variant="outlined" placeholder="Поиск по дереву"
+      prepend-inner-icon="mdi-magnify" clearable class="mb-4" />
 
-    <!-- Список дерева -->
-    <v-list dense>
-      <template v-for="item in filteredItems" :key="item.id">
-        <v-list-item @click="onNodeClick(item)">
-          <template #prepend>
-            <v-icon v-if="item.children" @click.stop="toggleExpand(item)">
-              {{
-                expandedNodes.has(item.id)
-                  ? "mdi-chevron-down"
-                  : "mdi-chevron-right"
-              }}
-            </v-icon>
-          </template>
-          <v-list-item-content>
-            <v-list-item-title>{{ getItemTitle(item) }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <!-- Дочерние элементы (рекурсивный рендеринг) -->
-        <div v-if="item.children && expandedNodes.has(item.id)" class="pl-4">
-          <TreeView :items="item.children" @item-click="onNodeClick" />
-        </div>
-      </template>
+    <v-list density="compact" class="tree-view">
+      <TreeViewItem v-for="item in filteredItems" :key="item.id" :item="item" :depth="0" :search-query="searchQuery" />
     </v-list>
   </div>
 </template>
 
-<script setup lang="ts" generic="T extends IBaseEntity & INestedSet<T>">
-import { ref, computed, defineProps, defineEmits } from "vue";
-import type { IBaseEntity, INestedSet, ITreeViewProps } from "../types";
-import { useItems } from "../composables/useItems";
-import { get } from "lodash";
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { PropType } from 'vue'
+import TreeViewItem from './TreeViewItem.vue'
+import type { TreeItem } from './TreeViewItem.vue'
 
-// Пропсы
-const { items = [], itemValue, itemTitle } = defineProps<ITreeViewProps<T>>();
-
-const { getItemValue, getItemTitle } = useItems<T>({ itemTitle, itemValue });
-
-// Эмит событий
-const emit = defineEmits<{
-  (e: "item-click", item: T): void;
-}>();
-
-// Строка поиска
-const search = ref("");
-
-// Управление раскрытием узлов
-const expandedNodes = ref<Set<string>>(new Set());
-
-// Функция переключения раскрытия узлов
-const toggleExpand = (item: T) => {
-  if (expandedNodes.value.has(item.id)) {
-    expandedNodes.value.delete(item.id);
-  } else {
-    expandedNodes.value.add(item.id);
+const props = defineProps({
+  items: {
+    type: Array as PropType<TreeItem[]>,
+    required: true
   }
-};
+})
 
-// Фильтрация дерева по поиску
+const searchQuery = ref('')
+
 const filteredItems = computed(() => {
-  const filterTree = (nodes: T[]): T[] => {
-    return nodes
-      .filter((item) => {
-        console.log(getItemTitle(item))
-        return getItemTitle(item).toLowerCase().includes(search.value.toLowerCase())
-      })
-      .map((item) => ({
-        ...item,
-        children: item.children ? filterTree(item.children) : undefined,
-      }));
-  };
+  if (!searchQuery.value) return props.items
+  return filterItems(props.items, searchQuery.value.toLowerCase())
+})
 
-  return filterTree(items);
-});
+function filterItems(items: TreeItem[], query: string): TreeItem[] {
+  return items
+    .map(item => ({ ...item }))
+    .filter(item => {
+      const matches = checkItemMatches(item, query)
+      if (item.children) {
+        item.children = filterItems(item.children, query)
+      }
+      return matches || (item.children && item.children.length > 0)
+    })
+}
 
-// Обработчик кликов по узлу
-const onNodeClick = (item: T) => {
-  emit("item-click", item);
-};
+function checkItemMatches(item: TreeItem, query: string): boolean {
+  return (
+    item.link.title.toLowerCase().includes(query) ||
+    (item.link.subtitle && item.link.subtitle.toLowerCase().includes(query)) ||
+    item.link.slug.toLowerCase().includes(query)
+  )
+}
 </script>

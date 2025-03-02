@@ -1,5 +1,5 @@
 import type { FormContext } from "vee-validate";
-import type { Component, Ref } from "vue";
+import type { Component, InjectionKey, Ref } from "vue";
 import type { IModule } from "../modules";
 import type { AuditModel, User } from "@/ts/types/models";
 
@@ -111,3 +111,13 @@ export interface IJSONEditorProps {
 export interface ITreeViewProps<T> extends IItems<T> {
   items: T[]
 }
+
+
+export const selectedKey = Symbol("selected") as InjectionKey<Ref<string[]>>;
+
+export const onSelectKey = Symbol() as InjectionKey<(value: any) => void>;
+
+export const setOrderKey = Symbol() as InjectionKey<
+  (item: any, value: number, depth: number) => void
+>;
+
