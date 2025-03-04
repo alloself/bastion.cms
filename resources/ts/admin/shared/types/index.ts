@@ -118,6 +118,7 @@ export interface ITreeViewItemProps<T> {
   search: string;
   getItemValue: (item: T) => T[keyof T] | undefined;
   getItemTitle: (item: T) => string;
+  onItemClick: (item: T) => void;
 }
 
 

@@ -7,7 +7,7 @@
             :item-title="getItemTitle"
             :item-value="getItemValue"
             select-strategy="classic"
-            @click:select="onItemClick"
+            @item:click="onItemClick"
             selectable
             return-object
         ></tree-view>
@@ -177,8 +177,7 @@ const addExistingEntity = () => {
 
 const deleteSelected = () => {};
 
-const onItemClick = ({ id }: { id: unknown }) => {
-    const item = id as T;
+const onItemClick = (item: T) => {
     editRelation(item.id);
 };
 
