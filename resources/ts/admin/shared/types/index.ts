@@ -78,8 +78,8 @@ export interface IRelationAutocompleteProps<T extends IBaseEntity> extends IItem
 }
 
 export interface IItems<T> {
-  itemValue?: keyof T | string | ((item: T) => string);
-  itemTitle?: keyof T | string |  ((item: T) => string);
+  itemValue?: keyof T | string | ((item: T) => T[keyof T] | undefined);
+  itemTitle?: keyof T | string | ((item: T) => string);
 }
 
 export interface IRelationTreeProps<T> extends IItems<T> {
@@ -112,12 +112,16 @@ export interface ITreeViewProps<T> extends IItems<T> {
   items: T[]
 }
 
+export interface ITreeViewItemProps<T> {
+  item: T;
+  depth: number;
+  search: string;
+  getItemValue: (item: T) => T[keyof T] | undefined;
+  getItemTitle: (item: T) => string;
+}
 
-export const selectedKey = Symbol("selected") as InjectionKey<Ref<string[]>>;
 
-export const onSelectKey = Symbol() as InjectionKey<(value: any) => void>;
-
-export const setOrderKey = Symbol() as InjectionKey<
-  (item: any, value: number, depth: number) => void
->;
-
+export interface PIGenetic<T> {
+  data: T;
+  update: (value: T) => void;
+}

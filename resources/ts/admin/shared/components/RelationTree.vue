@@ -105,11 +105,7 @@
     </relation-card>
 </template>
 
-<script
-    setup
-    lang="ts"
-    generic="T extends IBaseEntity & INestedSet<T>"
->
+<script setup lang="ts" generic="T extends IBaseEntity & INestedSet<T>">
 import { ref, watch } from "vue";
 import { useModule } from "../composables";
 import type { IBaseEntity, INestedSet, IRelationTreeProps } from "../types";
@@ -117,7 +113,7 @@ import RelationCard from "./RelationCard.vue";
 import { useItems } from "../composables/useItems";
 import { useModalDrawerStore } from "../../features/modal-drawer";
 import { client } from "../api/axios";
-import TreeView from "./TreeView.vue";
+import { TreeView } from "./TreeView";
 
 const {
     moduleKey,
@@ -182,8 +178,8 @@ const addExistingEntity = () => {
 const deleteSelected = () => {};
 
 const onItemClick = ({ id }: { id: unknown }) => {
-  const item = id as T
-  editRelation(item.id)
+    const item = id as T;
+    editRelation(item.id);
 };
 
 const getSearchedItems = async (string = "") => {
