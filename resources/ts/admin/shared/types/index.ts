@@ -24,7 +24,7 @@ export interface IBaseEntity {
   id: string;
 }
 
-export interface INestedSet<T> {
+export interface INestedSetEntity<T> {
   children: T[];
   parent_id: string;
 }

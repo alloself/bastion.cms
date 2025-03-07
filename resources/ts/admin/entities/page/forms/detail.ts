@@ -51,6 +51,21 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                     : [],
             },
         },
+        {
+            component: markRaw(RelationAutocomplete),
+            key: "parent_id",
+            props: {
+                autocomplete: "parent_id",
+                label: "Родительская страница",
+                name: "parent_id",
+                itemValue: "id",
+                itemTitle: "link.title",
+                moduleKey: "page",
+                initialItems: options?.entity?.parent
+                    ? [options?.entity?.parent]
+                    : [],
+            },
+        },
     ]);
     
     if (options?.entity?.id) {

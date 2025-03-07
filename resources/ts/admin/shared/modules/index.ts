@@ -32,7 +32,7 @@ export const modules: IModule[] = [
                 key: "language.title",
             },
         ],
-        relations: ["link", "audits.user", 'children.link'],
+        relations: ["link", "audits.user", 'children.link', 'parent'],
     },
     {
         key: "user",

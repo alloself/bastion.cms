@@ -24,6 +24,8 @@
                 <v-checkbox
                     v-if="showCheckbox"
                     density="compact"
+                    :model-value="isSelected"
+                    @update:model-value="toggleSelection"
                     @click.stop
                     hide-details
                     class="mr-2"
@@ -63,10 +65,10 @@
     </div>
 </template>
 
-<script setup lang="ts" generic="T extends IBaseEntity & INestedSet<T>">
-import { ref, computed, watch, nextTick } from "vue";
+<script setup lang="ts" generic="T extends IBaseEntity & INestedSetEntity<T>">
+import { ref, computed, watch, nextTick, ModelRef } from "vue";
 
-import { IBaseEntity, INestedSet, ITreeViewItemProps } from "../../types";
+import { IBaseEntity, INestedSetEntity, ITreeViewItemProps } from "../../types";
 
 const {
     item,
@@ -77,11 +79,23 @@ const {
     onItemClick,
 } = defineProps<ITreeViewItemProps<T>>();
 
+const selectedModel = defineModel("selected", { default: [] }) as ModelRef<T[]>;
+
+const emit = defineEmits<{
+    "update:model-value": [value: T[]];
+    "update:selected": [value: T[]];
+}>();
+
 const isOpen = ref(false);
 const wasManuallyToggled = ref(false);
 
 const hasChildren = computed(() => !!item.children?.length);
 const showCheckbox = computed(() => depth === 0);
+const isSelected = computed(() =>
+    selectedModel.value.some(
+        (selected) => getItemValue(selected) === getItemValue(item)
+    )
+);
 
 const isMatched = computed(() => {
     if (!search) return false;
@@ -115,6 +129,16 @@ const toggle = () => {
         isOpen.value = !isOpen.value;
         wasManuallyToggled.value = true;
     }
+};
+
+const toggleSelection = () => {
+    const newValue = [...selectedModel.value];
+
+    const value = isSelected.value
+        ? newValue.filter((el) => getItemValue(el) !== getItemValue(item))
+        : [...newValue, item];
+
+    selectedModel.value = value;
 };
 </script>
 

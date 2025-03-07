@@ -10,9 +10,9 @@
         </template>
         <span>Создать</span>
       </v-tooltip>
-      <v-tooltip location="top" color="primary" v-if="modelValue && !readonly">
+      <v-tooltip location="top" color="primary">
         <template #activator="{ props }">
-          <v-btn @click="editRelation" v-bind="props" size="small" :disabled="readonly" icon="mdi-pencil"
+          <v-btn @click="editRelation" v-bind="props" size="small" :disabled="!modelValue || readonly" icon="mdi-pencil"
             aria-label="Редактировать выбранную запись"></v-btn>
         </template>
         <span>Редактировать</span>
