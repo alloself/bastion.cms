@@ -1,7 +1,7 @@
 FROM php:8.3-fpm
 
 # Установка необходимых пакетов и расширений
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y procps \
     build-essential \
     libpng-dev \
     libjpeg62-turbo-dev \
@@ -18,22 +18,26 @@ RUN apt-get update && apt-get install -y \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
 
-# Установка Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 # Установка рабочей директории
 WORKDIR /var/www/html
 
 # Копирование файлов проекта
 COPY . /var/www/html
 
+COPY ./docker/php/php.ini /usr/local/etc/php/php.ini
+
 # Настройка прав доступа для storage и bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chmod 666 storage/logs/laravel.log
+
+# Установка Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Установка зависимостей Laravel
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader \
-    && php artisan storage:link
+RUN composer self-update
+RUN composer install
+RUN php artisan storage:link
 
 EXPOSE 9000
 
