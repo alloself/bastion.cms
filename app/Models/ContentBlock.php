@@ -9,4 +9,6 @@ class ContentBlock extends Model
 {
     /** @use HasFactory<\Database\Factories\ContentBlockFactory> */
     use HasFactory;
+
+    
 }
