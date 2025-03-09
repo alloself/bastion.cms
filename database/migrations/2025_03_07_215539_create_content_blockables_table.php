@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('content_blocks', function (Blueprint $table) {
+        Schema::create('content_blockables', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('content_block_id')->constrained()->cascadeOnDelete();
+            $table->morphs('content_blockable');
+            $table->integer('order')->default(0);
+            $table->string('key')->nullable();
             $table->timestamps();
-            
         });
     }
 
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('content_blocks');
+        Schema::dropIfExists('content_blockables');
     }
 };
