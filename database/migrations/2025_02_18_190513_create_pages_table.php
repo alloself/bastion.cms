@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pages', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('id')->primary()->unique();
             $table->json('meta')->nullable();
             $table->boolean('index')->default(false);
             $table->unsignedInteger('_lft')->default(0);

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('content_blocks', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->uuid('id')->primary()->unique();
             $table->string('name');
             $table->longText('content')->nullable();
             $table->integer('order')->default(0);

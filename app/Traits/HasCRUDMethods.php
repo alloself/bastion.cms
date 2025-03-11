@@ -4,7 +4,7 @@ namespace App\Traits;
 
 trait HasCRUDMethods
 {
-  public function createEntity(array $data): self
+  public static function createEntity(array $data): self
   {
 
     $entity = self::create($data);

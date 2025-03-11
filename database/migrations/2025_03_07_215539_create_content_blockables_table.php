@@ -12,12 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('content_blockables', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('content_block_id')->constrained()->cascadeOnDelete();
-            $table->morphs('content_blockable');
+            $table->string('content_blockable_type');
+            $table->uuid('content_blockable_id');
+            $table->index(
+                ['content_blockable_type', 'content_blockable_id'],
+                'cb_type_id_index'
+            );
             $table->integer('order')->default(0);
             $table->string('key')->nullable();
-            $table->timestamps();
+
+            $table->foreignUuid('content_block_id')->constrained();
         });
     }
 

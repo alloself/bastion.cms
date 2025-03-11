@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\HasCRUDMethods;
 use App\Traits\HasLink;
 use App\Traits\HasList;
-use App\Traits\HasTree;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

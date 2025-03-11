@@ -20,6 +20,22 @@ export interface AuditModel {
 }
 export type AuditModelfillable = Pick<AuditModel, >
 
+export interface ContentBlock {
+  // columns
+  id: number
+  name: string
+  content: string | null
+  order: number
+  _lft: number
+  _rgt: number
+  parent_id: string | null
+  created_at: string | null
+  updated_at: string | null
+  deleted_at: string | null
+  template_id: string | null
+}
+export type ContentBlockfillable = Pick<ContentBlock, >
+
 export interface Link {
   // columns
   id: string
