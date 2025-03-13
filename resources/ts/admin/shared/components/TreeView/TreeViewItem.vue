@@ -5,9 +5,7 @@
             @click="toggle"
             :class="{ 'highlight-match': isMatched }"
             :style="{
-                'padding-left': depth
-                    ? `${(16 + 40 + 20) * depth}px`
-                    : '16px',
+                'padding-left': depth ? `${(16 + 40 + 20) * depth}px` : '16px',
             }"
         >
             <template #prepend>

@@ -11,7 +11,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
         () => import("@admin/shared/components/RelationAutocomplete.vue")
     );
     const RelationTree = defineAsyncComponent(
-        () => import("@admin/shared/components/RelationTree.vue")
+        () => import("@admin/shared/components/RelationTreeTest.vue")
     );
 
     const JSONEditor = defineAsyncComponent(

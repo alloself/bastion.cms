@@ -1,11 +1,11 @@
 import { get } from "lodash"
-import type { IItems } from "../types"
+import type { IBaseEntity, IItems } from "../types"
 
-export const useItems = <T>({ itemTitle, itemValue }: IItems<T>) => {
+export const useItems = <T extends IBaseEntity>({ itemTitle, itemValue }: IItems<T>) => {
 
   const getItemValue = (item: T): T[keyof T] | string => {
     if (!itemValue) {
-      return 'id';
+      return get(item, 'id');
     }
     return typeof itemValue === 'function' ? itemValue(item) : get(item, itemValue)
   }
