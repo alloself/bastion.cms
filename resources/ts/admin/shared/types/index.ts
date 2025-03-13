@@ -78,14 +78,15 @@ export interface IRelationAutocompleteProps<T extends IBaseEntity> extends IItem
 }
 
 export interface IItems<T> {
-  itemValue?: keyof T | string | ((item: T) => T[keyof T] | undefined);
+  itemValue?: keyof T | string | ((item: T) => T[keyof T] | string);
   itemTitle?: keyof T | string | ((item: T) => string);
 }
 
 export interface IRelationTreeProps<T> extends IItems<T> {
   moduleKey: string;
   modelValue: T[];
-  initialValues: Partial<T>;
+  initialValues?: Partial<T>;
+  morph?: boolean;
 }
 
 export interface IRelationCardProps {
@@ -116,7 +117,7 @@ export interface ITreeViewItemProps<T> {
   item: T;
   depth: number;
   search: string;
-  getItemValue: (item: T) => T[keyof T] | undefined;
+  getItemValue: (item: T) => T[keyof T] | string;
   getItemTitle: (item: T) => string;
   onItemClick: (item: T) => void;
 }

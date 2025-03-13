@@ -20,9 +20,15 @@ export interface AuditModel {
 }
 export type AuditModelfillable = Pick<AuditModel, >
 
+export interface BaseModel {
+  // relations
+  audits?: AuditModel[]
+}
+export type BaseModelfillable = Pick<BaseModel, >
+
 export interface ContentBlock {
   // columns
-  id: number
+  id: string
   name: string
   content: string | null
   order: number
@@ -33,8 +39,13 @@ export interface ContentBlock {
   updated_at: string | null
   deleted_at: string | null
   template_id: string | null
+  // relations
+  template?: Template
+  audits?: AuditModel[]
+  parent?: ContentBlock
+  children?: ContentBlock[]
 }
-export type ContentBlockfillable = Pick<ContentBlock, >
+export type ContentBlockfillable = Pick<ContentBlock, 'name' | 'content' | 'order' | 'parent_id' | 'template_id'>
 
 export interface Link {
   // columns

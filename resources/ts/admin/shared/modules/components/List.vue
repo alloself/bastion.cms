@@ -102,7 +102,7 @@ import type {
     IServerDataList,
     ITableProps,
 } from "@admin/shared/types";
-import type { IModule } from "..";
+import { getModuleUrlPart, type IModule } from "..";
 import { client, loading } from "@admin/shared/api/axios";
 import { useLayout } from "vuetify";
 import { onBeforeMount, ref, watch } from "vue";
@@ -142,6 +142,7 @@ const onRowClick = (event: InputEvent, { item }: { item: T }) => {
     }
 };
 
+
 const setSearch = () => {
     tableProps.value.page = 1;
     getItems(tableProps.value);
@@ -153,7 +154,7 @@ const getItems = async (options: Record<string, unknown>) => {
             ...options,
             with: module.relations,
         });
-        const { data } = await client.get(`/api/admin/${module.key}`, {
+        const { data } = await client.get(`/api/admin/${getModuleUrlPart(module.key)}`, {
             params,
         });
 
@@ -169,7 +170,7 @@ const getItems = async (options: Record<string, unknown>) => {
 
 const onDelete = async () => {
     try {
-        await client.post(`/api/admin/destroy/${module.key}`, {
+        await client.post(`/api/admin/destroy/${getModuleUrlPart(module.key)}`, {
             ids: selected.value
         });
         selected.value = [];

@@ -6,7 +6,7 @@
             :class="{ 'highlight-match': isMatched }"
             :style="{
                 'padding-left': depth
-                    ? `${16 + (depth === 1 ? 90 : 0) + 20 * depth}px`
+                    ? `${(16 + 40 + 20) * depth}px`
                     : '16px',
             }"
         >
@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends IBaseEntity & INestedSetEntity<T>">
-import { ref, computed, watch, nextTick, ModelRef } from "vue";
+import { ref, computed, watch, nextTick } from "vue";
 
 import { IBaseEntity, INestedSetEntity, ITreeViewItemProps } from "../../types";
 
@@ -79,7 +79,7 @@ const {
     onItemClick,
 } = defineProps<ITreeViewItemProps<T>>();
 
-const selectedModel = defineModel("selected", { default: [] }) as ModelRef<T[]>;
+const selectedModel = defineModel("selected", { default: [] as T[] });
 
 const emit = defineEmits<{
     "update:model-value": [value: T[]];

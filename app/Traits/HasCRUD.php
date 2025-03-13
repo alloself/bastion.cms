@@ -64,8 +64,8 @@ trait HasCRUD
     {
         return DB::transaction(function () use ($id, $request) {
             $entity = $this->model()::findOrFail($id);
-            $entity->updateEntity($request->all());
-            return $entity->load($request->input('with', []));
+            $entity->updateEntity($request->all(), $request->input('with', []));
+            return $entity;
         });
     }
 

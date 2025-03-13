@@ -74,6 +74,7 @@ import { useModalDrawerStore } from "../../features/modal-drawer";
 import { client } from "../api/axios";
 import { TreeView } from "./TreeView";
 import { debounce } from "lodash";
+import { getModuleUrlPart } from "../modules";
 
 const {
   moduleKey,
@@ -81,6 +82,7 @@ const {
   initialValues,
   itemTitle,
   itemValue,
+  morph = false
 } = defineProps<IRelationTreeProps<T>>();
 
 const emit = defineEmits<{
@@ -124,6 +126,7 @@ const addRelation = () => {
     {
       onCreate: (item: T) => {
         emit("update:model-value", [...modelValue, item]);
+        modalDrawerStore.onModalClose()
       },
     }
   );
@@ -142,18 +145,26 @@ const editRelation = (id: string) => {
         }
         const updatedModel = [...modelValue];
         updateTreeItem(updatedModel, updatedItem);
+        emit("update:model-value", updatedModel);
       },
     }
   );
 };
 
 const addExistingEntity = async () => {
+  if(morph) {
+    emit("update:model-value", [...modelValue, ... searchedModelValue.value]);
+    searchedModelValue.value = [];
+    showSearch.value = false;
+    return;
+  }
+
   try {
     loading.value = true
     const results = await Promise.all(
       searchedModelValue.value.map(async (item: T) => {
         const { data } = await client.patch(
-          `/api/admin/${moduleKey}/${item.id}`,
+          `/api/admin/${getModuleUrlPart(moduleKey)}/${item.id}`,
           { ...item, ...initialValues }
         );
         return data;
@@ -161,6 +172,7 @@ const addExistingEntity = async () => {
     );
 
     emit("update:model-value", [...modelValue, ...results]);
+    searchedModelValue.value = [];
   } finally {
     loading.value = false
     showSearch.value = false;
@@ -171,7 +183,8 @@ const deleteSelected = async () => {
   try {
     await Promise.all(
       selected.value.map(item =>
-        client.patch(`/api/admin/${moduleKey}/${item.id}`, {
+        client.patch(`/api/admin/${getModuleUrlPart(moduleKey)}/${item.id}`, {
+          ...item,
           parent_id: null
         })
       )
@@ -194,7 +207,7 @@ const onItemClick = (item: T) => {
 const getSearchedItems = async (string = "") => {
   try {
     loading.value = true
-    const { data } = await client.get(`/api/admin/${moduleKey}`, {
+    const { data } = await client.get(`/api/admin/${getModuleUrlPart(moduleKey)}`, {
       params: {
         search: string,
         with: module.value?.relations,

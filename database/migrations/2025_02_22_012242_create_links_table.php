@@ -25,6 +25,7 @@ return new class extends Migration
             $table->index('url', 'url_index');
             $table->index(['linkable_id', 'linkable_type'], 'linkable_index');
             $table->fullText(['title', 'url'], 'fulltext_title_url');
+            $table->unique(['title', 'linkable_id']);
         });
     }
 

@@ -23,6 +23,10 @@ return new class extends Migration
             $table->softDeletes();
 
             $table->foreignUuid('template_id')->nullable()->constrained();
+            $table->foreign('parent_id')
+                ->references('id')
+                ->on('content_blocks')
+                ->onDelete('cascade');
         });
     }
 

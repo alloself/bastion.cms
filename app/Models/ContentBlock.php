@@ -2,20 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\HasCRUDMethods;
-use App\Traits\HasList;
+use App\Traits\HasLink;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Kalnoy\Nestedset\NodeTrait;
-use OwenIt\Auditing\Auditable;
-use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 
-class ContentBlock extends Model implements AuditableContract
+class ContentBlock extends BaseModel
 {
-  use HasFactory, HasUuids, HasList, Auditable, HasCRUDMethods, SoftDeletes, NodeTrait;
+  use NodeTrait, HasLink;
 
   protected $fillable = ['name', 'content', 'order', 'parent_id', 'template_id'];
 
@@ -25,6 +19,10 @@ class ContentBlock extends Model implements AuditableContract
     'full_text' => true
   ];
 
+  public function getParentIdAttribute($value): string | null
+  {
+    return $value;
+  }
 
   public function template(): BelongsTo
   {

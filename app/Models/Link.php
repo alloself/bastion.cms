@@ -2,20 +2,14 @@
 
 namespace App\Models;
 
-use App\Traits\HasCRUDMethods;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
-use OwenIt\Auditing\Auditable;
-use OwenIt\Auditing\Contracts\Auditable as AuditableContract;
 use Spatie\Sluggable\SlugOptions;
 
-class Link extends Model implements AuditableContract
+class Link extends BaseModel
 {
-  use HasFactory, HasSlug, HasUuids, HasCRUDMethods, SoftDeletes, Auditable;
+  use HasSlug;
 
   protected $fillable = ['title', 'subtitle', 'slug', 'url'];
 

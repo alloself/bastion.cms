@@ -41,7 +41,7 @@ const emit = defineEmits<{
 const { getItemValue, getItemTitle } = useItems<T>({ itemTitle, itemValue });
 
 const search = ref("");
-const selectedModel = defineModel("selected", { default: [] });
+const selectedModel = defineModel("selected", { default: [] as T[] });
 
 const filteredItems = computed(() => {
     if (!search.value) return items;

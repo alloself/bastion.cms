@@ -3,9 +3,9 @@ import type { IItems } from "../types"
 
 export const useItems = <T>({ itemTitle, itemValue }: IItems<T>) => {
 
-  const getItemValue = (item: T): T[keyof T] | undefined => {
+  const getItemValue = (item: T): T[keyof T] | string => {
     if (!itemValue) {
-      return undefined;
+      return 'id';
     }
     return typeof itemValue === 'function' ? itemValue(item) : get(item, itemValue)
   }

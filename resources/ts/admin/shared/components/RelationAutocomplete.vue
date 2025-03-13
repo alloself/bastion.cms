@@ -36,6 +36,7 @@ import { debounce } from "lodash";
 import { useModalDrawerStore } from "@admin//features/modal-drawer";
 import { useModule } from "../composables";
 import { useItems } from "../composables/useItems";
+import { getModuleUrlPart } from "../modules";
 
 const modalDrawerStore = useModalDrawerStore();
 
@@ -63,7 +64,7 @@ const { getItemValue, getItemTitle } = useItems<T>({ itemTitle, itemValue });
 const getItems = async (options: Record<string, string> = {}) => {
   loading.value = true;
   try {
-    const { data } = await client.get(`/api/admin/${moduleKey}`, {
+    const { data } = await client.get(`/api/admin/${getModuleUrlPart(moduleKey)}`, {
       params: {
         ...options,
         with: module.value?.relations,

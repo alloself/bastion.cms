@@ -18,7 +18,7 @@ return new class extends Migration
                 ['content_blockable_type', 'content_blockable_id'],
                 'cb_type_id_index'
             );
-            $table->integer('order')->default(0);
+            $table->unsignedInteger('order')->default(0);
             $table->string('key')->nullable();
 
             $table->foreignUuid('content_block_id')->constrained();

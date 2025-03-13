@@ -1,4 +1,4 @@
-import type { Page } from "@/ts/types/models";
+import { ContentBlock } from "@/ts/types/models";
 import link from "@admin/shared/forms/link";
 import type {
     IOptionsFieldsFabric,
@@ -6,7 +6,11 @@ import type {
 } from "@admin/shared/types";
 import { computed, markRaw, defineAsyncComponent } from "vue";
 
-export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
+export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
+    const WYSIWYGEditor = defineAsyncComponent(
+        () => import("@admin/shared/components/WYSIWYGEditor.vue")
+    );
+
     const RelationAutocomplete = defineAsyncComponent(
         () => import("@admin/shared/components/RelationAutocomplete.vue")
     );
@@ -14,28 +18,18 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
         () => import("@admin/shared/components/RelationTree.vue")
     );
 
-    const JSONEditor = defineAsyncComponent(
-        () => import("@admin/shared/components/JSONEditor.vue")
-    );
-
     const fields = computed<ISmartFormField[]>(() => [
+        {
+            component: "v-text-field",
+            key: "name",
+            props: {
+                autocomplete: "name",
+                label: "Название",
+                name: "name",
+                type: "text",
+            },
+        },
         ...link,
-        {
-            component: markRaw(JSONEditor),
-            key: "meta",
-            props: {
-                title: "Мета",
-            },
-        },
-        {
-            component: "v-checkbox",
-            key: "index",
-            props: {
-                autocomplete: "index",
-                label: "Главная страница",
-                name: "index",
-            },
-        },
         {
             component: markRaw(RelationAutocomplete),
             key: "template_id",
@@ -56,41 +50,34 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
             key: "parent_id",
             props: {
                 autocomplete: "parent_id",
-                label: "Родительская страница",
+                label: "Родительский блок",
                 name: "parent_id",
                 itemValue: "id",
-                itemTitle: "link.title",
-                moduleKey: "page",
+                itemTitle: "name",
+                moduleKey: "contentBlock",
                 initialItems: options?.entity?.parent
                     ? [options?.entity?.parent]
                     : [],
             },
         },
+        {
+          component: markRaw(WYSIWYGEditor),
+          key: "content",
+        },
     ]);
 
     if (options?.entity?.id) {
-        fields.value.push(
-            {
-                component: markRaw(RelationTree),
-                key: "children",
-                props: {
-                    initialValues: { parent_id: options.entity.id },
-                    moduleKey: "page",
-                    orderable: false,
-                    itemTitle: "link.title",
-                },
+        fields.value.push({
+            component: markRaw(RelationTree),
+            key: "children",
+            props: {
+                initialValues: { parent_id: options.entity.id },
+                moduleKey: "contentBlock",
+                itemTitle: "name",
             },
-            {
-                component: markRaw(RelationTree),
-                key: "content_blocks",
-                props: {
-                    moduleKey: "contentBlock",
-                    itemTitle: "name",
-                    morph: true
-                },
-            }
-        );
+        });
     }
+
     return {
         fields,
     };

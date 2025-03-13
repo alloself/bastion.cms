@@ -2,6 +2,7 @@ import type { RouteRecordRaw } from "vue-router";
 import { capitalize } from "lodash";
 import { type RouteLocation } from "vue-router";
 import Detail from "@admin/shared/modules/components/Detail.vue";
+import { createProvide } from "../helpers";
 
 export interface IModule {
     key: string;
@@ -32,7 +33,12 @@ export const modules: IModule[] = [
                 key: "language.title",
             },
         ],
-        relations: ["link", "audits.user", 'children.link', 'parent'],
+        relations: [
+            "link",
+            "audits.user",
+            "children.link",
+            "contentBlocks",
+        ],
     },
     {
         key: "user",
@@ -71,6 +77,19 @@ export const modules: IModule[] = [
             },
         ],
         relations: ["audits.user"],
+    },
+    {
+        key: "contentBlock",
+        title: "Блоки",
+        icon: "mdi-toy-brick",
+        showInNavigation: true,
+        headers: [
+            {
+                title: "Название",
+                key: "name",
+            },
+        ],
+        relations: ["audits.user", "children", "link"],
     },
 ];
 
@@ -122,3 +141,10 @@ export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
 };
 
 export { Detail };
+
+export const getModuleUrlPart = (key: string) => {
+    return key
+        .replace(/([A-Z])/g, (letter) => `-${letter.toLowerCase()}`)
+        .replace(/^-/, "")
+        .toLowerCase();
+};
