@@ -86,7 +86,8 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                 props: {
                     moduleKey: "contentBlock",
                     itemTitle: "name",
-                    morph: true
+                    morph: true,
+                    ordered: true
                 },
             }
         );

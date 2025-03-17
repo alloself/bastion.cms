@@ -87,6 +87,7 @@ export interface IRelationTreeProps<T> extends IItems<T> {
   modelValue: T[];
   initialValues?: Partial<T>;
   morph?: boolean;
+  ordered?: boolean;
 }
 
 export interface IRelationCardProps {
@@ -108,20 +109,6 @@ export interface IJSONEditorProps {
   icon?: string;
   modelValue?: Record<string, string>;
 }
-
-export interface ITreeViewProps<T> extends IItems<T> {
-  items: T[]
-}
-
-export interface ITreeViewItemProps<T> {
-  item: T;
-  depth: number;
-  search: string;
-  getItemValue: (item: T) => T[keyof T] | string;
-  getItemTitle: (item: T) => string;
-  onItemClick: (item: T) => void;
-}
-
 
 export interface PIGenetic<T> {
   data: T;

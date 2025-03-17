@@ -7,9 +7,13 @@
         class="mb-8"
     >
         <template #title>
-            <span class="ml-2">
-                {{ title }}
-            </span>
+            <div class="d-flex">
+                <span class="ml-2">
+                    {{ title }}
+                </span>
+                <v-spacer></v-spacer>
+                <slot name="title:append"></slot>
+            </div>
         </template>
         <slot name="default"></slot>
         <v-divider></v-divider>

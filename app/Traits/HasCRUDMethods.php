@@ -83,8 +83,6 @@ trait HasCRUDMethods
   {
     $this->update($data);
 
-    $this->load($with);
-
     $childrenRelations = self::getChildrenRelations($with);
 
     $isChildtenRelationsNeeded = count($childrenRelations);
@@ -92,7 +90,6 @@ trait HasCRUDMethods
     if ($isChildtenRelationsNeeded) {
       $with = array_merge($with, $childrenRelations);
     }
-
 
     if ($isChildtenRelationsNeeded) {
       $this->loadChildrenTree($childrenRelations);
@@ -116,6 +113,8 @@ trait HasCRUDMethods
     if ($hasContentBlocks) {
       $this->getContentBlocksTree();
     }
+
+    $this->load($with);
 
     return $this;
   }

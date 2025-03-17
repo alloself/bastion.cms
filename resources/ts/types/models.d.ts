@@ -1,3 +1,13 @@
+export interface Attribute {
+  // columns
+  id: number
+  name: string
+  key: string
+  created_at: string | null
+  updated_at: string | null
+}
+export type Attributefillable = Pick<Attribute, >
+
 export interface AuditModel {
   // columns
   id: string
@@ -44,8 +54,51 @@ export interface ContentBlock {
   audits?: AuditModel[]
   parent?: ContentBlock
   children?: ContentBlock[]
+  link?: Link
 }
 export type ContentBlockfillable = Pick<ContentBlock, 'name' | 'content' | 'order' | 'parent_id' | 'template_id'>
+
+export interface DataCollection {
+  // columns
+  id: number
+  name: string
+  meta: Record<string, unknown> | null
+  order: number
+  _lft: number
+  _rgt: number
+  parent_id: string | null
+  template_id: string | null
+  page_id: string | null
+  created_at: string | null
+  updated_at: string | null
+  deleted_at: string | null
+}
+export type DataCollectionfillable = Pick<DataCollection, >
+
+export interface DataEntity {
+  // columns
+  id: number
+  name: string | null
+  meta: Record<string, unknown> | null
+  content: string | null
+  order: number
+  parent_id: string | null
+  template_id: string | null
+  created_at: string | null
+  updated_at: string | null
+}
+export type DataEntityfillable = Pick<DataEntity, >
+
+export interface File {
+  // columns
+  id: number
+  url: string
+  name: string
+  extension: string
+  created_at: string | null
+  updated_at: string | null
+}
+export type Filefillable = Pick<File, >
 
 export interface Link {
   // columns
@@ -83,6 +136,7 @@ export interface Page {
   audits?: AuditModel[]
   parent?: Page
   children?: Page[]
+  content_blocks?: ContentBlock[]
 }
 export type Pagefillable = Pick<Page, 'index' | 'meta' | 'parent_id' | 'template_id'>
 
