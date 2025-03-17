@@ -1,12 +1,15 @@
 export interface Attribute {
   // columns
-  id: number
+  id: string
   name: string
   key: string
   created_at: string | null
   updated_at: string | null
+  // relations
+  attributeable?: Attribute
+  audits?: AuditModel[]
 }
-export type Attributefillable = Pick<Attribute, >
+export type Attributefillable = Pick<Attribute, 'name' | 'key'>
 
 export interface AuditModel {
   // columns
@@ -60,7 +63,7 @@ export type ContentBlockfillable = Pick<ContentBlock, 'name' | 'content' | 'orde
 
 export interface DataCollection {
   // columns
-  id: number
+  id: string
   name: string
   meta: Record<string, unknown> | null
   order: number
@@ -72,12 +75,24 @@ export interface DataCollection {
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null
+  // relations
+  page?: Page
+  template?: Template
+  audits?: AuditModel[]
+  parent?: DataCollection
+  children?: DataCollection[]
+  link?: Link
+  content_blocks?: ContentBlock[]
 }
-export type DataCollectionfillable = Pick<DataCollection, >
+export type DataCollectionfillable = Pick<DataCollection, 'name' | 'meta' | 'parent_id' | 'page_id' | 'order' | 'template_id'>
+
+export interface DataCollectionable {
+}
+export type DataCollectionablefillable = Pick<DataCollectionable, >
 
 export interface DataEntity {
   // columns
-  id: number
+  id: string
   name: string | null
   meta: Record<string, unknown> | null
   content: string | null
@@ -86,19 +101,25 @@ export interface DataEntity {
   template_id: string | null
   created_at: string | null
   updated_at: string | null
+  // relations
+  links?: Link[]
+  variants?: DataEntity[]
+  audits?: AuditModel[]
 }
-export type DataEntityfillable = Pick<DataEntity, >
+export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'data_collection_id' | 'template_id' | 'content' | 'order'>
 
 export interface File {
   // columns
-  id: number
-  url: string
+  id: string
+  url: unknown
   name: string
   extension: string
   created_at: string | null
   updated_at: string | null
+  // relations
+  audits?: AuditModel[]
 }
-export type Filefillable = Pick<File, >
+export type Filefillable = Pick<File, 'url' | 'name' | 'extension'>
 
 export interface Link {
   // columns

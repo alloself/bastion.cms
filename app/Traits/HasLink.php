@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Models\Link;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 trait HasLink
