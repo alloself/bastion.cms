@@ -107,7 +107,7 @@ export interface IJSONEditorProps {
   loading?: boolean;
   title: string;
   icon?: string;
-  modelValue?: Record<string, string>;
+  modelValue?: Record<string, any>;
 }
 
 export interface PIGenetic<T> {

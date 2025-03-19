@@ -71,7 +71,7 @@ import type {
 import { loading, client } from "@admin/shared/api/axios";
 import { useRouter } from "vue-router";
 import { useLayout } from "vuetify";
-import { capitalize, computed, onMounted, provide, ref, watch } from "vue";
+import { capitalize, computed, onMounted, ref, watch } from "vue";
 import type { FormContext } from "vee-validate";
 import { SmartForm, HistoryBottomSheet } from "@admin/shared/components";
 import { useFormSubmit } from "../../composables";
@@ -131,7 +131,8 @@ const getEntity = async () => {
             }
         );
         await initializeFields(data);
-        form.value?.resetForm({ values: { ...data, ...initialValues } });
+
+        form.value?.resetForm({ values: data });
     } finally {
         loading.value = false;
     }
@@ -170,8 +171,11 @@ const onUpdate = async () => {
             }
         );
 
-        form.value?.resetForm({ values: { ...initialValues, ...data } });
-        modal && emit("update", data);
+        const values = { ...initialValues, ...data };
+
+        form.value?.resetForm({ values }, { force: true });
+
+        modal && emit("update", values);
     }, form);
 
     await handler();
