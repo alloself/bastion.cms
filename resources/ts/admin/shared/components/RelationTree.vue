@@ -9,6 +9,7 @@
         ></template>
         <v-text-field
             v-model="search"
+            density="compact"
             placeholder="Поиск"
             prepend-inner-icon="mdi-magnify"
             clearable

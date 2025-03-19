@@ -7,7 +7,7 @@
         class="mb-8"
     >
         <template #title>
-            <div class="d-flex">
+            <div class="d-flex align-center">
                 <span class="ml-2">
                     {{ title }}
                 </span>
