@@ -20,7 +20,7 @@ export interface ISmartFormProps {
   readonly?: boolean;
 }
 
-export interface IBaseEntity {
+export interface IBaseEntity extends Record<string, any> {
   id: string;
 }
 
@@ -90,8 +90,19 @@ export interface IRelationTreeProps<T> extends IItems<T> {
   ordered?: boolean;
 }
 
-export interface IRelationCardProps {
+export interface IRelationTableProps<T> extends IItems<T> {
+  moduleKey: string;
+  modelValue: T[];
+  initialValues?: Partial<T>;
+  morph?: boolean;
+  headers: Record<string, any>[]
+}
+
+export interface IRelationCardProps<T> {
   loading?: boolean;
+  module?: IModule;
+  actions?: Array<'search' | 'create' | 'delete'>
+  getItemTitle?: (item: T) => T[keyof T] | string
   title?: string;
   icon?: string;
 }

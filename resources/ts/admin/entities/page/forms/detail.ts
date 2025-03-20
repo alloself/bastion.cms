@@ -14,6 +14,10 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
         () => import("@admin/shared/components/RelationTree.vue")
     );
 
+    const RelationTable = defineAsyncComponent(
+        () => import("@admin/shared/components/RelationTable.vue")
+    );
+
     const JSONEditor = defineAsyncComponent(
         () => import("@admin/shared/components/JSONEditor.vue")
     );
@@ -66,6 +70,34 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                     : [],
             },
         },
+        {
+            component: markRaw(RelationTable),
+            key: "attributes",
+            props: {
+                title: "Атрибуты",
+                moduleKey: "attribute",
+                itemTitle: "name",
+                morphRelation: true,
+                headers: [
+                    {
+                        title: "Название",
+                        key: "name",
+                    },
+                    {
+                        title: "Ключ",
+                        key: "key",
+                    },
+                    {
+                        title: "Значение",
+                        key: "pivot.value",
+                    },
+                    {
+                        title: "Действия",
+                        key: "actions",
+                    },
+                ],
+            },
+        },
     ]);
 
     if (options?.entity?.id) {
@@ -87,7 +119,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                     moduleKey: "contentBlock",
                     itemTitle: "name",
                     morph: true,
-                    ordered: true
+                    ordered: true,
                 },
             }
         );

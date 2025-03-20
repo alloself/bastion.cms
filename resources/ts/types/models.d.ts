@@ -3,6 +3,7 @@ export interface Attribute {
   id: string
   name: string
   key: string
+  deleted_at: string | null
   created_at: string | null
   updated_at: string | null
   // relations
@@ -158,6 +159,7 @@ export interface Page {
   parent?: Page
   children?: Page[]
   content_blocks?: ContentBlock[]
+  attributes?: Attribute[]
 }
 export type Pagefillable = Pick<Page, 'index' | 'meta' | 'parent_id' | 'template_id'>
 

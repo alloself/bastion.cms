@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\ContentBlockController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\PageController;
@@ -16,6 +17,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(functio
     'template' => TemplateController::class,
     'link'=> LinkController::class,
     'content-block'=> ContentBlockController::class,
+    'attribute' => AttributeController::class,
   ]);
 
   Route::prefix('destroy')->group(function () {
@@ -24,5 +26,6 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(functio
     Route::post('template', [TemplateController::class, 'deleteMany']);
     Route::post('link', [LinkController::class, 'deleteMany']);
     Route::post('content-block', [ContentBlockController::class, 'deleteMany']);
+    Route::post('attribute', [AttributeController::class, 'deleteMany']);
   });
 });

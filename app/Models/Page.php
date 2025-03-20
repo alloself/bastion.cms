@@ -2,18 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasAttributes;
 use App\Traits\HasContentBlocks;
 use App\Traits\HasLink;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
 
-
 class Page extends BaseModel
 {
-  use NodeTrait, HasLink, HasContentBlocks;
+  use NodeTrait, HasLink, HasContentBlocks, HasAttributes;
 
   protected $fillable = ['index', 'meta', 'parent_id', 'template_id'];
 

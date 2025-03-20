@@ -1,5 +1,12 @@
 <template>
-    <relation-card :title="module?.title" :icon="module?.icon">
+    <relation-card
+        v-if="module"
+        :module="module"
+        :get-item-title="getItemTitle"
+        @event:create="onAddRelation"
+        @event:delete="onDeleteSelected"
+        @event:add-existing="onAddExistingEntity"
+    >
         <template #title:append
             ><v-btn
                 :icon="expandAll ? 'mdi-collapse-all' : 'mdi-expand-all'"
@@ -75,108 +82,11 @@
                 </v-btn>
             </template>
         </v-treeview>
-
-        <template #actions>
-            <v-tooltip location="top" text="Создать" color="primary">
-                <template #activator="{ props }">
-                    <v-btn icon large v-bind="props" @click="addRelation" flat>
-                        <v-icon>mdi-plus</v-icon>
-                    </v-btn>
-                </template>
-            </v-tooltip>
-
-            <v-menu
-                v-model="showSearch"
-                :close-on-content-click="false"
-                location="right"
-                offset="16"
-            >
-                <template v-slot:activator="menu">
-                    <v-tooltip location="top" text="Поиск" color="primary">
-                        <template #activator="tooltip">
-                            <v-btn
-                                :loading="loading"
-                                icon
-                                large
-                                v-bind="{ ...tooltip.props, ...menu.props }"
-                                flat
-                                @click="showSearch = true"
-                            >
-                                <v-icon>mdi-magnify</v-icon>
-                            </v-btn>
-                        </template>
-                        <span>Поиск</span>
-                    </v-tooltip>
-                </template>
-
-                <v-card width="500">
-                    <v-card-title>Найти</v-card-title>
-                    <v-card-text class="mt-2">
-                        <v-row>
-                            <v-col>
-                                <v-autocomplete
-                                    placeholder="Поиск"
-                                    v-model="searchedModelValue"
-                                    :item-title="getItemTitle"
-                                    multiple
-                                    return-object
-                                    chips
-                                    closable-chips
-                                    v-model:search="search"
-                                    :items="searchedItems"
-                                ></v-autocomplete>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-
-                    <v-divider></v-divider>
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-
-                        <v-btn
-                            variant="text"
-                            @click="
-                                (showSearch = false),
-                                    ((searchedModelValue = []), (search = ''))
-                            "
-                        >
-                            Отмена
-                        </v-btn>
-                        <v-btn
-                            color="primary"
-                            variant="text"
-                            @click="addExistingEntity"
-                        >
-                            Добавить
-                        </v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-menu>
-
-            <v-tooltip location="top" text="Удалить выбранное" color="primary">
-                <template #activator="{ props }">
-                    <v-btn
-                        icon
-                        large
-                        :disabled="!selected.length"
-                        v-bind="props"
-                        flat
-                        @click="deleteSelected"
-                    >
-                        <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                </template>
-            </v-tooltip>
-        </template>
     </relation-card>
 </template>
 
-<script
-    setup
-    lang="ts"
-    generic="T extends IBaseEntity & INestedSetEntity<T> & Record<string, any>"
->
-import { computed, Ref, ref, watch } from "vue";
+<script setup lang="ts" generic="T extends IBaseEntity & INestedSetEntity<T>">
+import { computed, Ref, ref } from "vue";
 import { useModule } from "../composables";
 import type {
     IBaseEntity,
@@ -188,7 +98,7 @@ import { useItems } from "../composables/useItems";
 import { useModalDrawerStore } from "../../features/modal-drawer";
 import { client } from "../api/axios";
 import { getModuleUrlPart } from "../modules";
-import { debounce } from "lodash";
+import { useRelationMethods } from "../composables/useRelationMethods";
 
 const {
     moduleKey,
@@ -210,9 +120,6 @@ const opened = ref<T[]>([]);
 const search = ref("");
 const expandAll = ref(true);
 const loading = ref(false);
-const showSearch = ref(false);
-const searchedModelValue = ref();
-const searchedItems = ref();
 
 const processItems = (items: T[], depth = 0): T[] => {
     return items.map((item) => ({
@@ -243,51 +150,31 @@ const updateTreeItem = <T extends { id: string; children?: T[] }>(
 
 const processedItems = computed(() => processItems(modelValue));
 
-const addRelation = () => {
-    modalDrawerStore.addDetailModal(
-        {
-            module: module.value,
-            initialValues: initialValues ? { ...initialValues } : undefined,
-        },
-        {
-            onCreate: (item: T) => {
-                emit("update:model-value", [...modelValue, item]);
-                modalDrawerStore.onModalClose();
-            },
-        }
-    );
+const { addRelation, editRelation, addExistingEntity,deleteSelected } = useRelationMethods<T>({
+    module: module.value,
+    initialValues,
+});
+
+const onAddRelation = () => {
+    addRelation((item: T) => {
+        emit("update:model-value", [...modelValue, item]);
+        modalDrawerStore.onModalClose();
+    });
 };
 
-const editRelation = (id: string) => {
-    modalDrawerStore.addDetailModal(
-        { module: module.value, id },
-        {
-            onUpdate: (updatedItem: T) => {
-                if (!updatedItem) {
-                    return;
-                }
-                const updatedModel = [...modelValue];
-                updateTreeItem(updatedModel, updatedItem);
-                emit("update:model-value", updatedModel);
-            },
-        }
-    );
+const onEditRelation = (id: string) => {
+    editRelation(id, (item: T) => {
+        const updatedModel = [...modelValue];
+        updateTreeItem(updatedModel, item);
+        emit("update:model-value", updatedModel);
+    });
 };
 
-const deleteSelected = async () => {
+const onDeleteSelected = async () => {
     try {
-        await Promise.all(
-            selected.value.map((item) =>
-                client.patch(
-                    `/api/admin/${getModuleUrlPart(moduleKey)}/${item.id}`,
-                    {
-                        ...item,
-                        parent_id: null,
-                    }
-                )
-            )
-        );
-
+        if (!morph) {
+          deleteSelected(selected.value)
+        }
         const selectedIds = new Set(selected.value.map(getItemValue));
         emit(
             "update:model-value",
@@ -300,58 +187,22 @@ const deleteSelected = async () => {
 };
 
 const onItemClick = (item: T) => {
-    editRelation(item.id);
+    onEditRelation(item.id);
 };
 
-const getSearchedItems = async (string = "") => {
-    try {
-        loading.value = true;
-        const { data } = await client.get(
-            `/api/admin/${getModuleUrlPart(moduleKey)}`,
-            {
-                params: {
-                    search: string,
-                    with: module.value?.relations,
-                },
-            }
-        );
-        searchedItems.value = data;
-    } catch (e) {
-        console.log(e);
-    } finally {
-        loading.value = false;
-    }
-};
-
-const addExistingEntity = async () => {
+const onAddExistingEntity = async (items: T[]) => {
     if (morph) {
-        emit("update:model-value", [
-            ...modelValue,
-            ...searchedModelValue.value,
-        ]);
-        searchedModelValue.value = [];
-        showSearch.value = false;
+        emit("update:model-value", [...modelValue, ...items]);
         return;
     }
 
-    try {
-        loading.value = true;
-        const results = await Promise.all(
-            searchedModelValue.value.map(async (item: T) => {
-                const { data } = await client.patch(
-                    `/api/admin/${getModuleUrlPart(moduleKey)}/${item.id}`,
-                    { ...item, ...initialValues }
-                );
-                return data;
-            })
-        );
-
-        emit("update:model-value", [...modelValue, ...results]);
-        searchedModelValue.value = [];
-    } finally {
-        loading.value = false;
-        showSearch.value = false;
-    }
+    addExistingEntity(
+        items,
+        (results) => {
+            emit("update:model-value", [...modelValue, ...results]);
+        },
+        loading
+    );
 };
 
 const updateOrder = async (item: T, value: string | number) => {
@@ -376,12 +227,4 @@ const getItmOrder = (item: T) => {
     }
     return item.order;
 };
-
-watch(
-    search,
-    debounce((newValue) => {
-        if (!newValue) return;
-        getSearchedItems(newValue);
-    }, 300)
-);
 </script>

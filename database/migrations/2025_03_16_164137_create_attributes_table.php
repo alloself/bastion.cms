@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->unique();
             $table->string('name')->unique();
             $table->string('key')->unique();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -38,6 +38,7 @@ export const modules: IModule[] = [
             "audits.user",
             "children.link",
             "contentBlocks",
+            "attributes",
         ],
     },
     {
@@ -90,6 +91,23 @@ export const modules: IModule[] = [
             },
         ],
         relations: ["audits.user", "children", "link"],
+    },
+    {
+        key: "attribute",
+        title: "Аттрибуты",
+        icon: "mdi-attachment",
+        showInNavigation: true,
+        headers: [
+            {
+                title: "Название",
+                key: "name",
+            },
+            {
+                title: "Ключ",
+                key: "key",
+            },
+        ],
+        relations: ["audits.user"],
     },
 ];
 

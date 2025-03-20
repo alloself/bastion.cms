@@ -14,6 +14,10 @@ trait HasCRUDMethods
       $entity->addLink($data['link']);
     }
 
+    if ($entity->isRelation('attributes') && isset($data['attributes'])) {
+      $entity->syncAttributes($data['attributes']);
+    }
+
     if ($entity->isRelation('contentBlocks') && isset($data['content_blocks'])) {
       $entity->syncContentBlocks($data['content_blocks']);
     }
@@ -38,7 +42,7 @@ trait HasCRUDMethods
 
   public function loadChildrenTree(array $with = []): self
   {
-    $this->load('descendants',...$with);
+    $this->load('descendants', ...$with);
 
     $childrenTree = $this->descendants->toTree($this->id);
 
@@ -97,6 +101,10 @@ trait HasCRUDMethods
 
     if ($this->isRelation('link') && isset($data['link'])) {
       $this->updateLink($data['link']);
+    }
+
+    if ($this->isRelation('attributes') && isset($data['attributes'])) {
+      $this->syncAttributes($data['attributes']);
     }
 
     if ($this->isRelation('contentBlocks') && isset($data['content_blocks'])) {

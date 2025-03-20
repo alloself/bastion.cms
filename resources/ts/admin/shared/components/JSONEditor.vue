@@ -136,7 +136,7 @@ const onInput = (e: Event, key: "key" | "value", index: number) => {
 
 const componentValue = computed({
   get: () => {
-    return Object.keys(modelValue).map((key) => {
+    return Object.keys(modelValue || {}).map((key) => {
       return {
         key,
         value: modelValue[key],
@@ -153,5 +153,4 @@ const componentValue = computed({
     );
   },
 });
-
 </script>
