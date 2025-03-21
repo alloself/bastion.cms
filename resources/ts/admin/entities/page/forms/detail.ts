@@ -77,7 +77,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                 title: "Атрибуты",
                 moduleKey: "attribute",
                 itemTitle: "name",
-                morphRelation: true,
+                morph: true,
                 headers: [
                     {
                         title: "Название",

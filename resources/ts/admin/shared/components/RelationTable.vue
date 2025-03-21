@@ -13,6 +13,9 @@
             :headers="headers"
             hide-default-footer
             hide-no-data
+            show-select
+            return-object
+            v-model="selected"
         >
             <template #[`item.pivot.value`]="{ item }">
                 <v-text-field
