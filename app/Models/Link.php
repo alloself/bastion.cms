@@ -9,126 +9,153 @@ use Spatie\Sluggable\SlugOptions;
 
 class Link extends BaseModel
 {
-  use HasSlug;
+    use HasSlug;
 
-  protected $fillable = ['title', 'subtitle', 'slug', 'url'];
+    protected $fillable = ['title', 'subtitle', 'slug', 'url'];
 
-  protected function casts(): array
-  {
-    return [
-      'url' => 'string',
-    ];
-  }
-
-  protected static function booted()
-  {
-    static::updated(function (self $link) {
-      if ($link->isDirty('slug') || $link->isDirty('url')) {
-        $link->refreshURL();
-      }
-    });
-  }
-
-
-  public function getSlugOptions(): SlugOptions
-  {
-    return SlugOptions::create()
-      ->generateSlugsFrom('title')
-      ->saveSlugsTo('slug')
-      ->allowDuplicateSlugs();
-  }
-
-  public function linkable(): MorphTo
-  {
-    return $this->morphTo();
-  }
-
-  public function refreshURL(): void
-  {
-    match ($this->linkable_type) {
-      Page::class => $this->generatePageURL(),
-      //DataCollection::class => $this->generateDataCollectionURL(),
-      //DataEntity::class => $this->generateDataEntityURL(),
-      default => null,
-    };
-
-    $this->updateDescendantsURL();
-  }
-
-  private function updateDescendantsURL(): void
-  {
-    $this->linkable->children?->each(function ($child) {
-      $child->link->refreshURL();
-    });
-  }
-
-  public function generatePageURL(): self
-  {
-    $page = $this->linkable->load('parent.link');
-
-    $this->url = match (true) {
-      $page->index => '/',
-      default => $this->buildURLFromAncestors($page->parent, $this->slug)
-    };
-
-    $this->saveQuietly();
-
-    return $this;
-  }
-
-  public function generateDataCollectionURL(): self
-  {
-    $dataCollection = $this->linkable->load([
-      'ancestors.link',
-      'page.link'
-    ]);
-
-    $this->url = $this->buildURLFromAncestors(
-      $dataCollection->page ?? $dataCollection->ancestors->last(),
-      $this->slug
-    );
-
-    return $this->saveWithEvents();
-  }
-
-  public function generateDataEntityURL(): self
-  {
-    $dataEntity = $this->linkable->load([
-      'dataCollection.link.page.link'
-    ]);
-
-    $this->url = $this->buildURLFromAncestors(
-      $dataEntity->dataCollection,
-      $this->slug
-    );
-
-    return $this->saveWithEvents();
-  }
-
-  protected function buildURLFromAncestors(?Model $startFrom, string $slug): string
-  {
-    $segments = [];
-    $current = $startFrom;
-
-    while ($current) {
-      if ($current->link) {
-
-        $segments[] = trim($current->link->slug, '/');
-      }
-      $current = $current->parent ?? $current->page ?? null;
+    protected function casts(): array
+    {
+        return [
+            'url' => 'string',
+        ];
     }
 
-    $segments = array_reverse($segments);
-    $segments[] = $slug;
+    protected static function booted(): void
+    {
+        static::updated(function (self $link) {
+            if ($link->isDirty('slug') || $link->isDirty('url')) {
+                $link->refreshURL();
+            }
+        });
+    }
 
-    $url = implode('/', array_filter($segments));
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('title')
+            ->saveSlugsTo('slug')
+            ->allowDuplicateSlugs();
+    }
 
-    return $url === '' ? '/' : "/{$url}";
-  }
+    public function linkable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
-  private function saveWithEvents(): self
-  {
-    $this->save();
-    return $this;
-  }
+    /**
+     * Обновляет URL для текущей модели и её потомков.
+     */
+    public function refreshURL(): void
+    {
+        switch ($this->linkable_type) {
+            case Page::class:
+                $this->generatePageURL();
+                break;
+            case DataCollection::class:
+                $this->generateDataCollectionURL();
+                break;
+            case DataEntity::class:
+                $this->generateDataEntityURL();
+                break;
+        }
+
+        $this->updateDescendantsURL();
+    }
+
+    /**
+     * Обновляет URL для всех потомков текущей модели.
+     */
+    private function updateDescendantsURL(): void
+    {
+        if (!method_exists($this->linkable, 'children')) {
+            return;
+        }
+
+        $children = $this->linkable->children()->with('link')->get();
+
+        foreach ($children as $child) {
+            if ($child->relationLoaded('link') && $child->link instanceof self) {
+                $child->link->refreshURL();
+            }
+        }
+    }
+
+    /**
+     * Генерирует URL для страниц (Page).
+     */
+    public function generatePageURL(): self
+    {
+        $page = $this->linkable->load('parent.link');
+
+        $this->url = $page->index
+            ? '/'
+            : $this->buildURLFromAncestors($page->parent, $this->slug);
+
+        return $this->saveLinkQuietly();
+    }
+
+    /**
+     * Генерирует URL для коллекций данных (DataCollection).
+     */
+    public function generateDataCollectionURL(): self
+    {
+        $dataCollection = $this->linkable->load(['ancestors.link', 'page.link']);
+
+        $ancestor = $dataCollection->page ?? $dataCollection->ancestors->last();
+
+        $this->url = $this->buildURLFromAncestors($ancestor, $this->slug);
+
+        return $this->saveLinkQuietly();
+    }
+
+    /**
+     * Генерирует URL для сущностей данных (DataEntity).
+     */
+    public function generateDataEntityURL(): self
+    {
+        $dataEntity = $this->linkable->load('dataCollection.link.page.link');
+
+        $this->url = $this->buildURLFromAncestors(
+            $dataEntity->dataCollection,
+            $this->slug
+        );
+
+        return $this->saveLinkQuietly();
+    }
+
+    /**
+     * Строит URL рекурсивно на основе родительских элементов.
+     *
+     * @param Model|null $startFrom
+     * @param string $slug
+     * @return string
+     */
+    protected function buildURLFromAncestors(?Model $startFrom, string $slug): string
+    {
+        $segments = [];
+        $current = $startFrom;
+
+        while ($current) {
+            if ($current->relationLoaded('link') && $current->link instanceof self) {
+                $segments[] = trim($current->link->slug, '/');
+            }
+            $current = $current->parent ?? $current->page ?? null;
+        }
+
+        $segments = array_reverse($segments);
+        $segments[] = $slug;
+
+        $url = implode('/', array_filter($segments));
+
+        return $url === '' ? '/' : "/{$url}";
+    }
+
+    /**
+     * Тихо сохраняет модель без триггеринга событий.
+     */
+    private function saveLinkQuietly(): self
+    {
+        $this->saveQuietly();
+        return $this;
+    }
 }

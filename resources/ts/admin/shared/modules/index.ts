@@ -96,7 +96,7 @@ export const modules: IModule[] = [
         key: "attribute",
         title: "Аттрибуты",
         icon: "mdi-attachment",
-        showInNavigation: true,
+        showInNavigation: false,
         headers: [
             {
                 title: "Название",

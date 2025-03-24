@@ -45,34 +45,13 @@
                 />
             </template>
             <template #append="{ item }">
-                <div
-                    class="d-flex items-center ga-2"
-                    @click.stop
+                <order-buttons
                     v-if="ordered"
-                >
-                    <v-btn
-                        icon="mdi-arrow-up-bold-circle-outline"
-                        size="small"
-                        @click="updateOrder(item, getItmOrder(item) + 1)"
-                        variant="text"
-                    >
-                    </v-btn>
-                    <v-text-field
-                        class="centered-input"
-                        hide-details="auto"
-                        :model-value="getItmOrder(item)"
-                        @update:model-value="(v) => updateOrder(item, v)"
-                        density="compact"
-                    >
-                    </v-text-field>
-                    <v-btn
-                        icon="mdi-arrow-down-bold-circle-outline"
-                        size="small"
-                        variant="text"
-                        @click="updateOrder(item, getItmOrder(item) - 1)"
-                    >
-                    </v-btn>
-                </div>
+                    :item="item"
+                    :morph="morph"
+                    :module="module"
+                    @update:order="onUpdateOrder"
+                />
                 <v-btn
                     variant="text"
                     size="small"
@@ -85,21 +64,25 @@
     </relation-card>
 </template>
 
-<script setup lang="ts" generic="T extends IBaseEntity & INestedSetEntity<T>">
+<script
+    setup
+    lang="ts"
+    generic="T extends IBaseEntity & Maybe<IOrderedEntity> & INestedSetEntity<T>"
+>
 import { computed, Ref, ref } from "vue";
 import { useModule } from "../composables";
 import type {
     IBaseEntity,
     INestedSetEntity,
+    IOrderedEntity,
     IRelationTreeProps,
+    Maybe,
 } from "../types";
 import RelationCard from "./RelationCard.vue";
 import { useItems } from "../composables/useItems";
 import { useModalDrawerStore } from "../../features/modal-drawer";
-import { client } from "../api/axios";
-import { getModuleUrlPart } from "../modules";
-import { useRelationMethods } from "../composables/useRelationMethods";
-
+import { useRelationMethods } from "../composables";
+import OrderButtons from "./OrderButtons.vue";
 const {
     moduleKey,
     modelValue = [],
@@ -125,7 +108,7 @@ const processItems = (items: T[], depth = 0): T[] => {
     return items.map((item) => ({
         ...item,
         depth,
-        children: item.children.length
+        children: item?.children?.length
             ? processItems(item.children, depth + 1)
             : undefined,
     }));
@@ -150,10 +133,11 @@ const updateTreeItem = <T extends { id: string; children?: T[] }>(
 
 const processedItems = computed(() => processItems(modelValue));
 
-const { addRelation, editRelation, addExistingEntity,deleteSelected } = useRelationMethods<T>({
-    module: module.value,
-    initialValues,
-});
+const { addRelation, editRelation, addExistingEntity, deleteSelected } =
+    useRelationMethods<T>({
+        module: module.value,
+        initialValues,
+    });
 
 const onAddRelation = () => {
     addRelation((item: T) => {
@@ -173,7 +157,7 @@ const onEditRelation = (id: string) => {
 const onDeleteSelected = async () => {
     try {
         if (!morph) {
-          deleteSelected(selected.value)
+            deleteSelected(selected.value);
         }
         const selectedIds = new Set(selected.value.map(getItemValue));
         emit(
@@ -205,26 +189,8 @@ const onAddExistingEntity = async (items: T[]) => {
     );
 };
 
-const updateOrder = async (item: T, value: string | number) => {
-    if (morph && item.depth === 0) {
-        item.pivot.order = Number(value);
-    } else {
-        const { data } = await client.patch(
-            `/api/admin/${getModuleUrlPart(moduleKey)}/${item.id}`,
-            {
-                ...item,
-                order: value,
-            }
-        );
-        const updatedModel = [...modelValue];
-        updateTreeItem(updatedModel, data);
-    }
-};
-
-const getItmOrder = (item: T) => {
-    if (morph && item.depth === 0) {
-        return item.pivot.order;
-    }
-    return item.order;
+const onUpdateOrder = (item: T) => {
+    const updatedModel = [...modelValue];
+    updateTreeItem(updatedModel, item);
 };
 </script>

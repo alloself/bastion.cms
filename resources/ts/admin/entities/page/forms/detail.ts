@@ -78,6 +78,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                 moduleKey: "attribute",
                 itemTitle: "name",
                 morph: true,
+                ordered: true,
                 headers: [
                     {
                         title: "Название",
@@ -92,8 +93,13 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                         key: "pivot.value",
                     },
                     {
+                        title: "Приоритет",
+                        key: "order",
+                    },
+                    {
                         title: "Действия",
                         key: "actions",
+                        width: 100
                     },
                 ],
             },

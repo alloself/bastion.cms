@@ -1,5 +1,5 @@
 import { ContentBlock } from "@/ts/types/models";
-import link from "@admin/shared/forms/link";
+import * as yup from "yup";
 import type {
     IOptionsFieldsFabric,
     ISmartFormField,
@@ -29,7 +29,27 @@ export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
                 type: "text",
             },
         },
-        ...link,
+        {
+            component: "v-text-field",
+            key: "link.title",
+            props: {
+                autocomplete: "title",
+                label: "Заголовок",
+                name: "title",
+                type: "text",
+            },
+            rule: yup.string().required("Поле обязательно для заполнения"),
+        },
+        {
+            component: "v-text-field",
+            key: "link.subtitle",
+            props: {
+                autocomplete: "subtitle",
+                label: "Подзаголовок",
+                name: "subtitle",
+                type: "text",
+            },
+        },
         {
             component: markRaw(RelationAutocomplete),
             key: "template_id",
@@ -61,8 +81,8 @@ export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
             },
         },
         {
-          component: markRaw(WYSIWYGEditor),
-          key: "content",
+            component: markRaw(WYSIWYGEditor),
+            key: "content",
         },
     ]);
 

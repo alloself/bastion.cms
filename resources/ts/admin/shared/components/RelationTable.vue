@@ -24,6 +24,14 @@
                     v-model="item.pivot.value"
                 ></v-text-field>
             </template>
+            <template #[`item.order`]="{ item }">
+                <order-buttons
+                    v-if="ordered"
+                    :item="item"
+                    :morph="morph"
+                    :module="module"
+                />
+            </template>
             <template #[`item.actions`]="{ item }">
                 <v-btn
                     variant="text"
@@ -37,12 +45,14 @@
     </relation-card>
 </template>
 
-<script setup lang="ts" generic="T extends IBaseEntity">
+<script setup lang="ts" generic="T extends IBaseEntity & Maybe<IOrderedEntity>">
 import RelationCard from "./RelationCard.vue";
+import OrderButtons from "./OrderButtons.vue";
 import { useItems, useModule } from "../composables";
-import { IBaseEntity, IRelationTableProps } from "../types";
+import { IBaseEntity, IOrderedEntity, IRelationTableProps } from "../types";
 import { useRelationMethods } from "../composables";
 import { Ref, ref } from "vue";
+import { Maybe } from "yup";
 
 const {
     moduleKey,
@@ -52,6 +62,7 @@ const {
     itemValue,
     morph = false,
     headers,
+    ordered,
 } = defineProps<IRelationTableProps<T>>();
 const emit = defineEmits<{ "update:model-value": [value: T[]] }>();
 

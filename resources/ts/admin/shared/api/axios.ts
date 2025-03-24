@@ -1,58 +1,94 @@
-
 import router from "@admin/app/router";
 import { useUserStore } from "@admin/entities/user";
 import axios from "axios";
 import { ref } from "vue";
 import { useNotificationsStore } from "@admin/features/notifications";
 
+export const loading = ref(false);
 
-export const loading = ref(false)
+function cleanEmptyValues<T>(data: T): T | undefined {
+    if (Array.isArray(data)) {
+        const cleanedArray = data
+            .map(cleanEmptyValues)
+            .filter((item) => item !== undefined);
+
+        return cleanedArray.length ? (cleanedArray as unknown as T) : undefined;
+    }
+
+    if (data && typeof data === "object") {
+        const cleanedObject = Object.entries(data).reduce(
+            (acc, [key, value]) => {
+                const cleanedValue = cleanEmptyValues(value);
+
+                if (cleanedValue !== undefined) {
+                    acc[key] = cleanedValue;
+                }
+
+                return acc;
+            },
+            {} as Record<string, unknown>
+        );
+
+        return Object.keys(cleanedObject).length
+            ? (cleanedObject as T)
+            : undefined;
+    }
+
+    // Проверка примитивов на пустоту
+    if (data === null || data === undefined || data === "") {
+        return undefined;
+    }
+
+    return data;
+}
 
 export const client = axios.create({
-  baseURL: `/`,
-  withCredentials: true,
-  withXSRFToken: true,
-  headers: {
-    Accept: "application/json",
-  },
+    baseURL: `/`,
+    withCredentials: true,
+    withXSRFToken: true,
+    headers: {
+        Accept: "application/json",
+    },
 });
 
 client.interceptors.request.use(
-  (config) => {
-    loading.value = true
-    return config;
-  },
-  (error) => {
-    return error
-  }
+    (config) => {
+        if (config.data) {
+            config.data = cleanEmptyValues(config.data)
+        }
+        loading.value = true;
+        return config;
+    },
+    (error) => {
+        return error;
+    }
 );
 
 client.interceptors.response.use(
-  (config) => {
-    loading.value = false
-    return config;
-  },
-  async (error) => {
-    loading.value = false
-    const errorMessage = error?.response?.data?.message || error.message;
-    const userStore = useUserStore();
+    (config) => {
+        loading.value = false;
+        return config;
+    },
+    async (error) => {
+        loading.value = false;
+        const errorMessage = error?.response?.data?.message || error.message;
+        const userStore = useUserStore();
 
-    if (error.response?.status === 401 || error.response?.status === 403) {
-      if (userStore.user) {
-        await userStore.logout();
-      }
-      router.push({ name: 'Login' })
-      return;
+        if (error.response?.status === 401 || error.response?.status === 403) {
+            if (userStore.user) {
+                await userStore.logout();
+            }
+            router.push({ name: "Login" });
+            return;
+        }
+
+        const notificationsStore = useNotificationsStore();
+
+        notificationsStore.pushNotification({
+            content: errorMessage,
+            color: "error",
+        });
+
+        return Promise.reject(error);
     }
-
-    const notificationsStore = useNotificationsStore();
-
-    notificationsStore.pushNotification({
-      content: errorMessage,
-      color: "error",
-    });
-
-
-    return Promise.reject(error);
-  }
 );

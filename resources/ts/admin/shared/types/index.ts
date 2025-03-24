@@ -95,6 +95,7 @@ export interface IRelationTableProps<T> extends IItems<T> {
   modelValue: T[];
   initialValues?: Partial<T>;
   morph?: boolean;
+  ordered?: boolean;
   headers: Record<string, any>[]
 }
 
@@ -125,3 +126,10 @@ export interface PIGenetic<T> {
   data: T;
   update: (value: T) => void;
 }
+
+export interface IOrderedEntity {
+  order: number;
+  pivot: Record<string,unknown> & { order: number }
+}
+
+export type Maybe<T> = T | null | undefined;
