@@ -3,6 +3,7 @@
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\ContentBlockController;
 use App\Http\Controllers\DataCollectionController;
+use App\Http\Controllers\DataEntityController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\PageController;
@@ -19,6 +20,7 @@ $resources = [
   'attribute' => AttributeController::class,
   'file' => FileController::class,
   'data-collection' => DataCollectionController::class,
+  'data-entity' => DataEntityController::class,
 ];
 
 
@@ -26,7 +28,7 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(functio
   Route::get('me', [UserController::class, 'me']);
 
   Route::apiResources($resources);
-  
+
   Route::prefix('destroy')->group(function () use ($resources) {
     foreach ($resources as $route => $controller) {
       Route::post($route, [$controller, 'deleteMany']);
