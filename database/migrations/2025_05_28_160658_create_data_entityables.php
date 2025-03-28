@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_entityables', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('data_entityable');
             $table->string('key')->nullable();
             $table->bigInteger('order')->default(0);

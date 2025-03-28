@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('content_blockables', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
             $table->string('content_blockable_type');
             $table->uuid('content_blockable_id');
             $table->index(

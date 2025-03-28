@@ -42,6 +42,14 @@ function cleanEmptyValues<T>(data: T): T | undefined {
     return data;
 }
 
+function hasFile(data: Record<string, any>): boolean {
+    return Object.values(data).some((value) =>
+      value instanceof File ||
+      value instanceof Blob ||
+      (Array.isArray(value) && value.some((item) => item instanceof File || item instanceof Blob))
+    );
+  }
+
 export const client = axios.create({
     baseURL: `/`,
     withCredentials: true,
@@ -53,8 +61,28 @@ export const client = axios.create({
 
 client.interceptors.request.use(
     (config) => {
+        console.log(config.data);
         if (config.data) {
-            config.data = cleanEmptyValues(config.data)
+            //config.data = cleanEmptyValues(config.data);
+        }
+        console.log(config.data)
+        if (config.data instanceof Object && hasFile(config.data)) {
+            const formData = new FormData();
+            console.log(formData)
+
+            Object.entries(config.data).forEach(([key, value]) => {
+                if (Array.isArray(value)) {
+                    value.forEach((val) => formData.append(key, val));
+                } else {
+                    formData.append(key, value as any);
+                }
+            });
+
+            config.data = formData;
+
+            if (config.headers) {
+                delete config.headers["Content-Type"];
+            }
         }
         loading.value = true;
         return config;

@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('fileables', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('fileable');
             $table->enum('type', ['image', 'file']);
             $table->string('key')->nullable();

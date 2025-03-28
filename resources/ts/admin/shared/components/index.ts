@@ -5,6 +5,7 @@ import SmartForm from "./SmartForm.vue";
 import WYSIWYGEditor from "./WYSIWYGEditor.vue";
 import RelationTable from "./RelationTable.vue";
 import RelationTree from "./RelationTree.vue";
+import FormSkeleton from './FormSkeleton.vue';
 
 export {
   CodeEditor,
@@ -14,4 +15,5 @@ export {
   WYSIWYGEditor,
   RelationTable,
   RelationTree,
+  FormSkeleton
 };

@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('attributeables', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
             $table->uuidMorphs('attributeable');
             $table->longText('value')->nullable();
             $table->bigInteger('order')->default(0);

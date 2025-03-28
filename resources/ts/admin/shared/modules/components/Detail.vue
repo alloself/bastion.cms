@@ -101,6 +101,7 @@ const fields = ref<ISmartFormField[]>([]);
 const showConfirmDelete = ref(false);
 const showHistory = ref(false);
 const readonly = ref(false);
+const firstLoading = ref(true);
 
 const onReset = () => form.value?.resetForm(initialValues);
 const onClose = () => emit("close");
@@ -125,14 +126,15 @@ const getEntity = async () => {
     try {
         loading.value = true;
         const { data } = await client.get<T>(
-            `/api/admin/${getModuleUrlPart(module.key)}/${id}`,
+            `/api/admin/${getModuleUrlPart(module.url || module.key)}/${id}`,
             {
                 params: { with: module.relations },
             }
         );
+
         await initializeFields(data);
 
-        form.value?.resetForm({ values: data });
+        form.value?.resetForm({ values: data, errors: {} });
     } finally {
         loading.value = false;
     }
@@ -141,10 +143,10 @@ const getEntity = async () => {
 const onCreate = async () => {
     const { handler } = useFormSubmit(async () => {
         const { data } = await client.post<T>(
-            `/api/admin/${getModuleUrlPart(module.key)}`,
+            `/api/admin/${getModuleUrlPart(module.url || module.key)}`,
             {
                 ...form.value?.values,
-                with: module.relations,
+                with: module.relations || [],
             }
         );
 
@@ -164,10 +166,10 @@ const onCreate = async () => {
 const onUpdate = async () => {
     const { handler } = useFormSubmit(async () => {
         const { data } = await client.patch<T>(
-            `/api/admin/${getModuleUrlPart(module.key)}/${id}`,
+            `/api/admin/${getModuleUrlPart(module.url || module.key)}/${id}`,
             {
                 ...form.value?.values,
-                with: module.relations,
+                with: module.relations || [],
             }
         );
 
@@ -184,7 +186,9 @@ const onUpdate = async () => {
 const onDelete = async () => {
     if (!id) return;
 
-    await client.delete(`/api/admin/${getModuleUrlPart(module.key)}/${id}`);
+    await client.delete(
+        `/api/admin/${getModuleUrlPart(module.url || module.key)}/${id}`
+    );
 
     if (modal) {
         emit("delete");

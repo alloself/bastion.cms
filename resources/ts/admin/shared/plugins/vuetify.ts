@@ -22,6 +22,7 @@ export default createVuetify({
     },
     VFileInput: {
       variant: "solo-filled",
+      accept: 'image/*'
     },
     VSelect: {
       variant: "solo-filled",
@@ -52,7 +53,7 @@ export default createVuetify({
     VTextarea,
     VCombobox,
     VSelect,
-    VTreeview
+    VTreeview,
   },
   theme: {
     defaultTheme: "dark",

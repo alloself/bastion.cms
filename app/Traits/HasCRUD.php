@@ -92,7 +92,11 @@ trait HasCRUD
         ]);
 
         return DB::transaction(function () use ($validated) {
-            $this->model()::destroy($validated['ids']);
+            $entities = $this->model()::whereIn('id', $validated['ids'])->get();
+
+            foreach ($entities as $entity) {
+                $entity->deleteEntity();
+            }
             return response()->noContent();
         });
     }

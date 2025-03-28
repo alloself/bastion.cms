@@ -2,125 +2,87 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 trait HasCRUDMethods
 {
+  protected array $syncableRelations = ['link', 'attributes', 'content_blocks', 'images', 'files'];
+
+  protected function syncRelations(array $relations): void
+  {
+    foreach ($relations as $relation => $data) {
+      if (!$this->isRelation($relation) || !$data) {
+        continue;
+      }
+
+      $method = 'sync' . ucfirst(Str::camel($relation));
+
+      if (method_exists($this, $method)) {
+        $this->$method($data);
+      }
+    }
+  }
+
+  protected function loadChildrenTree(): void
+  {
+    $this->load('descendants');
+    $this->setRelation('children', $this->descendants->toTree($this->id));
+    $this->unsetRelation('descendants');
+  }
+
+  protected static function prepareRelations(array $relations): array
+  {
+    $prepared = [];
+
+    foreach ($relations as $relation) {
+      if ($relation === 'children') {
+        $prepared[] = 'descendants';
+      } elseif (strpos($relation, 'children.') === 0) {
+        $prepared[] = 'descendants.' . substr($relation, 9);
+      } else {
+        $prepared[] = $relation;
+      }
+    }
+
+    return $prepared;
+  }
+
   public static function createEntity(array $data): self
   {
-    $entity = static::query()->create($data);
+    $syncableRelations = (new static)->syncableRelations;
+    $relations = Arr::only($data, $syncableRelations);
 
-    if ($entity->isRelation('link') && isset($data['link'])) {
-      $entity->addLink($data['link']);
-    }
+    $entity = static::query()->create(Arr::except($data, array_keys($relations)));
 
-    if ($entity->isRelation('attributes') && isset($data['attributes'])) {
-      $entity->syncAttributes($data['attributes']);
-    }
-
-    if ($entity->isRelation('contentBlocks') && isset($data['content_blocks'])) {
-      $entity->syncContentBlocks($data['content_blocks']);
-    }
+    $entity->syncRelations($relations);
 
     return $entity;
   }
 
-  public static function getChildrenRelations(array $relations = []): array
-  {
-    $with = [];
-
-    foreach ($relations as $relation) {
-      if ($relation === 'children') {
-        $with[] = 'children';
-      } elseif (strpos($relation, 'children.') === 0 && method_exists(static::class, 'descendants')) {
-        $with[] = 'descendants.' . substr($relation, strlen('children.'));
-      }
-    }
-
-    return $with;
-  }
-
-  public function loadChildrenTree(array $with = []): self
-  {
-    $this->load('descendants', ...$with);
-
-    $childrenTree = $this->descendants->toTree($this->id);
-
-    $this->setRelation('children', $childrenTree);
-    $this->unsetRelation('descendants');
-
-    return $this;
-  }
-
   public static function showEntity($id, array $with = []): self
   {
-    $childrenRelations = self::getChildrenRelations($with);
+    $entity = static::with(static::prepareRelations($with))->findOrFail($id);
 
-    $isChildtenRelationsNeeded = count($childrenRelations);
-
-    if ($isChildtenRelationsNeeded) {
-      $with = array_merge($with, $childrenRelations);
+    if (in_array('children', $with)) {
+      $entity->loadChildrenTree();
     }
 
-
-    $entity = static::with($with)->findOrFail($id);
-
-    if ($isChildtenRelationsNeeded) {
-      $entity->loadChildrenTree($childrenRelations);
-    }
-
-    $hasContentBlocks = false;
-    foreach ($with as $relation) {
-      if (strpos($relation, 'contentBlocks') !== false) {
-        $hasContentBlocks = true;
-      }
-    }
-    if ($hasContentBlocks) {
+    if (in_array('contentBlocks', $with)) {
       $entity->getContentBlocksTree();
     }
-
 
     return $entity;
   }
 
   public function updateEntity(array $data, array $with = []): self
   {
-    $this->update($data);
+    $syncableRelations = (new static)->syncableRelations;
+    $relations = Arr::only($data, $syncableRelations);
 
-    $childrenRelations = self::getChildrenRelations($with);
+    $this->update(Arr::except($data, array_keys($relations)));
 
-    $isChildtenRelationsNeeded = count($childrenRelations);
-
-    if ($isChildtenRelationsNeeded) {
-      $with = array_merge($with, $childrenRelations);
-    }
-
-    if ($isChildtenRelationsNeeded) {
-      $this->loadChildrenTree($childrenRelations);
-    }
-
-    if ($this->isRelation('link') && isset($data['link'])) {
-      $this->updateLink($data['link']);
-    }
-
-    if ($this->isRelation('attributes') && isset($data['attributes'])) {
-      $this->syncAttributes($data['attributes']);
-    }
-
-    if ($this->isRelation('contentBlocks') && isset($data['content_blocks'])) {
-      $this->syncContentBlocks($data['content_blocks']);
-    }
-
-    $hasContentBlocks = false;
-    foreach ($with as $relation) {
-      if (strpos($relation, 'contentBlocks') !== false) {
-        $hasContentBlocks = true;
-      }
-    }
-
-    if ($hasContentBlocks) {
-      $this->getContentBlocksTree();
-    }
+    $this->syncRelations($relations);
 
     $this->load($with);
 

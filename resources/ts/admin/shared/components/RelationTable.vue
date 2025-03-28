@@ -1,44 +1,25 @@
 <template>
-    <relation-card
-        v-if="module"
-        :module="module"
-        :getItemTitle="getItemTitle"
-        :loading="loading"
-        @event:create="onAddRelation"
-        @event:delete="onDeleteSelected"
-        @event:add-existing="onAddExistingEntity"
-    >
-        <v-data-table
-            :items="modelValue"
-            :headers="headers"
-            hide-default-footer
-            hide-no-data
-            show-select
-            return-object
-            v-model="selected"
-        >
+    <relation-card v-if="module" :module="module" :title="title" :getItemTitle="getItemTitle" :loading="loading"
+        @event:create="onAddRelation" @event:delete="onDeleteSelected" @event:add-existing="onAddExistingEntity">
+        <v-data-table :items="modelValue" :headers="headers" hide-default-footer hide-no-data show-select return-object
+            v-model="selected">
             <template #[`item.pivot.value`]="{ item }">
-                <v-text-field
-                    density="compact"
-                    hide-details
-                    v-model="item.pivot.value"
-                ></v-text-field>
+                <v-text-field density="compact" hide-details v-model="item.pivot.value"></v-text-field>
             </template>
             <template #[`item.order`]="{ item }">
-                <order-buttons
-                    v-if="ordered"
-                    :item="item"
-                    :morph="morph"
-                    :module="module"
-                />
+                <order-buttons v-if="ordered" :item="item" :morph="morph" :module="module" />
+            </template>
+            <template #[`item.pivot.key`]="{ item }">
+                <v-text-field density="compact" hide-details v-model="item.pivot.key"></v-text-field>
+            </template>
+            <template #[`item.url`]="{ item }">
+                <a :href="item.url" target="_blank">{{ item.url }}</a>
+            </template>
+            <template #[`item.preview`]="{ item }">
+                <img :src="item.url" style="width: 150px; height: 150px; object-fit: contain" />
             </template>
             <template #[`item.actions`]="{ item }">
-                <v-btn
-                    variant="text"
-                    size="small"
-                    icon="mdi-open-in-new"
-                    @click.stop="onEditRelation(item.id)"
-                >
+                <v-btn variant="text" size="small" icon="mdi-open-in-new" @click.stop="onEditRelation(item.id)">
                 </v-btn>
             </template>
         </v-data-table>
@@ -63,6 +44,7 @@ const {
     morph = false,
     headers,
     ordered,
+    title
 } = defineProps<IRelationTableProps<T>>();
 const emit = defineEmits<{ "update:model-value": [value: T[]] }>();
 
@@ -93,6 +75,11 @@ const updateTreeItem = <T extends { id: string; children?: T[] }>(
 
 const onAddRelation = () => {
     addRelation((item: T) => {
+        if (morph) {
+            item.pivot = {
+                order: 0
+            }
+        }
         emit("update:model-value", [...modelValue, item]);
     });
 };

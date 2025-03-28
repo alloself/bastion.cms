@@ -19,6 +19,15 @@
         <template #loading>
             <v-skeleton-loader type="table-row@20"></v-skeleton-loader>
         </template>
+        <template #[`item.url`]="{ item }">
+            <a :href="item.url" target="_blank">{{ item.url }}</a>
+        </template>
+        <template #[`item.preview`]="{ item }">
+            <img
+                :src="item.url"
+                style="width: 150px; height: 150px; object-fit: contain"
+            />
+        </template>
 
         <template #top>
             <v-text-field
@@ -142,7 +151,6 @@ const onRowClick = (event: InputEvent, { item }: { item: T }) => {
     }
 };
 
-
 const setSearch = () => {
     tableProps.value.page = 1;
     getItems(tableProps.value);
@@ -154,9 +162,12 @@ const getItems = async (options: Record<string, unknown>) => {
             ...options,
             with: module.relations,
         });
-        const { data } = await client.get(`/api/admin/${getModuleUrlPart(module.key)}`, {
-            params,
-        });
+        const { data } = await client.get(
+            `/api/admin/${getModuleUrlPart(module.key)}`,
+            {
+                params,
+            }
+        );
 
         router.replace({
             query: params,
@@ -170,9 +181,12 @@ const getItems = async (options: Record<string, unknown>) => {
 
 const onDelete = async () => {
     try {
-        await client.post(`/api/admin/destroy/${getModuleUrlPart(module.key)}`, {
-            ids: selected.value
-        });
+        await client.post(
+            `/api/admin/destroy/${getModuleUrlPart(module.key)}`,
+            {
+                ids: selected.value,
+            }
+        );
         selected.value = [];
         getItems(tableProps.value);
     } catch (e) {

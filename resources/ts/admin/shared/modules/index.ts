@@ -2,12 +2,12 @@ import type { RouteRecordRaw } from "vue-router";
 import { capitalize } from "lodash";
 import { type RouteLocation } from "vue-router";
 import Detail from "@admin/shared/modules/components/Detail.vue";
-import { createProvide } from "../helpers";
 
 export interface IModule {
     key: string;
     title: string;
     icon?: string;
+    url?: string;
     showInNavigation?: boolean;
     headers: Array<{ title: string; key: string }>;
     relations?: string[];
@@ -39,6 +39,8 @@ export const modules: IModule[] = [
             "children.link",
             "contentBlocks",
             "attributes",
+            "files",
+            "images"
         ],
     },
     {
@@ -108,6 +110,43 @@ export const modules: IModule[] = [
             },
         ],
         relations: ["audits.user"],
+    },
+    {
+        key: "file",
+        title: "Файлы",
+        icon: "mdi-image-filter-drama-outline",
+        showInNavigation: true,
+        headers: [
+            {
+                title: "Название",
+                key: "name",
+            },
+            {
+                title: "Ссылка",
+                key: "url",
+            },
+            {
+                title: "Превью",
+                key: "preview",
+            },
+        ],
+    },
+    {
+        key: "image",
+        title: "Изображения",
+        url: "file",
+        icon: "mdi-image-filter-drama-outline",
+        showInNavigation: false,
+        headers: [
+            {
+                title: "Название",
+                key: "name",
+            },
+            {
+                title: "Ключ",
+                key: "key",
+            },
+        ],
     },
 ];
 

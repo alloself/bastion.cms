@@ -9,7 +9,7 @@
         <template #title>
             <div class="d-flex align-center">
                 <span class="ml-2">
-                    {{ module ? module.title : title }}
+                    {{ title || module?.title }}
                 </span>
                 <v-spacer></v-spacer>
                 <slot name="title:append"></slot>

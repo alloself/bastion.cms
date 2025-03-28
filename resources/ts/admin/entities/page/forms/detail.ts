@@ -65,6 +65,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                 itemValue: "id",
                 itemTitle: "link.title",
                 moduleKey: "page",
+                readonly: !!options?.initialValues?.parent_id,
                 initialItems: options?.entity?.parent
                     ? [options?.entity?.parent]
                     : [],
@@ -99,7 +100,71 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                     {
                         title: "Действия",
                         key: "actions",
-                        width: 100
+                        width: 100,
+                    },
+                ],
+            },
+        },
+        {
+            component: markRaw(RelationTable),
+            key: "files",
+            props: {
+                title: "Файлы",
+                moduleKey: "file",
+                itemTitle: "name",
+                morph: true,
+                ordered: true,
+                headers: [
+                    {
+                        title: "Название",
+                        key: "name",
+                    },
+                    
+                    {
+                        title: "Ключ",
+                        key: "pivot.key",
+                    },
+                    {
+                        title: "Приоритет",
+                        key: "order",
+                    },
+                    {
+                        title: "Ссылка",
+                        key: "url",
+                    },
+                ],
+            },
+        },
+        {
+            component: markRaw(RelationTable),
+            key: "images",
+            props: {
+                title: "Изображения",
+                moduleKey: "image",
+                itemTitle: "name",
+                morph: true,
+                ordered: true,
+                headers: [
+                    {
+                        title: "Название",
+                        key: "name",
+                    },
+                    {
+                        title: "Ключ",
+                        key: "pivot.key",
+                    },
+                    {
+                        title: "Приоритет",
+                        key: "order",
+                    },
+                    {
+                        title: "Ссылка",
+                        key: "url",
+                    },
+                    {
+                        title: "Првеью",
+                        key: "preview",
+                        width: 100,
                     },
                 ],
             },

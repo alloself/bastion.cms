@@ -97,6 +97,7 @@ export interface IRelationTableProps<T> extends IItems<T> {
   morph?: boolean;
   ordered?: boolean;
   headers: Record<string, any>[]
+  title?: string;
 }
 
 export interface IRelationCardProps<T> {

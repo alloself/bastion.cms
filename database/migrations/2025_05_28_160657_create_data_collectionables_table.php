@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('data_collectionables', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
             $table->uuid('data_collectionable_id');
             $table->string('data_collectionable_type');
             $table->string('key')->nullable();
