@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasAttributes;
 use App\Traits\HasContentBlocks;
+use App\Traits\HasDataCollections;
 use App\Traits\HasFiles;
 use App\Traits\HasImages;
 use App\Traits\HasLink;
@@ -14,7 +15,7 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class Page extends BaseModel
 {
-  use NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages;
+  use NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages, HasDataCollections;
 
   protected $fillable = ['index', 'meta', 'parent_id', 'template_id'];
 

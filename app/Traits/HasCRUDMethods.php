@@ -3,16 +3,30 @@
 namespace App\Traits;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 trait HasCRUDMethods
 {
-  protected array $syncableRelations = ['link', 'attributes', 'content_blocks', 'images', 'files'];
+  protected array $syncableRelations = ['data_collections', 'link', 'attributes', 'content_blocks', 'images', 'files'];
+
+
+  protected function snakeToCamel($input)
+  {
+    $trimmed = trim($input, '_');
+
+    $camel = preg_replace_callback('/_([a-z])/i', function ($matches) {
+      return strtoupper($matches[1]);
+    }, $trimmed);
+
+    return lcfirst($camel);
+  }
+
 
   protected function syncRelations(array $relations): void
   {
     foreach ($relations as $relation => $data) {
-      if (!$this->isRelation($relation) || !$data) {
+      if (!$this->isRelation($this->snakeToCamel($relation)) || !$data) {
         continue;
       }
 
@@ -81,7 +95,6 @@ trait HasCRUDMethods
     $relations = Arr::only($data, $syncableRelations);
 
     $this->update(Arr::except($data, array_keys($relations)));
-
     $this->syncRelations($relations);
 
     $this->load($with);

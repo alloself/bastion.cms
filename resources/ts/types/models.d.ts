@@ -87,10 +87,6 @@ export interface DataCollection {
 }
 export type DataCollectionfillable = Pick<DataCollection, 'name' | 'meta' | 'parent_id' | 'page_id' | 'order' | 'template_id'>
 
-export interface DataCollectionable {
-}
-export type DataCollectionablefillable = Pick<DataCollectionable, >
-
 export interface DataEntity {
   // columns
   id: string
@@ -118,7 +114,7 @@ export interface File {
   created_at: string | null
   updated_at: string | null
   // relations
-  audits?: AuditModel[]
+  fileables?: Fileable[]
 }
 export type Filefillable = Pick<File, 'url' | 'name' | 'extension'>
 
@@ -160,6 +156,9 @@ export interface Page {
   children?: Page[]
   content_blocks?: ContentBlock[]
   attributes?: Attribute[]
+  images?: File[]
+  files?: File[]
+  data_collections?: DataCollection[]
 }
 export type Pagefillable = Pick<Page, 'index' | 'meta' | 'parent_id' | 'template_id'>
 
@@ -176,6 +175,25 @@ export interface Permission {
   permissions?: Permission[]
 }
 export type Permissionfillable = Pick<Permission, >
+
+export interface DataCollectionable {
+}
+export type DataCollectionablefillable = Pick<DataCollectionable, >
+
+export interface Fileable {
+  // columns
+  id: string
+  fileable_type: string
+  fileable_id: string
+  type: string
+  key: string | null
+  order: number
+  file_id: string
+  // relations
+  fileable?: Fileable
+  file?: File
+}
+export type Fileablefillable = Pick<Fileable, 'file_id' | 'fileable_id' | 'fileable_type'>
 
 export interface Role {
   // columns

@@ -27,6 +27,7 @@ export interface IBaseEntity extends Record<string, any> {
 export interface INestedSetEntity<T> {
   children: T[];
   parent_id: string;
+  pivot?: Record<string,unknown>
 }
 
 export interface IServerDataList<T> {
@@ -88,6 +89,7 @@ export interface IRelationTreeProps<T> extends IItems<T> {
   initialValues?: Partial<T>;
   morph?: boolean;
   ordered?: boolean;
+  pivot?: Record<string,unknown> & { order: number }
 }
 
 export interface IRelationTableProps<T> extends IItems<T> {
@@ -134,3 +136,19 @@ export interface IOrderedEntity {
 }
 
 export type Maybe<T> = T | null | undefined;
+
+export interface ITab {
+  id: string;              // уникальный идентификатор вкладки
+  title: string;           // заголовок вкладки для отображения
+  fullPath: string;        // полный путь маршрута (например, "/pages/1?filter=x")
+  routeName?: string;      // имя маршрута (если используете именованные маршруты)
+  params?: Record<string, any>; // параметры маршрута (если есть, например { id: 1 })
+  query?: Record<string, any>;  // query-параметры маршрута (если есть)
+}
+
+export interface IScreen {
+  id: string;            // идентификатор экрана (можно использовать для множественных экранов)
+  tabs: ITab[];          // список вкладок, открытых в этом экране
+  activeTabId: string;   // идентификатор текущей активной вкладки
+  name?: string;         // название экрана (опционально, на случай нескольких экранов)
+}

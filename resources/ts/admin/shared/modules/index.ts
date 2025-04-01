@@ -40,7 +40,8 @@ export const modules: IModule[] = [
             "contentBlocks",
             "attributes",
             "files",
-            "images"
+            "images",
+            'dataCollections'
         ],
     },
     {
@@ -147,6 +148,22 @@ export const modules: IModule[] = [
                 key: "key",
             },
         ],
+    },
+    {
+        key: "dataCollection",
+        title: "Коллекции данных",
+        icon: "mdi-database",
+        headers: [
+            {
+                title: "Название",
+                key: "name",
+            },
+        ], relations: [
+            "link",
+            "audits.user",
+            "children.link",
+        ],
+        showInNavigation: true
     },
 ];
 

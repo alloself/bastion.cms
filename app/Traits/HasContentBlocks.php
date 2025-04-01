@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\ContentBlock;
+use App\Models\Pivot\ContentBlockable;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Collection;
 
@@ -13,7 +14,7 @@ trait HasContentBlocks
   {
     return $this->morphToMany(ContentBlock::class, 'content_blockable')
       ->withPivot('order', 'key')
-      ->orderBy('order');
+      ->orderBy('order')->using(ContentBlockable::class);
   }
 
   public function syncContentBlocks(array $values): void

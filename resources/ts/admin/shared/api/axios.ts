@@ -62,10 +62,9 @@ export const client = axios.create({
 client.interceptors.request.use(
     (config) => {
         console.log(config.data);
-        if (config.data) {
-            //config.data = cleanEmptyValues(config.data);
+        if (config.data && !hasFile(config.data)) {
+            config.data = cleanEmptyValues(config.data);
         }
-        console.log(config.data)
         if (config.data instanceof Object && hasFile(config.data)) {
             const formData = new FormData();
             console.log(formData)

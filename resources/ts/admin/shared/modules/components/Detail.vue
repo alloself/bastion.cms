@@ -4,7 +4,7 @@
         rounded="0"
         flat
         :class="detailClass"
-        :max-height="`calc(100svh - ${mainRect.top}px)`"
+        :max-height="`calc(100svh - ${mainRect.top}px`"
         :loading="loading"
         class="h-100 d-flex flex-column overflow-auto w-100"
     >

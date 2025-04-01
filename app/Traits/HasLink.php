@@ -51,4 +51,15 @@ trait HasLink
 
     return $this;
   }
+
+  protected function syncLink(array $data): self
+  {
+    if (isset($data['id'])) {
+      $this->updateLink($data);
+    } else {
+      $this->addLink($data);
+    }
+
+    return $this;
+  }
 }

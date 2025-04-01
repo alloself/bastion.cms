@@ -95,13 +95,7 @@
                     color="primary"
                 >
                     <template #activator="{ props }">
-                        <v-btn
-                            icon
-                            large
-                            v-bind="props"
-                            flat
-                            @click="onDelete"
-                        >
+                        <v-btn icon large v-bind="props" flat @click="onDelete">
                             <v-icon>mdi-delete</v-icon>
                         </v-btn>
                     </template>
@@ -146,11 +140,11 @@ const onCancelSearch = () => {
 const onAddExistingEntity = () => {
     emit("event:add-existing", searchingModelValue.value);
     searchingModelValue.value = [];
-    showSearch.value = false
+    showSearch.value = false;
 };
 
 const onDelete = () => {
-  emit("event:delete");
+    emit("event:delete");
 };
 
 const getSearchedItems = async (string = "") => {
@@ -183,4 +177,9 @@ watch(
         getSearchedItems(newValue);
     }, 300)
 );
+
+watch(showSearch, () => {
+    search.value = "";
+    searchingItems.value = [];
+});
 </script>

@@ -45,6 +45,27 @@
                 />
             </template>
             <template #append="{ item }">
+                <v-checkbox
+                    v-if="'paginate' in pivot && item.depth === 0"
+                    density="compact"
+                    hide-details
+                    @click.stop
+                    class="mr-2"
+                    label="Пагинация"
+                    :model-value="Boolean(item.pivot.paginate)"
+                    @update:model-value="
+                        item.pivot.paginate = !item.pivot.paginate
+                    "
+                ></v-checkbox>
+                <v-text-field
+                    v-if="'key' in pivot && item.depth === 0"
+                    density="compact"
+                    hide-details
+                    @click.stop
+                    class="mr-2"
+                    label="Ключ"
+                    v-model="item.pivot.key"
+                ></v-text-field>
                 <order-buttons
                     v-if="ordered"
                     :item="item"
@@ -91,6 +112,9 @@ const {
     itemValue,
     morph = false,
     ordered = false,
+    pivot = {
+        order: 0,
+    },
 } = defineProps<IRelationTreeProps<T>>();
 const emit = defineEmits<{ "update:model-value": [value: T[]] }>();
 
@@ -141,7 +165,11 @@ const { addRelation, editRelation, addExistingEntity, deleteSelected } =
 
 const onAddRelation = () => {
     addRelation((item: T) => {
-        emit("update:model-value", [...modelValue, item]);
+        const data = item;
+        if (morph) {
+            data.pivot = pivot;
+        }
+        emit("update:model-value", [...modelValue, data]);
         modalDrawerStore.onModalClose();
     });
 };
@@ -176,14 +204,30 @@ const onItemClick = (item: T) => {
 
 const onAddExistingEntity = async (items: T[]) => {
     if (morph) {
-        emit("update:model-value", [...modelValue, ...items]);
+        emit("update:model-value", [
+            ...modelValue,
+            ...items.map((i) => {
+                return {
+                    ...i,
+                    pivot,
+                };
+            }),
+        ]);
         return;
     }
 
     addExistingEntity(
         items,
         (results) => {
-            emit("update:model-value", [...modelValue, ...results]);
+            emit("update:model-value", [
+                ...modelValue,
+                ...results.map((i) => {
+                    return {
+                        ...i,
+                        pivot,
+                    };
+                }),
+            ]);
         },
         loading
     );

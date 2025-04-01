@@ -119,7 +119,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                         title: "Название",
                         key: "name",
                     },
-                    
+
                     {
                         title: "Ключ",
                         key: "pivot.key",
@@ -191,6 +191,21 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                     itemTitle: "name",
                     morph: true,
                     ordered: true,
+                },
+            },
+            {
+                component: markRaw(RelationTree),
+                key: "data_collections",
+                props: {
+                    moduleKey: "dataCollection",
+                    itemTitle: "name",
+                    morph: true,
+                    ordered: true,
+                    pivot: {
+                        order: 0,
+                        key: '',
+                        paginate: false
+                    }
                 },
             }
         );

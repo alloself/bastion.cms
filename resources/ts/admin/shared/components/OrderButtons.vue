@@ -10,6 +10,7 @@
         <v-text-field
             class="centered-input"
             hide-details="auto"
+            label="Приоритет"
             :model-value="getItemOrder(item,morph)"
             @update:model-value="(v) => onUpdate(Number(v))"
             density="compact"
@@ -54,6 +55,6 @@ const onUpdate = async (value: number) => {
 </script>
 <style lang="scss" scoped>
 .ordered-buttons {
-    width: 150px;
+    width: 190px;
 }
 </style>
