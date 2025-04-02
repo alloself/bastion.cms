@@ -4,8 +4,8 @@ namespace App\Traits;
 
 use App\Models\DataCollection;
 use App\Models\Pivot\DataCollectionable as PivotDataCollectionable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Facades\Log;
 
 trait HasDataCollections
 {
@@ -29,5 +29,15 @@ trait HasDataCollections
         }
 
         $this->dataCollections()->sync($mapped);
+    }
+
+    public function getDataCollectionsTree(): Collection
+    {
+      $this->loadMissing('dataCollections.descendants');
+  
+      return $this->dataCollections->each(function (DataCollection $dataCollection) {
+        $dataCollection->setRelation('children', $dataCollection->descendants->toTree());
+        $dataCollection->unsetRelation('descendants');
+      });
     }
 }

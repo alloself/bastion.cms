@@ -176,6 +176,10 @@ export interface Permission {
 }
 export type Permissionfillable = Pick<Permission, >
 
+export interface ContentBlockable {
+}
+export type ContentBlockablefillable = Pick<ContentBlockable, >
+
 export interface DataCollectionable {
 }
 export type DataCollectionablefillable = Pick<DataCollectionable, >

@@ -86,6 +86,10 @@ trait HasCRUDMethods
       $entity->getContentBlocksTree();
     }
 
+    if (in_array('dataCollections', $with)) {
+      $entity->getDataCollectionsTree();
+    }
+
     return $entity;
   }
 

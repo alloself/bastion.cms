@@ -1,10 +1,14 @@
 import link from "@/ts/admin/shared/forms/link";
 import { DataCollection } from "@/ts/types/models";
-import type { IOptionsFieldsFabric, ISmartFormField } from "@admin/shared/types";
+import type {
+  IOptionsFieldsFabric,
+  ISmartFormField,
+} from "@admin/shared/types";
 import { computed, defineAsyncComponent, markRaw } from "vue";
 
-export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => {
-
+export const createFields = (
+  options?: IOptionsFieldsFabric<DataCollection>
+) => {
   const RelationAutocomplete = defineAsyncComponent(
     () => import("@admin/shared/components/RelationAutocomplete.vue")
   );
@@ -15,6 +19,10 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
 
   const JSONEditor = defineAsyncComponent(
     () => import("@admin/shared/components/JSONEditor.vue")
+  );
+
+  const RelationTable = defineAsyncComponent(
+    () => import("@admin/shared/components/RelationTable.vue")
   );
 
   const fields = computed<ISmartFormField[]>(() => [
@@ -38,6 +46,22 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
     },
     {
       component: markRaw(RelationAutocomplete),
+      key: "page_id",
+      props: {
+        autocomplete: "page_id",
+        label: "Страница",
+        name: "page_id",
+        itemValue: "id",
+        itemTitle: "link.title",
+        moduleKey: "page",
+        readonly: !!options?.initialValues?.page_id,
+        initialItems: options?.entity?.page
+          ? [options?.entity?.page]
+          : [],
+      },
+    },
+    {
+      component: markRaw(RelationAutocomplete),
       key: "template_id",
       props: {
         autocomplete: "template_id",
@@ -49,6 +73,104 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
         initialItems: options?.entity?.template
           ? [options?.entity?.template]
           : [],
+      },
+    },
+    {
+      component: markRaw(RelationTable),
+      key: "attributes",
+      props: {
+        title: "Атрибуты",
+        moduleKey: "attribute",
+        itemTitle: "name",
+        morph: true,
+        ordered: true,
+        headers: [
+          {
+            title: "Название",
+            key: "name",
+          },
+          {
+            title: "Ключ",
+            key: "key",
+          },
+          {
+            title: "Значение",
+            key: "pivot.value",
+          },
+          {
+            title: "Приоритет",
+            key: "order",
+          },
+          {
+            title: "Действия",
+            key: "actions",
+            width: 100,
+          },
+        ],
+      },
+    },
+    {
+      component: markRaw(RelationTable),
+      key: "files",
+      props: {
+        title: "Файлы",
+        moduleKey: "file",
+        itemTitle: "name",
+        morph: true,
+        ordered: true,
+        headers: [
+          {
+            title: "Название",
+            key: "name",
+          },
+
+          {
+            title: "Ключ",
+            key: "pivot.key",
+          },
+          {
+            title: "Приоритет",
+            key: "order",
+          },
+          {
+            title: "Ссылка",
+            key: "url",
+          },
+        ],
+      },
+    },
+    {
+      component: markRaw(RelationTable),
+      key: "images",
+      props: {
+        title: "Изображения",
+        moduleKey: "image",
+        itemTitle: "name",
+        morph: true,
+        ordered: true,
+        headers: [
+          {
+            title: "Название",
+            key: "name",
+          },
+          {
+            title: "Ключ",
+            key: "pivot.key",
+          },
+          {
+            title: "Приоритет",
+            key: "order",
+          },
+          {
+            title: "Ссылка",
+            key: "url",
+          },
+          {
+            title: "Првеью",
+            key: "preview",
+            width: 100,
+          },
+        ],
       },
     },
   ]);
@@ -75,6 +197,37 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
           ordered: true,
         },
       },
+      {
+        component: markRaw(RelationTable),
+        key: "data_entities",
+        props: {
+          moduleKey: "dataEntity",
+          initialValues: {
+            data_collection_id: options?.entity?.id,
+            data_collection: options?.entity,
+          },
+          morph: true,
+          ordered: true,
+          headers: [
+            {
+              title: "Название",
+              key: "name",
+            },
+            {
+              title: "Ключ",
+              key: "pivot.key",
+            },
+            {
+              title: "Приоритет",
+              key: "order",
+            },
+            {
+              title: "Ссылка",
+              key: "pivot.link",
+            },
+          ],
+        },
+      }
     );
   }
 

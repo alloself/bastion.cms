@@ -165,6 +165,22 @@ export const modules: IModule[] = [
         ],
         showInNavigation: true
     },
+    {
+        key: "dataEntity",
+        title: "Элементы",
+        icon: "mdi-table-row",
+        headers: [
+            {
+                title: "Название",
+                key: "name",
+            },
+        ], relations: [
+            "link",
+            "audits.user",
+            "children.link",
+        ],
+        showInNavigation: true
+    },
 ];
 
 export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
