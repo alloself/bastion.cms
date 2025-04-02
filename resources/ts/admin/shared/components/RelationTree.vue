@@ -170,7 +170,6 @@ const onAddRelation = () => {
             data.pivot = pivot;
         }
         emit("update:model-value", [...modelValue, data]);
-        modalDrawerStore.onModalClose();
     });
 };
 

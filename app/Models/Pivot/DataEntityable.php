@@ -13,6 +13,8 @@ class DataEntityable extends MorphPivot
 {
     use HasUuids;
 
+    protected $table = 'data_entityables';
+
     public function dataEntityable(): MorphTo
     {
         return $this->morphTo();

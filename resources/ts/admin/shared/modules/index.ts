@@ -41,7 +41,7 @@ export const modules: IModule[] = [
             "attributes",
             "files",
             "images",
-            'dataCollections'
+            "dataCollections",
         ],
     },
     {
@@ -158,12 +158,9 @@ export const modules: IModule[] = [
                 title: "Название",
                 key: "name",
             },
-        ], relations: [
-            "link",
-            "audits.user",
-            "children.link",
         ],
-        showInNavigation: true
+        relations: ["link", "audits.user", "children.link", "dataEntities"],
+        showInNavigation: true,
     },
     {
         key: "dataEntity",
@@ -174,12 +171,9 @@ export const modules: IModule[] = [
                 title: "Название",
                 key: "name",
             },
-        ], relations: [
-            "link",
-            "audits.user",
-            "children.link",
         ],
-        showInNavigation: true
+        relations: ["link", "audits.user", "variants.link"],
+        showInNavigation: true,
     },
 ];
 

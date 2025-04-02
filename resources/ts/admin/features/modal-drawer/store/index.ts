@@ -41,7 +41,7 @@ export const useModalDrawerStore = defineStore("modal-drawer", () => {
     };
 
     const onModalClose = () => {
-        modals.value = modals.value.toSpliced(-1, 1);
+        modals.value.pop();
     };
     
 

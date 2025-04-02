@@ -42,7 +42,6 @@ export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
                 name: "title",
                 type: "text",
             },
-            rule: yup.string().required("Поле обязательно для заполнения"),
         },
         {
             component: "v-text-field",

@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Models\DataCollection;
-use App\Models\Pivot\DataCollectionable as PivotDataCollectionable;
+use App\Models\Pivot\DataCollectionable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
@@ -13,7 +13,7 @@ trait HasDataCollections
     {
         return $this->morphToMany(DataCollection::class, 'data_collectionable')
             ->withPivot('key', 'order', 'paginate')->orderBy('order')
-            ->using(PivotDataCollectionable::class);
+            ->using(DataCollectionable::class);
     }
 
     public function syncDataCollections(array $values): void

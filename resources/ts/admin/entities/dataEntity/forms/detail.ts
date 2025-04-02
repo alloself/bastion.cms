@@ -171,7 +171,8 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
         key: "children",
         props: {
           initialValues: { parent_id: options.entity.id },
-          moduleKey: "dataCollection",
+          title: 'Варианты',
+          moduleKey: "dataEntity",
           orderable: false,
           itemTitle: "link.title",
         },

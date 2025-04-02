@@ -113,12 +113,19 @@ class Link extends BaseModel
      */
     public function generateDataEntityURL(): self
     {
-        $dataEntity = $this->linkable->load('dataCollection.link.page.link');
+        /** @var DataEntity $dataEntity */
+        $dataEntity = $this->linkable->load('dataEntityables.dataEntityable.link');
 
-        $this->url = $this->buildURLFromAncestors(
-            $dataEntity->dataCollection,
-            $this->slug
-        );
+        $entityable = $dataEntity->dataEntityables->first();
+
+        if (!$entityable || !$entityable->dataEntityable) {
+            $this->url = '/' . trim($this->slug, '/');
+            return $this->saveLinkQuietly();
+        }
+
+        $parent = $entityable->dataEntityable;
+
+        $this->url = $this->buildURLFromAncestors($parent, $this->slug);
 
         return $this->saveLinkQuietly();
     }

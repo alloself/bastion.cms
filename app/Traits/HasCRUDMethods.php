@@ -3,12 +3,11 @@
 namespace App\Traits;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 trait HasCRUDMethods
 {
-  protected array $syncableRelations = ['data_collections', 'link', 'attributes', 'content_blocks', 'images', 'files'];
+  protected array $syncableRelations = ['data_entities', 'data_collections', 'link', 'attributes', 'content_blocks', 'images', 'files'];
 
 
   protected function snakeToCamel($input)
@@ -102,6 +101,16 @@ trait HasCRUDMethods
     $this->syncRelations($relations);
 
     $this->load($with);
+
+    if (in_array('children', $with)) {
+      $this->loadChildrenTree();
+    }
+
+    if (in_array('contentBlocks', $with)) {
+      $this->getContentBlocksTree();
+    }
+
+
 
     return $this;
   }

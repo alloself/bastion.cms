@@ -1,5 +1,3 @@
-import * as yup from "yup";
-
 export default [
     {
         component: "v-text-field",
@@ -10,7 +8,6 @@ export default [
             name: "title",
             type: "text",
         },
-        rule: yup.string().required("Поле обязательно для заполнения"),
     },
     {
         component: "v-text-field",

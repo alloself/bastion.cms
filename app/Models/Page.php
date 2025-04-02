@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Traits\HasAttributes;
 use App\Traits\HasContentBlocks;
 use App\Traits\HasDataCollections;
-use App\Traits\HasFiles;
 use App\Traits\HasImages;
 use App\Traits\HasLink;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

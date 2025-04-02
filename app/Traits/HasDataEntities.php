@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Models\DataEntity;
-use App\Models\Pivot\DataEntityable as PivotDataEntityable;
+use App\Models\Pivot\DataEntityable;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasDataEntities
@@ -12,7 +12,7 @@ trait HasDataEntities
     {
         return $this->morphToMany(DataEntity::class, 'data_entityable')
             ->withPivot('key', 'order', 'link_id')
-            ->using(PivotDataEntityable::class)
+            ->using(DataEntityable::class)
             ->orderBy('order');
     }
 

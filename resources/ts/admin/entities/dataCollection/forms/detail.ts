@@ -221,6 +221,11 @@ export const createFields = (
               title: "Ссылка",
               key: "pivot.link",
             },
+            {
+              title: "Действия",
+              key: "actions",
+              width: 100,
+            },
           ],
         },
       }

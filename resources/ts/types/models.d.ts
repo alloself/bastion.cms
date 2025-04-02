@@ -106,6 +106,8 @@ export interface DataEntity {
   // relations
   links?: Link[]
   variants?: DataEntity[]
+  data_entityables?: DataEntityable[]
+  children?: DataEntity[]
   audits?: AuditModel[]
   link?: Link
 }
@@ -191,6 +193,14 @@ export interface DataCollectionable {
 export type DataCollectionablefillable = Pick<DataCollectionable, >
 
 export interface DataEntityable {
+  // columns
+  id: string
+  data_entityable_type: string
+  data_entityable_id: string
+  key: string | null
+  order: number
+  data_entity_id: string | null
+  link_id: string | null
   // relations
   data_entityable?: DataEntityable
   data_entity?: DataEntity
