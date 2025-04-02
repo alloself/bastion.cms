@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasAttributes;
 use App\Traits\HasContentBlocks;
+use App\Traits\HasDataEntities;
 use App\Traits\HasImages;
 use App\Traits\HasLink;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class DataCollection extends BaseModel
 {
-  use HasFactory, NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages;
+  use HasFactory, NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages, HasDataEntities;
 
   protected $fillable = ['name', 'meta', 'parent_id', 'page_id', 'order', 'template_id'];
 

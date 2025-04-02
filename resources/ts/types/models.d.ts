@@ -84,6 +84,10 @@ export interface DataCollection {
   children?: DataCollection[]
   link?: Link
   content_blocks?: ContentBlock[]
+  attributes?: Attribute[]
+  images?: File[]
+  files?: File[]
+  data_entities?: DataEntity[]
 }
 export type DataCollectionfillable = Pick<DataCollection, 'name' | 'meta' | 'parent_id' | 'page_id' | 'order' | 'template_id'>
 
@@ -98,12 +102,14 @@ export interface DataEntity {
   template_id: string | null
   created_at: string | null
   updated_at: string | null
+  deleted_at: string | null
   // relations
   links?: Link[]
   variants?: DataEntity[]
   audits?: AuditModel[]
+  link?: Link
 }
-export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'data_collection_id' | 'template_id' | 'content' | 'order'>
+export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'template_id' | 'content' | 'order'>
 
 export interface File {
   // columns
@@ -183,6 +189,14 @@ export type ContentBlockablefillable = Pick<ContentBlockable, >
 export interface DataCollectionable {
 }
 export type DataCollectionablefillable = Pick<DataCollectionable, >
+
+export interface DataEntityable {
+  // relations
+  data_entityable?: DataEntityable
+  data_entity?: DataEntity
+  link?: Link
+}
+export type DataEntityablefillable = Pick<DataEntityable, >
 
 export interface Fileable {
   // columns

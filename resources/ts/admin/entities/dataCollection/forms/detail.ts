@@ -202,10 +202,6 @@ export const createFields = (
         key: "data_entities",
         props: {
           moduleKey: "dataEntity",
-          initialValues: {
-            data_collection_id: options?.entity?.id,
-            data_collection: options?.entity,
-          },
           morph: true,
           ordered: true,
           headers: [

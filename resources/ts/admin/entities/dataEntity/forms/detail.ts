@@ -17,6 +17,15 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
     () => import("@admin/shared/components/JSONEditor.vue")
   );
 
+  const WYSIWYGEditor = defineAsyncComponent(
+    () => import("@admin/shared/components/WYSIWYGEditor.vue")
+  );
+
+
+  const RelationTable = defineAsyncComponent(
+    () => import("@admin/shared/components/RelationTable.vue")
+  );
+
   const fields = computed<ISmartFormField[]>(() => [
     {
       component: "v-text-field",
@@ -37,6 +46,10 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
       },
     },
     {
+      component: markRaw(WYSIWYGEditor),
+      key: "content",
+    },
+    {
       component: markRaw(RelationAutocomplete),
       key: "template_id",
       props: {
@@ -49,6 +62,104 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
         initialItems: options?.entity?.template
           ? [options?.entity?.template]
           : [],
+      },
+    },
+    {
+      component: markRaw(RelationTable),
+      key: "attributes",
+      props: {
+        title: "Атрибуты",
+        moduleKey: "attribute",
+        itemTitle: "name",
+        morph: true,
+        ordered: true,
+        headers: [
+          {
+            title: "Название",
+            key: "name",
+          },
+          {
+            title: "Ключ",
+            key: "key",
+          },
+          {
+            title: "Значение",
+            key: "pivot.value",
+          },
+          {
+            title: "Приоритет",
+            key: "order",
+          },
+          {
+            title: "Действия",
+            key: "actions",
+            width: 100,
+          },
+        ],
+      },
+    },
+    {
+      component: markRaw(RelationTable),
+      key: "files",
+      props: {
+        title: "Файлы",
+        moduleKey: "file",
+        itemTitle: "name",
+        morph: true,
+        ordered: true,
+        headers: [
+          {
+            title: "Название",
+            key: "name",
+          },
+
+          {
+            title: "Ключ",
+            key: "pivot.key",
+          },
+          {
+            title: "Приоритет",
+            key: "order",
+          },
+          {
+            title: "Ссылка",
+            key: "url",
+          },
+        ],
+      },
+    },
+    {
+      component: markRaw(RelationTable),
+      key: "images",
+      props: {
+        title: "Изображения",
+        moduleKey: "image",
+        itemTitle: "name",
+        morph: true,
+        ordered: true,
+        headers: [
+          {
+            title: "Название",
+            key: "name",
+          },
+          {
+            title: "Ключ",
+            key: "pivot.key",
+          },
+          {
+            title: "Приоритет",
+            key: "order",
+          },
+          {
+            title: "Ссылка",
+            key: "url",
+          },
+          {
+            title: "Првеью",
+            key: "preview",
+            width: 100,
+          },
+        ],
       },
     },
   ]);

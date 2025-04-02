@@ -23,6 +23,7 @@ return new class extends Migration
             $table->foreignUuid('template_id')->nullable()->constrained();
 
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
