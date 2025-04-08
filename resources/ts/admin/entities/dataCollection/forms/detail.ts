@@ -1,4 +1,4 @@
-import link from "@/ts/admin/shared/forms/link";
+import { createFields as linkCreateFields } from "@admin/entities/link"
 import { DataCollection } from "@/ts/types/models";
 import type {
   IOptionsFieldsFabric,
@@ -36,7 +36,7 @@ export const createFields = (
         type: "text",
       },
     },
-    ...link,
+    ...linkCreateFields(undefined, 'link.').fields.value,
     {
       component: markRaw(JSONEditor),
       key: "meta",

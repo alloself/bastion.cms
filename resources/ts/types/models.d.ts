@@ -104,14 +104,11 @@ export interface DataEntity {
   updated_at: string | null
   deleted_at: string | null
   // relations
-  links?: Link[]
-  variants?: DataEntity[]
   data_entityables?: DataEntityable[]
-  children?: DataEntity[]
+  variants?: DataEntity[]
   audits?: AuditModel[]
-  link?: Link
 }
-export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'template_id' | 'content' | 'order'>
+export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'template_id' | 'content' | 'order' | 'parent_id'>
 
 export interface File {
   // columns
@@ -133,8 +130,8 @@ export interface Link {
   subtitle: string | null
   slug: string
   url: string | null
-  linkable_type: string
-  linkable_id: string
+  linkable_id: string | null
+  linkable_type: string | null
   deleted_at: string | null
   created_at: string | null
   updated_at: string | null
@@ -200,13 +197,12 @@ export interface DataEntityable {
   key: string | null
   order: number
   data_entity_id: string | null
-  link_id: string | null
   // relations
   data_entityable?: DataEntityable
   data_entity?: DataEntity
   link?: Link
 }
-export type DataEntityablefillable = Pick<DataEntityable, >
+export type DataEntityablefillable = Pick<DataEntityable, 'data_entity_id' | 'data_entityable_type' | 'data_entityable_id' | 'key' | 'order' | 'link_id'>
 
 export interface Fileable {
   // columns

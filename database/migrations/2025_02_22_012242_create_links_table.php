@@ -17,7 +17,8 @@ return new class extends Migration
             $table->longText('subtitle')->nullable();
             $table->string('slug');
             $table->string('url')->nullable();
-            $table->uuidMorphs('linkable');
+            $table->uuid('linkable_id')->nullable();
+            $table->string('linkable_type')->nullable();
             $table->softDeletes();
             $table->timestamps();
 

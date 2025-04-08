@@ -84,6 +84,7 @@ client.interceptors.request.use(
             }
         }
         loading.value = true;
+        console.log(config.data);
         return config;
     },
     (error) => {

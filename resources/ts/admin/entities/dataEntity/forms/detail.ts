@@ -1,4 +1,4 @@
-import link from "@/ts/admin/shared/forms/link";
+import { createFields as linkCreateFields } from "@admin/entities/link"
 import { DataCollection } from "@/ts/types/models";
 import type { IOptionsFieldsFabric, ISmartFormField } from "@admin/shared/types";
 import { computed, defineAsyncComponent, markRaw } from "vue";
@@ -37,7 +37,7 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
         type: "text",
       },
     },
-    ...link,
+    //...linkCreateFields().fields.value,
     {
       component: markRaw(JSONEditor),
       key: "meta",

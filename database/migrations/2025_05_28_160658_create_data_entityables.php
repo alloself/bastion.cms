@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('key')->nullable();
             $table->bigInteger('order')->default(0);
             $table->foreignUuid('data_entity_id')->nullable()->constrained();
-            $table->foreignUuid('link_id')->nullable()->constrained();
         });
     }
 

@@ -27,7 +27,7 @@ export interface IBaseEntity extends Record<string, any> {
 export interface INestedSetEntity<T> {
   children: T[];
   parent_id: string;
-  pivot?: Record<string,unknown>
+  pivot?: Record<string, unknown>
 }
 
 export interface IServerDataList<T> {
@@ -73,9 +73,10 @@ export type TCreateFields<T> = (context?: IOptionsFieldsFabric<T>) => Promise<{
 export interface IRelationAutocompleteProps<T extends IBaseEntity> extends IItems<T> {
   readonly?: boolean;
   moduleKey: string;
-  modelValue?: keyof T;
+  modelValue?: T[keyof T] | string;
   loading?: boolean;
   initialItems?: T[];
+  returnObject?: boolean;
 }
 
 export interface IItems<T> {
@@ -89,7 +90,7 @@ export interface IRelationTreeProps<T> extends IItems<T> {
   initialValues?: Partial<T>;
   morph?: boolean;
   ordered?: boolean;
-  pivot?: Record<string,unknown> & { order: number }
+  pivot?: Record<string, unknown> & { order: number }
 }
 
 export interface IRelationTableProps<T> extends IItems<T> {
@@ -132,7 +133,7 @@ export interface PIGenetic<T> {
 
 export interface IOrderedEntity {
   order: number;
-  pivot: Record<string,unknown> & { order: number }
+  pivot: Record<string, unknown> & { order: number, link_id?: string }
 }
 
 export type Maybe<T> = T | null | undefined;

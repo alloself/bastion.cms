@@ -36,7 +36,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Установка зависимостей Laravel
 RUN composer install
-RUN php artisan storage:link
 
 EXPOSE 9000
 

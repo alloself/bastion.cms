@@ -1,5 +1,5 @@
 import type { Page } from "@/ts/types/models";
-import link from "@admin/shared/forms/link";
+import { createFields as linkCreateFields } from "@admin/entities/link"
 import type {
     IOptionsFieldsFabric,
     ISmartFormField,
@@ -23,7 +23,7 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
     );
 
     const fields = computed<ISmartFormField[]>(() => [
-        ...link,
+        ...linkCreateFields(undefined, 'link.').fields.value,
         {
             component: markRaw(JSONEditor),
             key: "meta",

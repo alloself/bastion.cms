@@ -10,38 +10,6 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-function getStatusCodeFromException(Throwable $e)
-{
-  // Для исключений Symfony
-  if ($e instanceof HttpExceptionInterface) {
-    return $e->getStatusCode();
-  }
-
-  // Для кастомных исключений Laravel
-  if ($e instanceof HttpResponseException) {
-    return $e->getResponse()->getStatusCode();
-  }
-
-  // Для ValidationException
-  if ($e instanceof ValidationException) {
-    return 422;
-  }
-
-  // Для ModelNotFoundException
-  if ($e instanceof ModelNotFoundException) {
-    return 404;
-  }
-
-  if ($e instanceof AuthenticationException) {
-    return 401;
-  }
-
-  // Стандартный код для остальных исключений
-  return method_exists($e, 'getCode') && $e->getCode() >= 400 && $e->getCode() < 600
-    ? $e->getCode()
-    : 500;
-}
-
 return Application::configure(basePath: dirname(__DIR__))
   ->withRouting(
     web: __DIR__ . '/../routes/web.php',

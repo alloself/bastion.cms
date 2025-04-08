@@ -43,6 +43,17 @@
             <template #[`item.url`]="{ item }">
                 <a :href="item.url" target="_blank">{{ item.url }}</a>
             </template>
+            <template #[`item.pivot.link`]="{ item }">
+                <relation-autocomplete
+                    module-key="link"
+                    density="compact"
+                    itemValue="id"
+                    itemTitle="title"
+                    return-object
+                    hide-details
+                    v-model="item.pivot.link"
+                />
+            </template>
             <template #[`item.preview`]="{ item }">
                 <v-dialog max-width="500">
                     <template #activator="{ props }">
@@ -79,6 +90,7 @@
 <script setup lang="ts" generic="T extends IBaseEntity & Maybe<IOrderedEntity>">
 import RelationCard from "./RelationCard.vue";
 import OrderButtons from "./OrderButtons.vue";
+import RelationAutocomplete from "./RelationAutocomplete.vue";
 import { useItems, useModule } from "../composables";
 import { IBaseEntity, IOrderedEntity, IRelationTableProps } from "../types";
 import { useRelationMethods } from "../composables";

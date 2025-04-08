@@ -172,8 +172,24 @@ export const modules: IModule[] = [
                 key: "name",
             },
         ],
-        relations: ["link", "audits.user", "variants.link"],
+        relations: ["audits.user", "variants.link"],
         showInNavigation: true,
+    },
+    {
+        key: "link",
+        title: "ССылки",
+        icon: "mdi-link",
+        headers: [
+            {
+                title: "Заголовок",
+                key: "title",
+            },
+            {
+                title: "Ссылка",
+                key: "url",
+            },
+        ],
+        showInNavigation: false,
     },
 ];
 

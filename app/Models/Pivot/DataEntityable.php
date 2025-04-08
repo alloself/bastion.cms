@@ -3,7 +3,7 @@
 namespace App\Models\Pivot;
 
 use App\Models\DataEntity;
-use App\Models\Link;
+use App\Traits\HasLink;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,9 +11,13 @@ use Illuminate\Database\Eloquent\Relations\MorphPivot;
 
 class DataEntityable extends MorphPivot
 {
-    use HasUuids;
+    use HasUuids, HasLink;
 
     protected $table = 'data_entityables';
+
+    protected $appends = ['link'];
+
+    protected $fillable = ['data_entity_id', 'data_entityable_type', 'data_entityable_id', 'key', 'order'];
 
     public function dataEntityable(): MorphTo
     {
@@ -23,10 +27,5 @@ class DataEntityable extends MorphPivot
     public function dataEntity(): BelongsTo
     {
         return $this->belongsTo(DataEntity::class);
-    }
-
-    public function link(): BelongsTo
-    {
-        return $this->belongsTo(Link::class);
     }
 }

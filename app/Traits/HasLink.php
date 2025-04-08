@@ -3,18 +3,18 @@
 namespace App\Traits;
 
 use App\Models\Link;
+use App\Services\LinkUrlGenerator;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Facades\Validator;
 
 trait HasLink
 {
-
   public function link(): MorphOne
   {
     return $this->morphOne(Link::class, 'linkable');
   }
 
-  function addLink(array $values): self
+  public function addLink(array $values): self
   {
     Validator::make($values, [
       'title' => 'required|string',
@@ -24,17 +24,19 @@ trait HasLink
     $link->fill($values);
 
     $this->link()->save($link);
-    $this->link->refreshURL();
+
+    app(LinkUrlGenerator::class)->generate($link);
 
     return $this;
   }
 
-  public function updateLink(array $values)
+  public function updateLink(array $values): self
   {
     if (empty($values['title']) && $this->link) {
       $this->link->delete();
       return $this;
     }
+
     Validator::make($values, [
       'title' => 'required|string',
     ])->validate();
@@ -46,7 +48,8 @@ trait HasLink
     } else {
       $link->fill($values);
       $link->save();
-      $this->link->refreshURL();
+
+      app(LinkUrlGenerator::class)->generate($link);
     }
 
     return $this;
