@@ -134,10 +134,11 @@ const addRelation = () => {
 };
 
 const editRelation = () => {
+    console.log(modelValue)
     modalDrawerStore.addDetailModal(
         {
             module: module.value,
-            id: modelValue,
+            id: returnObject ? modelValue.value?.id : modelValue.value,
         },
         {
             onUpdate: (updatedItem: T) => {

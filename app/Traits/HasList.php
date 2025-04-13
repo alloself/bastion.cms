@@ -7,10 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
@@ -227,7 +225,6 @@ trait HasList
       return self::buildBaseQuery($params, $with)
         ->paginate($perPage, ['*'], 'page', $page);
     } catch (QueryException $e) {
-      Log::error('Paginate error: ' . $e->getMessage());
       throw new \RuntimeException('Data retrieval error' . $e->getMessage());
     }
   }
@@ -243,7 +240,6 @@ trait HasList
 
       return self::buildBaseQuery($params, $with)->get();
     } catch (QueryException $e) {
-      Log::error('List error: ' . $e->getMessage());
       throw new \RuntimeException('Data retrieval error');
     }
   }

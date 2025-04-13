@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from "vue-router";
-import { capitalize } from "lodash";
 import { type RouteLocation } from "vue-router";
 import Detail from "@admin/shared/modules/components/Detail.vue";
+import { capitalize, toKebabCase } from "../helpers";
 
 export interface IModule {
     key: string;
@@ -93,7 +93,7 @@ export const modules: IModule[] = [
                 key: "name",
             },
         ],
-        relations: ["audits.user", "children", "link"],
+        relations: ["audits.user", "children", "link", "images", 'files', 'dataEntities'],
     },
     {
         key: "attribute",
@@ -159,7 +159,7 @@ export const modules: IModule[] = [
                 key: "name",
             },
         ],
-        relations: ["link", "audits.user", "children.link", "dataEntities"],
+        relations: ["link", "audits.user", "children.link", "dataEntities", "attributes", "images", "files"],
         showInNavigation: true,
     },
     {
@@ -196,10 +196,9 @@ export const modules: IModule[] = [
 export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
     return array.reduce((acc, item) => {
         const routes: RouteRecordRaw[] = [];
-
         if (item.showInNavigation) {
             const listRoute = {
-                path: `/${item.key}`,
+                path: `/${toKebabCase(item.key)}`,
                 name: `${capitalize(item.key)}List`,
                 props: {
                     module: item,
@@ -214,7 +213,7 @@ export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
         }
         routes.push(
             {
-                path: `/${item.key}/create`,
+                path: `/${toKebabCase(item.key)}/create`,
                 name: `${capitalize(item.key)}Create`,
                 props: {
                     module: item,
@@ -223,7 +222,7 @@ export const createCRUDModulesRoutes = (array: IModule[]): RouteRecordRaw[] => {
                     import(`@admin/shared/modules/components/Detail.vue`),
             },
             {
-                path: `/${item.key}/:id`,
+                path: `/${toKebabCase(item.key)}/:id`,
                 name: `${capitalize(item.key)}Detail`,
                 props: (route: RouteLocation) => ({
                     id: route.params.id,

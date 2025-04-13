@@ -116,8 +116,7 @@ import { client, loading } from "@admin/shared/api/axios";
 import { useLayout } from "vuetify";
 import { onBeforeMount, ref, watch } from "vue";
 import { useRouter } from "vue-router";
-import { capitalize } from "lodash";
-import { prepareQueryParams, parseQueryParams } from "@admin/shared/helpers";
+import { prepareQueryParams, parseQueryParams, capitalize } from "@admin/shared/helpers";
 
 const { module } = defineProps<{
     module: IModule;

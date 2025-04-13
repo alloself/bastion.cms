@@ -154,6 +154,7 @@ const onCreate = async () => {
             emit("create", data);
         } else {
             const routeName = `${capitalize(module.key)}Detail`;
+            console.log(routeName)
             if (router.hasRoute(routeName)) {
                 router.push({ name: routeName, params: { id: data.id } });
             }

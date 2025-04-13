@@ -3,14 +3,11 @@
 namespace App\Models\Pivot;
 
 use App\Models\File;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphPivot;
 
-class Fileable extends Model
+class Fileable extends MorphPivot
 {
-    use HasFactory, HasUuids;
 
     protected $fillable = [
         'file_id',

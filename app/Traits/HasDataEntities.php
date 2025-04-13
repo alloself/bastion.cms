@@ -7,6 +7,7 @@ use App\Models\Link;
 use App\Models\Pivot\DataEntityable;
 use App\Services\LinkUrlGenerator;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 trait HasDataEntities
 {
@@ -48,5 +49,27 @@ trait HasDataEntities
                 }
             }
         }
+    }
+
+    public function loadDataEntityLinks(): self
+    {
+        $this->load('dataEntities');
+
+        $pivots = $this->dataEntities
+            ->pluck('pivot')
+            ->filter(fn($pivot) => $pivot instanceof DataEntityable);
+
+        $morphType = (new DataEntityable)->getMorphClass();
+
+        $links = Link::where('linkable_type', $morphType)
+            ->whereIn('linkable_id', $pivots->pluck('id')->all())
+            ->get()
+            ->keyBy('linkable_id');
+
+        foreach ($pivots as $pivot) {
+            $pivot->setRelation('link', $links[$pivot->id] ?? null);
+        }
+
+        return $this;
     }
 }

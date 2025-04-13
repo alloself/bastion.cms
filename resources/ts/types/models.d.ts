@@ -202,7 +202,7 @@ export interface DataEntityable {
   data_entity?: DataEntity
   link?: Link
 }
-export type DataEntityablefillable = Pick<DataEntityable, 'data_entity_id' | 'data_entityable_type' | 'data_entityable_id' | 'key' | 'order' | 'link_id'>
+export type DataEntityablefillable = Pick<DataEntityable, 'data_entity_id' | 'data_entityable_type' | 'data_entityable_id' | 'key' | 'order'>
 
 export interface Fileable {
   // columns

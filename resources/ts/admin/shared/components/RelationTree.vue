@@ -104,6 +104,7 @@ import { useItems } from "../composables/useItems";
 import { useModalDrawerStore } from "../../features/modal-drawer";
 import { useRelationMethods } from "../composables";
 import OrderButtons from "./OrderButtons.vue";
+import { orderBy } from "lodash";
 const {
     moduleKey,
     modelValue = [],
@@ -155,7 +156,12 @@ const updateTreeItem = <T extends { id: string; children?: T[] }>(
     return false;
 };
 
-const processedItems = computed(() => processItems(modelValue));
+const processedItems = computed(() => {
+    const items = processItems(modelValue)
+    const isTree = items.some(({ parent_id }) => parent_id)
+    const sortBy = isTree ? 'order' : 'pivot.order'
+    return orderBy(items, [sortBy, "created_at"], ["desc"])
+});
 
 const { addRelation, editRelation, addExistingEntity, deleteSelected } =
     useRelationMethods<T>({

@@ -19,7 +19,8 @@ import { storeToRefs } from "pinia";
 import { useNavigationDrawerStore } from "../store";
 import { modules } from "@admin/shared/modules";
 import { computed } from "vue";
-import { capitalize, sortBy } from "lodash";
+import { sortBy } from "lodash";
+import { capitalize } from "@/ts/admin/shared/helpers";
 
 const navigationDrawerStore = useNavigationDrawerStore();
 const { showNavigationDrawer } = storeToRefs(navigationDrawerStore);

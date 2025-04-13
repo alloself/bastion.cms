@@ -189,15 +189,50 @@ export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
     ]);
 
     if (options?.entity?.id) {
-        fields.value.push({
-            component: markRaw(RelationTree),
-            key: "children",
-            props: {
-                initialValues: { parent_id: options.entity.id },
-                moduleKey: "contentBlock",
-                itemTitle: "name",
+        fields.value.push(
+            {
+                component: markRaw(RelationTree),
+                key: "children",
+                props: {
+                    initialValues: { parent_id: options.entity.id },
+                    moduleKey: "contentBlock",
+                    ordered: true,
+                    itemTitle: "name",
+                },
             },
-        });
+            {
+                component: markRaw(RelationTable),
+                key: "data_entities",
+                props: {
+                    moduleKey: "dataEntity",
+                    morph: true,
+                    ordered: true,
+                    headers: [
+                        {
+                            title: "Название",
+                            key: "name",
+                        },
+                        {
+                            title: "Ключ",
+                            key: "pivot.key",
+                        },
+                        {
+                            title: "Приоритет",
+                            key: "order",
+                        },
+                        {
+                            title: "Ссылка",
+                            key: "pivot.link",
+                        },
+                        {
+                            title: "Действия",
+                            key: "actions",
+                            width: 100,
+                        },
+                    ],
+                },
+            }
+        );
     }
 
     return {

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\File;
+use App\Models\Pivot\Fileable;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasFiles
@@ -10,6 +11,7 @@ trait HasFiles
     public function files(): MorphToMany
     {
         return $this->morphToMany(File::class, 'fileable')
+            ->using(Fileable::class)
             ->wherePivot('type', 'file')
             ->withPivot('key', 'order');
     }

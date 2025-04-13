@@ -31,7 +31,7 @@ export const useOrderedEntity = <T extends IOrderedEntity & IBaseEntity>(
 
                 return data;
             } finally {
-                loading.value = true;
+                loading.value = false;
             }
         }
     };

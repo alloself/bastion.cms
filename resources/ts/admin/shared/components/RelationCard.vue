@@ -154,7 +154,7 @@ const getSearchedItems = async (string = "") => {
     try {
         loading.value = true;
         const { data } = await client.get(
-            `/api/admin/${getModuleUrlPart(module.key)}`,
+            `/api/admin/${getModuleUrlPart(module?.url || module.key)}`,
             {
                 params: {
                     search: string,

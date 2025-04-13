@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 trait HasCRUDMethods
@@ -75,7 +76,12 @@ trait HasCRUDMethods
 
   public static function showEntity($id, array $with = []): self
   {
+
+
+
     $entity = static::with(static::prepareRelations($with))->findOrFail($id);
+
+    Log::alert($entity);
 
     if (in_array('children', $with)) {
       $entity->loadChildrenTree();
