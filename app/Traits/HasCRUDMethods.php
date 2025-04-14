@@ -38,6 +38,7 @@ trait HasCRUDMethods
     }
   }
 
+  //TODO: возможно стоит убрать тк есть ресурсы
   protected function loadChildrenTree(): void
   {
     $this->load('descendants');
@@ -77,11 +78,7 @@ trait HasCRUDMethods
   public static function showEntity($id, array $with = []): self
   {
 
-
-
     $entity = static::with(static::prepareRelations($with))->findOrFail($id);
-
-    Log::alert($entity);
 
     if (in_array('children', $with)) {
       $entity->loadChildrenTree();

@@ -21,6 +21,16 @@ class DataCollection extends BaseModel
     'meta' => 'object'
   ];
 
+  protected array $searchConfig = [
+    'model_fields' => ['name'],
+    'relation' => 'link',
+    'relation_fields' => ['title', 'url'],
+    'full_text_mode' => 'boolean',
+    'full_text' => true
+  ];
+
+  protected $sortable = ['link.title', 'link.url'];
+
   public function getParentIdAttribute($value): string | null
   {
     return $value;

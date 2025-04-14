@@ -5,6 +5,7 @@ use App\Http\Controllers\ContentBlockController;
 use App\Http\Controllers\DataCollectionController;
 use App\Http\Controllers\DataEntityController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\TemplateController;
@@ -24,8 +25,12 @@ $resources = [
 ];
 
 
-Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(function () use($resources) {
+Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(function () use ($resources) {
   Route::get('me', [UserController::class, 'me']);
+
+
+  Route::post('import', [ImportController::class, 'import']);
+  Route::post('import/price', [ImportController::class, 'importPrice']);
 
   Route::apiResources($resources);
 

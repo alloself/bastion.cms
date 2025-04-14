@@ -14,6 +14,7 @@
             :headers="headers"
             hide-default-footer
             hide-no-data
+            :items-per-page="-1"
             show-select
             return-object
             v-model="selected"

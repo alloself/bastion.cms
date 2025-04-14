@@ -172,7 +172,7 @@ export const modules: IModule[] = [
                 key: "name",
             },
         ],
-        relations: ["audits.user", "variants.link"],
+        relations: ["audits.user", "variants.link", 'images', 'files', 'attributes'],
         showInNavigation: true,
     },
     {

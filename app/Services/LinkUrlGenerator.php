@@ -6,11 +6,13 @@ use App\Models\Link;
 use App\Models\Page;
 use App\Models\DataCollection;
 use App\Models\Pivot\DataEntityable;
+use Illuminate\Support\Facades\Log;
 
 class LinkUrlGenerator
 {
     public function generate(Link $link): void
     {
+        $link->load('linkable');
         $linkable = $link->linkable;
 
         if (!$linkable) {

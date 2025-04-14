@@ -173,7 +173,6 @@ watch(
             handleSearch({ search: newSearchVal });
         }
     },
-    { immediate: true }
 );
 
 watch(

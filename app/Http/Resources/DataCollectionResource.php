@@ -31,8 +31,10 @@ class DataCollectionResource extends JsonResource
                 })
             ),
             'children' => DataCollectionResource::collection(
-                $this->whenLoaded('children')
-            ),
+                $this->whenLoaded('descendants', function ($entity) {
+                    return $entity;
+                })
+            )
         ];
     }
 }

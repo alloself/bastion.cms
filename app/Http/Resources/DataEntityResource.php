@@ -19,6 +19,9 @@ class DataEntityResource extends JsonResource
             'name' => $this->name,
             'meta' => $this->meta,
             'content' => $this->content,
+            'images' => $this->images,
+            'files' => $this->files,
+            'attributes' => $this->attributes,
             'pivot' => [
                 'id' => $this->pivot->id ?? null,
                 'key' => $this->pivot->key ?? null,

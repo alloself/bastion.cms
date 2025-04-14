@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 trait HasCRUD
 {
@@ -58,11 +59,11 @@ trait HasCRUD
             'with' => 'sometimes|array'
         ]);
 
-        $entity =  $this->model()::showEntity(
+        $entity = $this->model()::showEntity(
             $id,
             $request->input('with', [])
         ) ?? throw new ModelNotFoundException();
-
+        
         $resourceClass = $this->resource();
 
         return new $resourceClass($entity);

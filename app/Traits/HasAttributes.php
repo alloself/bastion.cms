@@ -33,8 +33,6 @@ trait HasAttributes
             ];
         })->all();
 
-        Log::alert($syncData);
-
         $this->attributes()->sync($syncData);
     }
 }

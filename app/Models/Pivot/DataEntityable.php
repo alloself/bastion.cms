@@ -17,6 +17,8 @@ class DataEntityable extends MorphPivot
 
     protected $fillable = ['data_entity_id', 'data_entityable_type', 'data_entityable_id', 'key', 'order'];
 
+    public $timestamps = false;
+
     public function dataEntityable(): MorphTo
     {
         return $this->morphTo();
