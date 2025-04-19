@@ -23,6 +23,7 @@ class DataCollectionResource extends JsonResource
             'attributes' => $this->attributes,
             'images' => $this->images,
             'files' => $this->files,
+            'template' => $this->template,
             'link' => new LinkResource($this->whenLoaded('link')),
             'data_entities' => DataEntityResource::collection(
                 $this->whenLoaded('dataEntities', function () {

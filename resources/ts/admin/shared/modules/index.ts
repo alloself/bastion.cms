@@ -178,7 +178,8 @@ export const modules: IModule[] = [
             "attributes",
             "images",
             "files",
-            "parent"
+            "parent",
+            "template"
         ],
         showInNavigation: true,
     },
@@ -198,6 +199,7 @@ export const modules: IModule[] = [
             "images",
             "files",
             "attributes",
+            "template"
         ],
         showInNavigation: true,
     },
