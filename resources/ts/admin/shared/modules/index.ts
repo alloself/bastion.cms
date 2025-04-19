@@ -28,10 +28,6 @@ export const modules: IModule[] = [
                 title: "Ссылка",
                 key: "link.url",
             },
-            {
-                title: "Язык",
-                key: "language.title",
-            },
         ],
         relations: [
             "link",
@@ -42,6 +38,7 @@ export const modules: IModule[] = [
             "files",
             "images",
             "dataCollections",
+            "template",
         ],
     },
     {
@@ -93,7 +90,17 @@ export const modules: IModule[] = [
                 key: "name",
             },
         ],
-        relations: ["audits.user", "children", "link", "images", 'files', 'dataEntities'],
+        relations: [
+            "audits.user",
+            "children",
+            "link",
+            "images",
+            "files",
+            "dataEntities",
+            "dataCollections",
+            "template",
+            "parent"
+        ],
     },
     {
         key: "attribute",
@@ -158,8 +165,21 @@ export const modules: IModule[] = [
                 title: "Название",
                 key: "name",
             },
+            {
+                title: "Ссылка",
+                key: "link.url",
+            },
         ],
-        relations: ["link", "audits.user", "children.link", "dataEntities", "attributes", "images", "files"],
+        relations: [
+            "link",
+            "audits.user",
+            "children.link",
+            "dataEntities",
+            "attributes",
+            "images",
+            "files",
+            "parent"
+        ],
         showInNavigation: true,
     },
     {
@@ -172,7 +192,13 @@ export const modules: IModule[] = [
                 key: "name",
             },
         ],
-        relations: ["audits.user", "variants.link", 'images', 'files', 'attributes'],
+        relations: [
+            "audits.user",
+            "variants.link",
+            "images",
+            "files",
+            "attributes",
+        ],
         showInNavigation: true,
     },
     {

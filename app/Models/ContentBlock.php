@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\HasAttributes;
+use App\Traits\HasDataCollections;
 use App\Traits\HasDataEntities;
 use App\Traits\HasImages;
 use App\Traits\HasLink;
@@ -10,7 +12,7 @@ use Kalnoy\Nestedset\NodeTrait;
 
 class ContentBlock extends BaseModel
 {
-  use NodeTrait, HasLink, HasImages, HasDataEntities;
+  use NodeTrait, HasLink, HasImages, HasDataEntities, HasDataCollections, HasAttributes;
 
   protected $fillable = ['name', 'content', 'order', 'parent_id', 'template_id'];
 

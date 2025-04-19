@@ -33,6 +33,7 @@
             :item-value="getItemValue"
             :item-title="getItemTitle"
             open-on-click
+            return-object
         >
             <template #prepend="{ item, isSelected, select }">
                 <v-checkbox
@@ -46,7 +47,7 @@
             </template>
             <template #append="{ item }">
                 <v-checkbox
-                    v-if="'paginate' in pivot && item.depth === 0"
+                    v-if="item.pivot && 'paginate' in item.pivot && item.depth === 0"
                     density="compact"
                     hide-details
                     @click.stop
@@ -58,7 +59,7 @@
                     "
                 ></v-checkbox>
                 <v-text-field
-                    v-if="'key' in pivot && item.depth === 0"
+                    v-if="item.pivot && 'key' in item.pivot && item.depth === 0"
                     density="compact"
                     hide-details
                     @click.stop
@@ -101,7 +102,6 @@ import type {
 } from "../types";
 import RelationCard from "./RelationCard.vue";
 import { useItems } from "../composables/useItems";
-import { useModalDrawerStore } from "../../features/modal-drawer";
 import { useRelationMethods } from "../composables";
 import OrderButtons from "./OrderButtons.vue";
 import { orderBy } from "lodash";
@@ -121,7 +121,6 @@ const emit = defineEmits<{ "update:model-value": [value: T[]] }>();
 
 const { module } = useModule(moduleKey);
 const { getItemValue, getItemTitle } = useItems<T>({ itemTitle, itemValue });
-const modalDrawerStore = useModalDrawerStore();
 
 const selected = ref<T[]>([]) as Ref<T[]>;
 const opened = ref<T[]>([]);
@@ -157,10 +156,10 @@ const updateTreeItem = <T extends { id: string; children?: T[] }>(
 };
 
 const processedItems = computed(() => {
-    const items = processItems(modelValue)
-    const isTree = items.some(({ parent_id }) => parent_id)
-    const sortBy = isTree ? 'order' : 'pivot.order'
-    return orderBy(items, [sortBy, "created_at"], ["desc"])
+    const items = processItems(modelValue);
+    const isTree = items.some(({ parent_id }) => parent_id);
+    const sortBy = isTree ? "order" : "pivot.order";
+    return orderBy(items, [sortBy, "created_at"], ["desc"]);
 });
 
 const { addRelation, editRelation, addExistingEntity, deleteSelected } =
@@ -173,7 +172,7 @@ const onAddRelation = () => {
     addRelation((item: T) => {
         const data = item;
         if (morph) {
-            data.pivot = pivot;
+            data.pivot = pivot || {};
         }
         emit("update:model-value", [...modelValue, data]);
     });
@@ -214,7 +213,7 @@ const onAddExistingEntity = async (items: T[]) => {
             ...items.map((i) => {
                 return {
                     ...i,
-                    pivot,
+                    pivot: pivot || {},
                 };
             }),
         ]);

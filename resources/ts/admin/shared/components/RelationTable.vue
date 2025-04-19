@@ -93,10 +93,9 @@ import RelationCard from "./RelationCard.vue";
 import OrderButtons from "./OrderButtons.vue";
 import RelationAutocomplete from "./RelationAutocomplete.vue";
 import { useItems, useModule } from "../composables";
-import { IBaseEntity, IOrderedEntity, IRelationTableProps } from "../types";
+import { IBaseEntity, IOrderedEntity, IRelationTableProps, Maybe } from "../types";
 import { useRelationMethods } from "../composables";
 import { Ref, ref } from "vue";
-import { Maybe } from "yup";
 
 const {
     moduleKey,
@@ -123,7 +122,7 @@ const { addRelation, editRelation, addExistingEntity, deleteSelected } =
 const loading = ref(false);
 const selected = ref([]) as Ref<T[]>;
 
-const updateTreeItem = <T extends { id: string; children?: T[] }>(
+const updateTreeItem = (
     items: T[],
     updatedItem: T
 ): boolean => {

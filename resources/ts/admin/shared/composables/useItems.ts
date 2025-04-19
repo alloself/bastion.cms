@@ -12,7 +12,7 @@ export const useItems = <T extends IBaseEntity>({ itemTitle, itemValue }: IItems
 
   const getItemTitle = (item: T) => {
     if (!itemTitle) {
-      return 'name';
+      return get(item, 'name');
     }
     return typeof itemTitle === 'function' ? itemTitle(item) : get(item, itemTitle)
   }

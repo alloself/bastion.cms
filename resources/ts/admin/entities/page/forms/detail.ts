@@ -191,6 +191,10 @@ export const createFields = (options?: IOptionsFieldsFabric<Page>) => {
                     itemTitle: "name",
                     morph: true,
                     ordered: true,
+                    pivot: {
+                        order: 0,
+                        key: '',
+                    }
                 },
             },
             {

@@ -201,6 +201,22 @@ export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
                 },
             },
             {
+                component: markRaw(RelationTree),
+                key: "data_collections",
+                props: {
+                    initialValues: { page_id: options.entity.id },
+                    moduleKey: "dataCollection",
+                    itemTitle: "name",
+                    morph: true,
+                    ordered: true,
+                    pivot: {
+                        order: 0,
+                        key: '',
+                        paginate: false
+                    }
+                },
+            },
+            {
                 component: markRaw(RelationTable),
                 key: "data_entities",
                 props: {
