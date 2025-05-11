@@ -1,0 +1,23 @@
+ymaps {
+    [class*="balloon_layout_normal"] {
+        background: none;
+        @apply
+            shadow-none
+        ;
+    }
+
+    [class*="balloon__layout"] {
+        background: none;
+    }
+
+    [class*="balloon__content"] {
+        background: none;
+        @apply
+            border-none 
+            backdrop-blur-md
+            rounded-[4px]
+            bg-white
+            bg-opacity-60
+        ;
+    }
+}

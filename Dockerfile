@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install -y procps \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
 
+# Установка дополнительных расширений для обработки больших данных
+RUN docker-php-ext-install opcache bcmath
+
 # Установка рабочей директории
 WORKDIR /var/www/html
 

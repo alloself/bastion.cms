@@ -11,7 +11,7 @@
             ><v-btn
                 :icon="expandAll ? 'mdi-collapse-all' : 'mdi-expand-all'"
                 variant="text"
-                @click="expandAll = !expandAll"
+                @click="toggleExpandAll"
             ></v-btn
         ></template>
         <v-text-field
@@ -25,29 +25,34 @@
         />
 
         <v-treeview
-            v-model:opened="opened"
-            v-model:selected="selected"
             :items="processedItems"
             :search="search"
+            :open-on-click="false"
             :open-all="expandAll"
             :item-value="getItemValue"
             :item-title="getItemTitle"
-            open-on-click
-            return-object
+            v-model:active="active"
         >
-            <template #prepend="{ item, isSelected, select }">
+            <template #prepend="{ item }">
                 <v-checkbox
                     v-if="item.depth === 0"
                     density="compact"
-                    :model-value="isSelected"
-                    @click.stop="select"
+                    :model-value="selected.includes(item.id)"
+                    @click.stop="toggleSelect(item)"
                     hide-details
                     class="mr-2"
                 />
             </template>
+            <template #title="{ item }">
+                <div>{{ getItemTitle(item) }}</div>
+            </template>
             <template #append="{ item }">
                 <v-checkbox
-                    v-if="item.pivot && 'paginate' in item.pivot && item.depth === 0"
+                    v-if="
+                        item.pivot &&
+                        'paginate' in item.pivot &&
+                        item.depth === 0
+                    "
                     density="compact"
                     hide-details
                     @click.stop
@@ -91,7 +96,7 @@
     lang="ts"
     generic="T extends IBaseEntity & Maybe<IOrderedEntity> & INestedSetEntity<T>"
 >
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 import { useModule } from "../composables";
 import type {
     IBaseEntity,
@@ -116,21 +121,27 @@ const {
     pivot = {
         order: 0,
     },
+    initialItems = {},
 } = defineProps<IRelationTreeProps<T>>();
 const emit = defineEmits<{ "update:model-value": [value: T[]] }>();
 
 const { module } = useModule(moduleKey);
 const { getItemValue, getItemTitle } = useItems<T>({ itemTitle, itemValue });
 
-const selected = ref<T[]>([]) as Ref<T[]>;
-const opened = ref<T[]>([]);
+const selected = ref<string[]>([]);
+const active = ref<string[]>([]);
 const search = ref("");
-const expandAll = ref(true);
+const expandAll = ref(false);
 const loading = ref(false);
+
+const toggleExpandAll = () => {
+    expandAll.value = !expandAll.value;
+};
 
 const processItems = (items: T[], depth = 0): T[] => {
     return items.map((item) => ({
         ...item,
+        title: getItemTitle(item),
         depth,
         children: item?.children?.length
             ? processItems(item.children, depth + 1)
@@ -162,10 +173,20 @@ const processedItems = computed(() => {
     return orderBy(items, [sortBy, "created_at"], ["desc"]);
 });
 
+const toggleSelect = (item: T) => {
+    const index = selected.value.indexOf(item.id);
+    if (index === -1) {
+        selected.value.push(item.id);
+    } else {
+        selected.value.splice(index, 1);
+    }
+};
+
 const { addRelation, editRelation, addExistingEntity, deleteSelected } =
     useRelationMethods<T>({
         module: module.value,
         initialValues,
+        initialItems,
     });
 
 const onAddRelation = () => {
@@ -189,12 +210,14 @@ const onEditRelation = (id: string) => {
 const onDeleteSelected = async () => {
     try {
         if (!morph) {
-            deleteSelected(selected.value);
+            const selectedItems = modelValue.filter((item) =>
+                selected.value.includes(item.id)
+            );
+            deleteSelected(selectedItems);
         }
-        const selectedIds = new Set(selected.value.map(getItemValue));
         emit(
             "update:model-value",
-            modelValue.filter((item) => !selectedIds.has(getItemValue(item)))
+            modelValue.filter((item) => !selected.value.includes(item.id))
         );
         selected.value = [];
     } catch (e) {

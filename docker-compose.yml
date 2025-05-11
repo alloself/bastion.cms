@@ -55,6 +55,13 @@ services:
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: secret
+      UPLOAD_LIMIT: 500M
+      MAX_EXECUTION_TIME: 600
+      MEMORY_LIMIT: 512M
+      POST_MAX_SIZE: 500M
+      UPLOAD_MAX_FILESIZE: 500M
+    volumes:
+      - ./docker/phpmyadmin/php.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
     depends_on:
       - mysql
     networks:

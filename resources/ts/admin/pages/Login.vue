@@ -54,10 +54,13 @@ const router = useRouter();
 const { fields } = useLoginFormFields();
 
 const form = ref<FormContext>();
-const initialValues = import.meta.env.MODE === 'development' ?  {
-    email: 'root@example.com',
-    password: 'password'
-} : {}
+const initialValues =
+    import.meta.env.MODE === "development"
+        ? {
+              email: "root@example.com",
+              password: "password",
+          }
+        : {};
 
 const { handler } = useFormSubmit(async () => {
     await userStore.login(form.value?.values);

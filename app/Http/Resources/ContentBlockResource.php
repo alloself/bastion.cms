@@ -22,16 +22,23 @@ class ContentBlockResource extends JsonResource
             'order' => $this->order,
             'parent_id' => $this->parent_id,
             'template_id' => $this->template_id,
+            'children' => $this->children,
+            'attributes' => $this->attributes,
             'template' => $this->whenLoaded('template'),
             'children' => self::collection($this->whenLoaded('children')),
-            'attributes' => AttributeResource::collection($this->whenLoaded('attributes')),
             'images' => $this->whenLoaded('images'),
             'link' => $this->whenLoaded('link'),
             'data_entities' => $this->whenLoaded('dataEntities'),
-            'data_collections' => $this->whenLoaded('dataCollections'),
+            'data_collections' => DataCollectionResource::collection($this->whenLoaded('dataCollections')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'parent' => $this->whenLoaded('parent'),
+            'pivot' => $this->whenPivotLoaded('content_blockables', function () {
+                return [
+                    'order' => $this->pivot->order,
+                    'key' => $this->pivot->key
+                ];
+            }),
         ];
     }
 }

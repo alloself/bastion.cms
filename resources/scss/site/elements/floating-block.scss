@@ -1,0 +1,60 @@
+.floating-block {
+    @apply 
+        relative
+        py-5
+        px-6
+        bg-white
+        bg-opacity-[0.15]
+        rounded-lg
+        backdrop-blur-lg
+        text-current
+        text-left
+        transition-all
+        duration-300
+        hover:shadow-lg
+        hover:scale-[1.02]
+    ;
+
+    > a {
+        @apply 
+            absolute
+            left-0
+            right-0
+            top-0
+            bottom-0
+            z-[5]
+        ;
+    }
+
+    &__label {
+        @apply 
+            text-[12px]
+            font-medium
+            tracking-[-0.24px]
+            leading-[1.1]
+            uppercase
+            opacity-50
+            mb-2
+        ;
+    }
+
+    &__title {
+        @apply 
+            text-[14px]
+            font-semibold
+            leading-[1.1]
+            tracking-[-0.28px]
+        ;
+    }
+
+    &__price {
+        @apply 
+            font-semibold
+            text-[14px]
+            tracking-[-0.24px]
+            leading-[1.1]
+            opacity-60
+            mt-2
+        ;
+    }
+}

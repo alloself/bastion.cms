@@ -21,31 +21,89 @@ trait HasDataEntities
 
     public function syncDataEntities(array $entities): void
     {
-        $this->dataEntities()->detach();
-
+        // Получаем текущие pivot записи с их ID
+        $currentPivots = $this->dataEntities()
+            ->withPivot('id', 'key', 'order')
+            ->get()
+            ->keyBy('id')
+            ->map(function ($item) {
+                return [
+                    'pivot_id' => $item->pivot->id,
+                    'key' => $item->pivot->key,
+                    'order' => $item->pivot->order
+                ];
+            })
+            ->toArray();
+        
+        // Создаем массив для хранения отношений
+        $syncData = [];
+        
+        // Обрабатываем каждую сущность
         foreach ($entities as $item) {
             $pivotData = [
                 'key'   => $item['pivot']['key'] ?? null,
                 'order' => $item['pivot']['order'] ?? 0,
             ];
-
-            $this->dataEntities()->attach($item['id'], $pivotData);
-
-            $pivotModel = $this->dataEntities()
-                ->wherePivot('data_entity_id', $item['id'])
-                ->withPivot('id')
-                ->first()
-                ?->pivot;
-
-            if ($pivotModel && !empty($item['pivot']['link'])) {
-                $dataEntityable = DataEntityable::find($pivotModel->id);
-                if ($dataEntityable) {
-                    $linkData = $item['pivot']['link'];
-
-                    $link = new Link($linkData);
-                    $link->linkable()->associate($dataEntityable);
-
-                    app(LinkUrlGenerator::class)->generate($link);
+            
+            $syncData[$item['id']] = $pivotData;
+            
+            // Обновляем или создаем связанную запись Link
+            if (!empty($item['pivot']['link'])) {
+                // После синхронизации найдем или создадим pivot модель
+                $dataEntityId = $item['id'];
+                $existingPivotId = $currentPivots[$dataEntityId]['pivot_id'] ?? null;
+                
+                // Если pivot запись не существует, мы обработаем её после синхронизации
+                if ($existingPivotId) {
+                    $dataEntityable = DataEntityable::find($existingPivotId);
+                    if ($dataEntityable) {
+                        $linkData = $item['pivot']['link'];
+                        
+                        // Проверяем существует ли уже Link для этой pivot записи
+                        $link = $dataEntityable->link;
+                        
+                        if ($link) {
+                            // Обновляем существующую запись Link
+                            $link->fill($linkData);
+                            app(LinkUrlGenerator::class)->generate($link);
+                        } else {
+                            // Создаем новую запись Link
+                            $link = new Link($linkData);
+                            $link->linkable()->associate($dataEntityable);
+                            app(LinkUrlGenerator::class)->generate($link);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Синхронизируем отношения
+        $this->dataEntities()->sync($syncData);
+        
+        // Обрабатываем новые pivot записи, которые были только что созданы
+        foreach ($entities as $item) {
+            if (!empty($item['pivot']['link'])) {
+                $dataEntityId = $item['id'];
+                
+                // Если pivot ID не существовал до синхронизации
+                if (!isset($currentPivots[$dataEntityId])) {
+                    $pivotModel = $this->dataEntities()
+                        ->wherePivot('data_entity_id', $dataEntityId)
+                        ->withPivot('id')
+                        ->first()
+                        ?->pivot;
+                        
+                    if ($pivotModel) {
+                        $dataEntityable = DataEntityable::find($pivotModel->id);
+                        if ($dataEntityable && !$dataEntityable->link) {
+                            $linkData = $item['pivot']['link'];
+                            
+                            $link = new Link($linkData);
+                            $link->linkable()->associate($dataEntityable);
+                            
+                            app(LinkUrlGenerator::class)->generate($link);
+                        }
+                    }
                 }
             }
         }

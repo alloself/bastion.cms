@@ -15,6 +15,7 @@
                 :readonly="readonly"
                 v-model:form="form"
                 :initial-values="initialValues"
+                :initial-items="initialItems"
             ></smart-form>
         </v-card-text>
 
@@ -86,6 +87,7 @@ const {
     initialValues = {},
     module,
     detailClass,
+    initialItems = {},
 } = defineProps<IDetailProps<T>>();
 
 const emit = defineEmits<{

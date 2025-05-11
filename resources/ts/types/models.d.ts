@@ -107,6 +107,8 @@ export interface DataEntity {
   data_entityables?: DataEntityable[]
   variants?: DataEntity[]
   audits?: AuditModel[]
+  dataCollection?: DataCollection
+  dataCollectionLink?: Link
 }
 export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'template_id' | 'content' | 'order' | 'parent_id'>
 

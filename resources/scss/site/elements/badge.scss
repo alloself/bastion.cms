@@ -1,0 +1,15 @@
+.badge {
+    @apply
+        py-0.5
+        px-1
+        flex
+        items-center
+        justify-center
+        min-w-[16px]
+        min-h-[16px]
+        text-[12px]
+        leading-[12px]
+        rounded-[16px]
+        text-white
+        bg-dark
+}

@@ -1,0 +1,33 @@
+.svg-icon {
+    @apply 
+        flex-none
+        w-6
+        h-6
+        inline-block
+        fill-[currentColor]
+    ;
+
+    svg {
+        @apply 
+            block
+            w-[inherit]
+            h-[inherit]
+            fill-[inherit]
+            stroke-[inherit]
+        ;
+    }
+
+    &--stroke {
+        @apply 
+            fill-none 
+            stroke-current
+        ;
+    }
+
+    &--nostyle {
+        @apply 
+            fill-none 
+            stroke-none
+        ;
+    }
+}

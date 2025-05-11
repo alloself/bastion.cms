@@ -5,6 +5,7 @@
         location="right"
         :model-value="modalStore.show"
         @update:model-value="onClose"
+        @mousedown.middle.prevent="toggleFullScreen"
         class="modals-wrapper"
     >
         <component
@@ -19,14 +20,18 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 import { useModalDrawerStore } from "../store";
 
 const display = useDisplay();
 const modalStore = useModalDrawerStore();
+const fullScreen = ref(false);
 
 const drawerWidth = computed(() => {
+    if (fullScreen.value) {
+        return display.width.value;
+    }
     return display.width.value > 500
         ? display.width.value / 2
         : display.width.value;
@@ -44,6 +49,11 @@ const onClose = () => {
     modalStore.modals = [];
     modalStore.show = false;
 };
+
+const toggleFullScreen = () => {
+    fullScreen.value = !fullScreen.value;
+};
+
 </script>
 <style lang="scss">
 .modals-wrapper {

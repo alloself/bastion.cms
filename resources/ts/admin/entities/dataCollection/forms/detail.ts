@@ -191,12 +191,16 @@ export const createFields = (
         component: markRaw(RelationTree),
         key: "content_blocks",
         props: {
-          moduleKey: "contentBlock",
-          itemTitle: "name",
-          morph: true,
-          ordered: true,
+            moduleKey: "contentBlock",
+            itemTitle: "name",
+            morph: true,
+            ordered: true,
+            pivot: {
+                order: 0,
+                key: '',
+            }
         },
-      },
+    },
       {
         component: markRaw(RelationTable),
         key: "data_entities",

@@ -18,6 +18,7 @@ export interface ISmartFormProps {
   initialValues?: Record<string, unknown>;
   loading?: boolean;
   readonly?: boolean;
+  initialItems?: Record<string, unknown>;
 }
 
 export interface IBaseEntity extends Record<string, any> {
@@ -58,6 +59,7 @@ export interface IDetailProps<T> {
   initialValues?: Partial<T>;
   module: IModule;
   detailClass?: string;
+  initialItems?: Record<string, T[]>;
 }
 
 export interface IOptionsFieldsFabric<T> {
@@ -91,6 +93,7 @@ export interface IRelationTreeProps<T> extends IItems<T> {
   morph?: boolean;
   ordered?: boolean;
   pivot?: Record<string, unknown> & { order: number }
+  initialItems?: Record<string, T[]>
 }
 
 export interface IRelationTableProps<T> extends IItems<T> {

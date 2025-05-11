@@ -195,6 +195,9 @@ export const createFields = (options?: IOptionsFieldsFabric<ContentBlock>) => {
                 key: "children",
                 props: {
                     initialValues: { parent_id: options.entity.id },
+                    initialItems: {
+                        parent_id: [options.entity],
+                    },
                     moduleKey: "contentBlock",
                     ordered: true,
                     itemTitle: "name",

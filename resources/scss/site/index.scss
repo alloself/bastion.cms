@@ -1,3 +1,34 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+
+@import "./base/fonts";
+@import "./base/defaults";
+@import "./base/typography";
+@import "./base/animates";
+
+@import "./elements/button";
+@import "./elements/toasts";
+@import "./elements/tooltips";
+@import "./elements/decor-link";
+@import "./elements/forms";
+@import "./elements/svg-icon";
+@import "./elements/rounded-icon";
+@import "./elements/badge";
+@import "./elements/app-logo";
+@import "./elements/slider-controls";
+@import "./elements/pagination";
+@import "./elements/floating-block";
+@import "./elements/lamps";
+@import "./elements/yandex-map";
+
+@import "tailwindcss/utilities";
+
+@import "/node_modules/flowbite-vue/dist/index.css";
+
+[v-cloak] {
+    display: none;
+}
+
+input:focus {
+    box-shadow: none !important;
+}

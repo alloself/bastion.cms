@@ -19,6 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('_lft')->default(0);
             $table->unsignedInteger('_rgt')->default(0);
             $table->uuid('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('data_collections');
 
             $table->foreignUuid('template_id')->nullable()->constrained();
             $table->foreignUuid('page_id')->nullable()->constrained();

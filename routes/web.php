@@ -10,3 +10,5 @@ Route::get('/admin/{any?}', [SiteController::class, 'admin'])
 Route::get('/{path?}', [SiteController::class, 'render'])
     ->where('path', '^((?!public\/).)*$')
     ->name('web');
+
+Route::fallback([SiteController::class, 'show404']);

@@ -99,7 +99,8 @@ export const modules: IModule[] = [
             "dataEntities",
             "dataCollections",
             "template",
-            "parent"
+            "parent",
+            "attributes",
         ],
     },
     {
@@ -179,7 +180,8 @@ export const modules: IModule[] = [
             "images",
             "files",
             "parent",
-            "template"
+            "template",
+            "contentBlocks"
         ],
         showInNavigation: true,
     },
@@ -199,7 +201,8 @@ export const modules: IModule[] = [
             "images",
             "files",
             "attributes",
-            "template"
+            "template",
+            "contentBlocks"
         ],
         showInNavigation: true,
     },

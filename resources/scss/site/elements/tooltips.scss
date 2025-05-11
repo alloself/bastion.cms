@@ -1,0 +1,42 @@
+// :root {
+//     --cooltipz-bg-color: #1f1f1f;
+//     --cooltipz-border-width: 0;
+//     --cooltipz-border-style: solid;
+//     --cooltipz-border-color: #1f1f1f;
+//     --cooltipz-text-color: #fff;
+//     --cooltipz-font-size: 0.75rem;
+//     --cooltipz-font-family: verdana,geneva,tahoma,var(--cooltipz-fontawesome,Arial),sans-serif;
+//     --cooltipz-slide: 6px;
+//     --cooltipz-border-radius: 0.125rem;
+//     --cooltipz-timing: 120ms;
+//     --cooltipz-cursor: pointer;
+//     --cooltipz-small: 6.25rem;
+//     --cooltipz-medium: 12.5rem;
+//     --cooltipz-large: 18.75rem;
+//     --cooltipz-arrow-size: 0.3125rem;
+//     --cooltipz-arrow-offset: 0px;
+//     --cooltipz-delay-show: 0s;
+//     --cooltipz-delay-hide: 0s;
+// }
+
+[aria-label][data-cooltipz-dir] {
+    --cooltipz-font-size: 14px;
+}
+
+[data-cooltipz-theme="danger"][data-cooltipz-dir="top-left"] {
+    --cooltipz-arrow-offset: 8px;
+}
+
+[data-cooltipz-theme="danger"][data-cooltipz-dir="top-right"] {
+    --cooltipz-arrow-offset: -8px;
+}
+
+[data-cooltipz-theme="danger"] {
+    --cooltipz-bg-color: rgb(248 113 113);
+    --cooltipz-border-color: rgb(248 113 113);
+    --cooltipz-border-radius: 8px;
+
+    .app-form-control {
+        @apply border-red-400;
+    }
+}

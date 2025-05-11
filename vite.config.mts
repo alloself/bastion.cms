@@ -14,10 +14,15 @@ export default defineConfig({
         "resources/scss/site/index.scss",
         "resources/scss/admin/index.scss",
       ],
-      refresh: true,
+      refresh: false,
     }),
     vue({
-      template: { transformAssetUrls },
+      template: {
+        transformAssetUrls: {
+          base: null,
+          includeAbsolute: false,
+        },
+      },
     }),
     vuetify({
       styles: {
@@ -33,31 +38,34 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./resources", import.meta.url)),
       "@admin": fileURLToPath(
         new URL("./resources/ts/admin", import.meta.url)
-      )
+      ),
+      "@site": fileURLToPath(
+        new URL("./resources/ts/site", import.meta.url)
+      ),
     },
     extensions: [".js", ".json", ".jsx", ".mjs", ".ts", ".tsx", ".vue"],
   },
   build: {
-    target: 'esnext',
+    target: "esnext",
     sourcemap: false,
-    minify: 'terser',
+    minify: "terser",
     terserOptions: {
       compress: {
         drop_console: true,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info'],
+        pure_funcs: ["console.log", "console.info"],
       },
     },
     rollupOptions: {
-      external: ['vuetify/components'],
+      external: ["vuetify/components"],
       output: {
         manualChunks: {
-          vendor: ['vue', 'vue-router'],
-          vuetify: ['vuetify'],
+          vendor: ["vue", "vue-router"],
+          vuetify: ["vuetify"],
         },
-        chunkFileNames: 'assets/js/[name]-[hash].js',
-        entryFileNames: 'assets/js/[name]-[hash].js',
-        assetFileNames: 'assets/[ext]/[name]-[hash].[ext]',
+        chunkFileNames: "assets/js/[name]-[hash].js",
+        entryFileNames: "assets/js/[name]-[hash].js",
+        assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
       },
     },
     cssCodeSplit: true,
@@ -66,24 +74,30 @@ export default defineConfig({
     reportCompressedSize: false,
   },
   define: {
-    'process.env': {},
+    "process.env": {},
   },
   worker: {
-    format: 'es',
+    format: "es",
   },
   css: {
     preprocessorOptions: {
-      sass: {
-        api: "modern-compiler",
+      scss: {
+        quietDeps: true,
+        silenceDeprecations: ["legacy-js-api"],
       },
     },
   },
   server: {
-    host: '0.0.0.0', 
+    host: "0.0.0.0",
     port: 5173,
+    fs: { allow: ["."] },
+    watch: {
+      usePolling: true,
+      ignored: ["**/storage/framework/views/**"],
+    },
     hmr: {
-      host: 'localhost',
-      protocol: 'ws',
+      host: "localhost",
+      protocol: "ws",
       port: 5173,
     },
   },

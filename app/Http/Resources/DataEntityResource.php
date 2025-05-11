@@ -23,6 +23,12 @@ class DataEntityResource extends JsonResource
             'files' => $this->files,
             'attributes' => $this->attributes,
             'template' => $this->template,
+            'dataCollection' => $this->whenLoaded('dataCollection', 
+                fn() => new DataCollectionResource($this->dataCollection)
+            ),
+            'dataCollectionLink' => $this->whenLoaded('dataCollectionLink',
+                fn() => new LinkResource($this->dataCollectionLink)
+            ),
             'pivot' => [
                 'id' => $this->pivot->id ?? null,
                 'key' => $this->pivot->key ?? null,

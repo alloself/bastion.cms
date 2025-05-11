@@ -1,0 +1,13 @@
+.app-logo {
+    img {
+        @apply block max-w-full;
+    }
+
+    &--header {
+        @apply w-[160px] lg:w-[230px];
+    }
+
+    &--footer {
+        @apply text-center;
+    }
+}

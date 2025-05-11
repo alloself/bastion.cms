@@ -37,7 +37,6 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
         type: "text",
       },
     },
-    //...linkCreateFields().fields.value,
     {
       component: markRaw(JSONEditor),
       key: "meta",
@@ -185,6 +184,10 @@ export const createFields = (options?: IOptionsFieldsFabric<DataCollection>) => 
           itemTitle: "name",
           morph: true,
           ordered: true,
+          pivot: {
+            order: 0,
+            key: '',
+          }
         },
       },
     );

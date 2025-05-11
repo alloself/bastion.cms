@@ -7,19 +7,23 @@ import { IBaseEntity } from "../types";
 interface IUseRelationMethodsArguments<T> {
     module: IModule;
     initialValues?: Record<string, unknown>;
+    initialItems?: Record<string, T[]>;
 }
 
 export const useRelationMethods = <T extends IBaseEntity>({
     module,
     initialValues,
+    initialItems = {},
 }: IUseRelationMethodsArguments<T>) => {
     const modalDrawerStore = useModalDrawerStore();
 
     const addRelation = (callback: (item: T) => void) => {
+        console.log(initialItems);
         modalDrawerStore.addDetailModal(
             {
                 module,
                 initialValues: initialValues ? { ...initialValues } : undefined,
+                initialItems,
             },
             {
                 onCreate: (item: T) => {

@@ -1,0 +1,64 @@
+.slider-pagination {
+    @apply
+        absolute 
+        z-[10] 
+        left-0 
+        right-0 
+        bottom-8 
+        flex 
+        flex-wrap 
+        justify-center 
+        gap-1.5
+    ;
+
+    &__item {
+        @apply 
+            w-2.5
+            h-2.5
+            rounded-full
+            border-2
+            border-stone
+            cursor-pointer
+        ;
+
+        &[class*="active"] {
+            @apply bg-stone pointer-events-none;
+        }
+    }
+}
+
+.slider-prev,
+.slider-next {
+    @apply 
+        cursor-pointer
+        absolute
+        top-1/2
+        -translate-y-1/2
+        z-10
+        text-stone
+        p-3
+    ;
+
+    .svg-icon {
+        @apply
+            w-4
+            h-4
+            block
+        ;
+    }
+
+    &[class*="disabled"] {
+        @apply 
+            pointer-events-none
+            opacity-40
+        ;
+    }
+}
+
+.slider-prev {
+    @apply left-0;
+}
+
+.slider-next {
+    @apply right-0;
+}

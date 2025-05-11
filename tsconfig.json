@@ -16,8 +16,14 @@
         "paths": {
             "@/*": ["resources/*"],
             "@admin/*": ["resources/ts/admin/*"],
-            "@admin/shared/*": ["resources/ts/admin/shared/*"]
-        }
+            "@admin/shared/*": ["resources/ts/admin/shared/*"],
+            "@site/*": ["resources/ts/site/*"]
+        },
+        "types": ["vite/client"],
+        "typeRoots": [
+            "./node_modules/@types",
+            "./resources/ts/types"
+        ]
     },
     "include": [
         "resources/ts/**/*.ts",

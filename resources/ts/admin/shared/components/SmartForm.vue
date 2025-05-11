@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, watchEffect } from "vue";
+import { computed, watch } from "vue";
 import {
     useForm,
     Field,
@@ -41,6 +41,7 @@ const {
     fields = [],
     initialValues = {},
     readonly = false,
+    initialItems = {},
 } = defineProps<ISmartFormProps>();
 
 const emits = defineEmits<{
@@ -64,17 +65,26 @@ const formContext = useForm({
 });
 emits("update:form", formContext);
 
+const getInitialItems = (field: ISmartFormField) => {
+    return field.key in initialItems
+        ? initialItems[field.key]
+        : field.props?.initialItems || [];
+};
+
 const normalizedFields = computed(() => {
-    return fields.map((field, index) => ({
-        ...field,
-        uniqueKey: `${field.key}-${index}`,
-        props: {
-            ...(field.props || {}),
-        },
-        events: {
-            ...(field.events || {}),
-        },
-    }));
+    return fields.map((field, index) => {
+        return {
+            ...field,
+            uniqueKey: `${field.key}-${index}`,
+            props: {
+                ...(field.props || {}),
+                initialItems: getInitialItems(field),
+            },
+            events: {
+                ...(field.events || {}),
+            },
+        };
+    });
 });
 
 const getFieldErrors = (field: ISmartFormField) => {
@@ -82,13 +92,13 @@ const getFieldErrors = (field: ISmartFormField) => {
 };
 
 watch(
-  () => initialValues,
-  (newValues) => {
-    if (newValues && Object.keys(newValues).length) {
-        formContext.setValues(newValues);
-    }
-  },
-  { deep: true }
+    () => initialValues,
+    (newValues) => {
+        if (newValues && Object.keys(newValues).length) {
+            formContext.setValues(newValues);
+        }
+    },
+    { deep: true }
 );
 </script>
 
