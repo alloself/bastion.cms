@@ -32,17 +32,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Добавляем SQL-логгирование в режиме разработки
-        if (config('app.debug')) {
-            DB::listen(function ($query) {
-                $sql = $query->sql;
-                foreach ($query->bindings as $binding) {
-                    $value = is_numeric($binding) ? $binding : "'{$binding}'";
-                    $sql = preg_replace('/\?/', $value, $sql, 1);
-                }
-                \Log::debug('SQL: ' . $sql . ' (' . $query->time . 'ms)');
-            });
-        }
+        // Отключаем SQL-логирование 
+        DB::disableQueryLog();
         
         // Регистрируем директивы для работы с изображениями
         Blade::directive('image', function ($expression) {
@@ -74,9 +65,6 @@ class AppServiceProvider extends ServiceProvider
         
         // Оптимизации для продакшн-среды
         if (app()->isProduction()) {
-            // Отключаем SQL-логи
-            DB::disableQueryLog();
-            
             // Включаем отложенную загрузку изображений
             View::composer('*', function ($view) {
                 $view->with('lazyLoadImages', true);

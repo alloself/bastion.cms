@@ -49,25 +49,6 @@ export default defineConfig({
     target: "esnext",
     sourcemap: false,
     minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
-        pure_funcs: ["console.log", "console.info"],
-      },
-    },
-    rollupOptions: {
-      external: ["vuetify/components"],
-      output: {
-        manualChunks: {
-          vendor: ["vue", "vue-router"],
-          vuetify: ["vuetify"],
-        },
-        chunkFileNames: "assets/js/[name]-[hash].js",
-        entryFileNames: "assets/js/[name]-[hash].js",
-        assetFileNames: "assets/[ext]/[name]-[hash].[ext]",
-      },
-    },
     cssCodeSplit: true,
     assetsInlineLimit: 4096,
     emptyOutDir: true,
