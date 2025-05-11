@@ -28,7 +28,7 @@ function getAttributeByKey($item, $findKey)
 
 function getItemImage($item, $key)
 {
-    return getItemByPivotKey($item->images, $key)?->path;
+    return getItemByPivotKey($item->images, $key)?->url;
 }
 
 function activeMenu($uri = '')

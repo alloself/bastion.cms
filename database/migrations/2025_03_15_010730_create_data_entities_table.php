@@ -21,6 +21,11 @@ return new class extends Migration
             $table->foreign('parent_id')->references('id')->on('data_entities')->onDelete('cascade');
 
             $table->foreignUuid('template_id')->nullable()->constrained();
+            
+            // Добавляем индексы для ускорения выборки
+            $table->index('order');
+            $table->index('name');
+            $table->index('parent_id');
 
             $table->timestamps();
             $table->softDeletes();
