@@ -21,6 +21,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Установка дополнительных расширений для обработки больших данных
 RUN docker-php-ext-install opcache bcmath
 
+# Создание пользователя с UID 1000
+RUN groupadd -g 1000 laravel && useradd -u 1000 -g laravel -m -s /bin/bash laravel
+
 # Установка рабочей директории
 WORKDIR /var/www/html
 
@@ -30,9 +33,8 @@ COPY . /var/www/html
 COPY ./docker/php/php.ini /usr/local/etc/php/php.ini
 
 # Настройка прав доступа для storage и bootstrap/cache
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R laravel:laravel /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-RUN chmod 666 storage/logs/laravel.log
 
 # Установка Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
