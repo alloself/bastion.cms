@@ -109,6 +109,7 @@ class DataEntityService
             // Сортировка по атрибуту
             if ($sortByAttribute === 'price') {
                 // Для цены используем подзапрос с числовой сортировкой
+                // Товары без цены или с некорректной ценой будут в конце
                 $query->select('data_entities.*')
                     ->selectSub(function ($subquery) {
                         $subquery->select('attributeables.value')
@@ -120,11 +121,21 @@ class DataEntityService
                             ->whereRaw('attributeables.value REGEXP "^[0-9]+(\\.[0-9]+)?$"')
                             ->limit(1);
                     }, 'price_value')
-                    ->whereHas('attributes', function ($q) {
-                        $q->where('key', 'price')
-                          ->whereRaw('attributeables.value REGEXP "^[0-9]+(\\.[0-9]+)?$"');
-                    })
-                    ->orderByRaw('CAST(price_value AS DECIMAL(20,2)) ' . $order)
+                    ->selectSub(function ($subquery) {
+                        $subquery->selectRaw('CASE 
+                            WHEN EXISTS (
+                                SELECT 1 FROM attributeables 
+                                JOIN attributes ON attributeables.attribute_id = attributes.id 
+                                WHERE attributeables.attributeable_id = data_entities.id 
+                                AND attributeables.attributeable_type = ? 
+                                AND attributes.key = ? 
+                                AND attributeables.value REGEXP "^[0-9]+(\\.[0-9]+)?$"
+                            ) THEN 0 
+                            ELSE 1 
+                        END', [DataEntity::class, 'price']);
+                    }, 'has_no_price')
+                    ->orderBy('has_no_price', 'asc') // Сначала товары с ценой
+                    ->orderByRaw('CASE WHEN price_value IS NOT NULL THEN CAST(price_value AS DECIMAL(20,2)) END ' . $order)
                     ->orderBy('id', 'asc');
             } else {
                 // Сортировка по другим атрибутам

@@ -9,5 +9,6 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('telescope:clear')->weekly();
+Schedule::command('sitemap:generate')->daily();
 
 //* * * * * cd /путь/к/вашему/проекту && php artisan schedule:run >> /dev/null 2>&1

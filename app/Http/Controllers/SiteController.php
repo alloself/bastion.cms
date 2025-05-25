@@ -24,6 +24,24 @@ class SiteController extends Controller
         return view('admin');
     }
 
+    public function robots(Request $request)
+    {
+        $baseUrl = $request->getSchemeAndHttpHost();
+        $sitemapUrl = $baseUrl . '/sitemap.xml';
+
+        $robotsContent = "User-agent: *\n";
+        $robotsContent .= "Disallow: /admin\n";
+        $robotsContent .= "Disallow: /admin/\n";
+        $robotsContent .= "Disallow: /telescope\n";
+        $robotsContent .= "Disallow: /telescope/\n";
+        $robotsContent .= "\n";
+        $robotsContent .= "Sitemap: {$sitemapUrl}\n";
+
+        return response($robotsContent, 200, [
+            'Content-Type' => 'text/plain'
+        ]);
+    }
+
     public function show404()
     {
         return view('errors.404', [
