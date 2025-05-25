@@ -57,7 +57,7 @@ class DataEntityService
         
         // Проверка валидности параметров
         $page = max(1, $page);
-        $perPage = max(1, min($perPage, 100));
+        $perPage = max(1, min($perPage, 15)); // Уменьшаем максимум
         $order = in_array($order, ['asc', 'desc']) ? $order : 'asc';
         
         // Получаем список ID коллекций (текущая + потомки)
@@ -206,7 +206,8 @@ class DataEntityService
             if ($entity->dataEntityables->isNotEmpty()) {
                 // Получаем первый pivot с link
                 $pivotWithLink = $entity->dataEntityables->first(function ($pivot) {
-                    return $pivot->link !== null;
+                    // Проверяем, загружена ли связь link у pivot
+                    return $pivot->relationLoaded('link') && $pivot->link !== null;
                 });
 
                 // Если нашли pivot с link, присваиваем его сущности

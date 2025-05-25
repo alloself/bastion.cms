@@ -64,9 +64,9 @@ const app = createApp({
 
         onMounted(async () => {
             try {
-                await axios.get("/sanctum/csrf-cookie");
-                const { data } = await axios.get("/api/public/me");
-                user.value = data;
+                //await axios.get("/sanctum/csrf-cookie");
+                //const { data } = await axios.get("/api/public/me");
+                //user.value = data;
             } catch (e) {}
 
             liked.value = getLikedIds();
@@ -111,26 +111,34 @@ const app = createApp({
     .component("offcanvas", Offcanvas)
     .component("offcanvasclose", OffcanvasClose)
     .component("appmodal", AppModal)
-    .component("pickuppoints", PickUpPoints)
+    .component("pickuppoints", PickUpPoints);
 
 app.mount("#app");
 
 document.addEventListener("DOMContentLoaded", () => {
-    initArticlesItemSlider();
-    initProductItemSlider();
-    initSlideShow();
-    initMainBannersSlider();
-    initTapeSlider();
-    initGallery();
-    
-    applyNightModeToWorkClocks();
+    try {
+        initArticlesItemSlider();
+        initProductItemSlider();
+        initSlideShow();
+        initMainBannersSlider();
+        initTapeSlider();
+        initGallery();
+
+        applyNightModeToWorkClocks();
+    } catch (e) {
+        console.log(e);
+    }
 });
 
 window.onload = () => {
-    initScrollAnimate();
-    if (document.querySelector('[data-map]')) {
-        initContactsMap();
-        console.log('Запущена инициализация карт');
+    try {
+        initScrollAnimate();
+        if (document.querySelector("[data-map]")) {
+            initContactsMap();
+            console.log("Запущена инициализация карт");
+        }
+        initThreeObjects();
+    } catch (e) {
+        console.log(e);
     }
-    initThreeObjects();
 };

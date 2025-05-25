@@ -59,6 +59,11 @@ trait HasDataEntities
                     if ($dataEntityable) {
                         $linkData = $item['pivot']['link'];
                         
+                        // Загружаем связь link, если она не загружена
+                        if (!$dataEntityable->relationLoaded('link')) {
+                            $dataEntityable->load('link');
+                        }
+                        
                         // Проверяем существует ли уже Link для этой pivot записи
                         $link = $dataEntityable->link;
                         
@@ -95,13 +100,20 @@ trait HasDataEntities
                         
                     if ($pivotModel) {
                         $dataEntityable = DataEntityable::find($pivotModel->id);
-                        if ($dataEntityable && !$dataEntityable->link) {
-                            $linkData = $item['pivot']['link'];
+                        if ($dataEntityable) {
+                            // Загружаем связь link, если она не загружена
+                            if (!$dataEntityable->relationLoaded('link')) {
+                                $dataEntityable->load('link');
+                            }
                             
-                            $link = new Link($linkData);
-                            $link->linkable()->associate($dataEntityable);
-                            
-                            app(LinkUrlGenerator::class)->generate($link);
+                            if (!$dataEntityable->link) {
+                                $linkData = $item['pivot']['link'];
+                                
+                                $link = new Link($linkData);
+                                $link->linkable()->associate($dataEntityable);
+                                
+                                app(LinkUrlGenerator::class)->generate($link);
+                            }
                         }
                     }
                 }

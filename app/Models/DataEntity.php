@@ -80,16 +80,22 @@ class DataEntity extends BaseModel
     public function getLinkAttribute()
     {
        $pivot = $this?->pivot;
-       $defaultLink = $this->dataEntityables->first(function ($pivot) {
-            return $pivot->link !== null;
+      
+       $defaultLink = $this->dataEntityables->first(function ($item) {   
+            if(!$item->relationLoaded('link')){
+                return false;
+            }
+            return $item?->link !== null;
         });
 
 
         $dataEntityable = $this->dataEntityables->first(function ($item) use ($pivot) {
             return $item->data_entityable_id == $pivot->data_entityable_id && $item->data_entityable_type == $pivot->data_entityable_type;
         });
+        
+        $link = $pivot->link ?? $dataEntityable?->link ?? $defaultLink?->link;
 
-        return $dataEntityable?->link ?? $defaultLink?->link;
+        return $link;
     }
 
     public static function getRenderRelations(Request $request)

@@ -47,7 +47,7 @@ class DataEntityable extends MorphPivot
             ],
         ],
         'link',
-        'dataEntityable'
+        'dataEntityable.link'
     ];
 
     public function dataEntityable(): MorphTo
