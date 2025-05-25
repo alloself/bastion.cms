@@ -74,8 +74,9 @@ import { useRouter } from "vue-router";
 import { useLayout } from "vuetify";
 import { capitalize, computed, onMounted, ref, watch } from "vue";
 import type { FormContext } from "vee-validate";
-import { SmartForm, HistoryBottomSheet } from "@admin/shared/components";
-import { useFormSubmit } from "../../composables";
+import SmartForm from "@admin/shared/components/SmartForm.vue";
+import HistoryBottomSheet from "@admin/shared/components/HistoryBottomSheet.vue";
+import { useFormSubmit } from "../../composables/useFormSubmit";
 import { getModuleUrlPart } from "..";
 
 const { mainRect } = useLayout();

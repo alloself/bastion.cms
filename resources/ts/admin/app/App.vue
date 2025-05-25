@@ -17,8 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { Notification } from "@admin/features/notifications";
-import { useNotificationsStore } from "@admin/features/notifications";
+import Notification from "@admin/features/notifications/components/Notification.vue";
+import { useNotificationsStore } from "@admin/features/notifications/store/notificationsStore";
 import { storeToRefs } from "pinia";
 
 const notificationStore = useNotificationsStore();

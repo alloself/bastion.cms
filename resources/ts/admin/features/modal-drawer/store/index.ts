@@ -1,4 +1,4 @@
-import { Detail } from "@admin/shared/modules";
+import Detail from "@admin/shared/modules/components/Detail.vue";
 import { defineStore } from "pinia";
 import { markRaw, ref, type Component } from "vue";
 

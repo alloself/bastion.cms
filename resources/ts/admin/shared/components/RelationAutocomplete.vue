@@ -57,8 +57,8 @@ import {
 import { ref, watch, onUnmounted, type Ref } from "vue";
 import { client } from "@admin/shared/api/axios";
 import { debounce } from "lodash";
-import { useModalDrawerStore } from "@admin//features/modal-drawer";
-import { useModule } from "../composables";
+import { useModalDrawerStore } from "@admin/features/modal-drawer/store";
+import { useModule } from "../composables/useModule";
 import { useItems } from "../composables/useItems";
 import { getModuleUrlPart } from "../modules";
 
@@ -134,7 +134,6 @@ const addRelation = () => {
 };
 
 const editRelation = () => {
-    console.log(modelValue)
     modalDrawerStore.addDetailModal(
         {
             module: module.value,

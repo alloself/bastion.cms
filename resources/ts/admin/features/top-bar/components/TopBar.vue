@@ -33,11 +33,11 @@
 </template>
 
 <script setup lang="ts">
-import { Logo } from "@admin/shared/components";
+import Logo from "@admin/shared/components/Logo.vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useUserStore } from "@admin/entities/user";
-import { useNavigationDrawerStore } from "@admin/features/navigation-drawer";
+import { useUserStore } from "@admin/entities/user/store";
+import { useNavigationDrawerStore } from "@admin/features/navigation-drawer/store";
 import { storeToRefs } from "pinia";
 
 const userStore = useUserStore();

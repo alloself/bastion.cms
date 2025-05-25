@@ -53,6 +53,7 @@ export default defineConfig({
         assetsInlineLimit: 4096,
         emptyOutDir: true,
         reportCompressedSize: false,
+        chunkSizeWarningLimit: 1000
     },
     define: {
         "process.env": {},

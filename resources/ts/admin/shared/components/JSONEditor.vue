@@ -86,7 +86,7 @@ const {
 
 const emit = defineEmits(["update:model-value"]);
 
-const selected = reactive<any>([]);
+const selected = ref<any>([]);
 const newProperty = reactive({
   key: "",
   value: "",

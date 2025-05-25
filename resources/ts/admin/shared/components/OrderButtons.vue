@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends IOrderedEntity & IBaseEntity">
-import { useOrderedEntity } from "../composables";
+import { useOrderedEntity } from "../composables/useOrderedEntity";
 import { IModule } from "../modules";
 import { IBaseEntity, IOrderedEntity } from "../types";
 

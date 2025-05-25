@@ -97,7 +97,7 @@
     generic="T extends IBaseEntity & Maybe<IOrderedEntity> & INestedSetEntity<T>"
 >
 import { computed, ref } from "vue";
-import { useModule } from "../composables";
+import { useModule } from "../composables/useModule";
 import type {
     IBaseEntity,
     INestedSetEntity,
@@ -107,7 +107,7 @@ import type {
 } from "../types";
 import RelationCard from "./RelationCard.vue";
 import { useItems } from "../composables/useItems";
-import { useRelationMethods } from "../composables";
+import { useRelationMethods } from "../composables/useRelationMethods";
 import OrderButtons from "./OrderButtons.vue";
 import { orderBy } from "lodash";
 const {

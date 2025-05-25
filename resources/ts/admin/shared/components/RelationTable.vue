@@ -92,9 +92,10 @@
 import RelationCard from "./RelationCard.vue";
 import OrderButtons from "./OrderButtons.vue";
 import RelationAutocomplete from "./RelationAutocomplete.vue";
-import { useItems, useModule } from "../composables";
+import { useItems } from "../composables/useItems";
+import { useModule } from "../composables/useModule";
 import { IBaseEntity, IOrderedEntity, IRelationTableProps, Maybe } from "../types";
-import { useRelationMethods } from "../composables";
+import { useRelationMethods } from "../composables/useRelationMethods";
 import { Ref, ref } from "vue";
 
 const {

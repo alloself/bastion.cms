@@ -18,9 +18,9 @@
 import AppView from '@admin/widgets/AppView.vue';
 import Screen from '../features/screen/components/Screen.vue';
 import { onBeforeUnmount, onMounted } from "vue";
-import { TopBar } from '@admin/features/top-bar';
-import { NavigationDrawer } from '@admin/features/navigation-drawer';
-import { ModalDrawer } from '@admin/features/modal-drawer';
+import TopBar from '@admin/features/top-bar/components/TopBar.vue';
+import NavigationDrawer from '@admin/features/navigation-drawer/components/NavigationDrawer.vue';
+import ModalDrawer from '@admin/features/modal-drawer/components/ModalDrawer.vue';
 import { useScreenStore } from '../features/screen';
 
 let HTMLDOMElement: HTMLHtmlElement | null;

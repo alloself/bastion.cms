@@ -1,5 +1,5 @@
 import { Ref } from "vue";
-import { useModalDrawerStore } from "../../features/modal-drawer";
+import { useModalDrawerStore } from "../../features/modal-drawer/store";
 import { client } from "../api/axios";
 import { getModuleUrlPart, IModule } from "../modules";
 import { IBaseEntity } from "../types";
@@ -18,7 +18,6 @@ export const useRelationMethods = <T extends IBaseEntity>({
     const modalDrawerStore = useModalDrawerStore();
 
     const addRelation = (callback: (item: T) => void) => {
-        console.log(initialItems);
         modalDrawerStore.addDetailModal(
             {
                 module,

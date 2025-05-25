@@ -1,7 +1,7 @@
 import { createApp } from "vue";
 import App from '@admin/app/App.vue';
 import { registerPlugins } from "@admin/shared/plugins";
-import { useUserStore } from "@admin/entities/user";
+import { useUserStore } from "@admin/entities/user/store";
 import { client } from "@admin/shared/api/axios";
 
 try {
