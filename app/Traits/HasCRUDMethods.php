@@ -78,12 +78,9 @@ trait HasCRUDMethods
             $entity->getChildrenTree();
         }
 
-        Log::alert($with);
-
         if (in_array('contentBlocks', $with, true) && method_exists($entity, 'getContentBlocksTree')) {
             $entity->getContentBlocksTree();
         }
-        Log::alert($entity);
         if (in_array('dataCollections', $with, true) && method_exists($entity, 'getDataCollectionsTree')) {
             $entity->getDataCollectionsTree();
         }

@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
 use Kalnoy\Nestedset\NodeTrait;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Blade;
 
 class Page extends BaseModel
 {
@@ -23,6 +25,56 @@ class Page extends BaseModel
     'index' => 'boolean',
   ];
 
+  public static $renderRelations = [
+    'template',
+    'contentBlocks' => [
+      'attributes',
+      'link',
+      'dataEntities' => [
+        'images',
+        'attributes',
+        'dataEntityables.link'
+      ],
+      'descendants' => [
+        'attributes',
+        'link',
+        'files',
+        'template',
+        'images',
+        'dataCollections' => [
+          'attributes',
+          'images',
+          'link',
+          'descendants',
+          'dataEntities' => [
+            'attributes',
+            'images',
+            'dataEntityables.link'
+          ]
+        ],
+        'dataEntities' => [
+          'images',
+          'attributes',
+          'dataEntityables.link'
+        ],
+      ],
+      'dataCollections' => [
+        'descendants',
+        'images',
+        'link',
+        'attributes',
+        'dataEntities' => [
+          'attributes',
+          'images',
+          'dataEntityables.link'
+        ]
+      ],
+      'files',
+      'images',
+      'template',
+    ]
+
+  ];
 
   protected array $searchConfig = [
     'model_fields' => ['meta'],
@@ -63,5 +115,38 @@ class Page extends BaseModel
   public function link(): MorphOne
   {
     return $this->morphOne(Link::class, 'linkable');
+  }
+
+  public static function getRenderRelations(Request $request)
+  {
+    $query->with(self::$renderRelations);
+    return $query;
+  }
+
+  public function render(Request $request)
+  {
+    ContentBlock::buildContentBlocksTree($this->contentBlocks);
+    $user = $request->user();
+
+    $header = getItemByPivotKey($this->contentBlocks ?? collect(), 'header');
+    $footer = getItemByPivotKey($this->contentBlocks ?? collect(), 'footer');
+
+    $contentBlocks = ContentBlock::renderContentBlocksTree($this->contentBlocks->sortByDesc('pivot.order'), [
+      'entity' => $this,
+      'user' => $user,
+      'header' => $header,
+      'footer' => $footer
+    ], 0, $request);
+
+    return Blade::render(
+      $this->template->value,
+      [
+        'entity' => $this,
+        'header' => $header,
+        'contentBlocks' => $contentBlocks,
+        'footer' => $footer,
+        'user' => $user
+      ],
+    );
   }
 }

@@ -45,7 +45,3 @@ Route::prefix('admin')->middleware(['auth:sanctum', 'role:root'])->group(functio
 Route::prefix('public')->group(function () {
   Route::get('me', [UserController::class, 'me']);
 });
-
-Route::fallback(function () {
-  abort(404, 'API resource not found');
-});

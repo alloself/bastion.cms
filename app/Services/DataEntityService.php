@@ -53,19 +53,7 @@ class DataEntityService
             $pageName = "page";
         }
         
-        // Логируем фактические параметры для отладки
-        \Illuminate\Support\Facades\Log::debug('Pagination parameters', [
-            'usePrefix' => $usePrefix,
-            'keyPrefix' => $keyPrefix,
-            'page' => $page,
-            'perPage' => $perPage,
-            'sortBy' => $sortBy,
-            'order' => $order,
-            'sortByAttribute' => $sortByAttribute,
-            'requestPath' => $request->path(),
-            'requestFullUrl' => $request->fullUrl(),
-            'requestAll' => $request->all()
-        ]);
+
         
         // Проверка валидности параметров
         $page = max(1, $page);
@@ -74,6 +62,8 @@ class DataEntityService
         
         // Получаем список ID коллекций (текущая + потомки)
         $collectionIds = $this->getCollectionWithDescendantIds($collection);
+        
+
         
         // Создаем базовый запрос с использованием Eloquent
         $query = DataEntity::with([

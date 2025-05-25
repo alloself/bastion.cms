@@ -52,15 +52,8 @@ trait HasDataCollections
      */
     public function getDataCollectionsTree(): Collection
     {
-        // Используем fresh() для полной перезагрузки модели с указанными отношениями
-        $fresh = $this->fresh('dataCollections.descendants');
-
-        return $fresh->dataCollections->map(function (DataCollection $dataCollection) {
-            // Устанавливаем детей как дерево
-            $tree = $dataCollection->descendants->toTree();
-            $dataCollection->setRelation('children', $tree);
-            $dataCollection->unsetRelation('descendants');
-            return $dataCollection;
+        return $this->dataCollections->map(function (DataCollection $dataCollection) {
+            return DataCollection::buildDataCollectionsTree($dataCollection);
         });
     }
 }

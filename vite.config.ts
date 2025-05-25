@@ -18,7 +18,10 @@ export default defineConfig({
         }),
         vue({
             template: {
-                transformAssetUrls,
+                transformAssetUrls: {
+                    base: null,
+                    includeAbsolute: false,
+                },
             },
         }),
         vuetify({

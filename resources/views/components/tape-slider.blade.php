@@ -9,7 +9,7 @@
             @foreach ($products as $product)
                 @php
                     $image = count($product->images ?? []) ? $product->images[0]->url : '';
-                    $link = $product->dataEntityables[0]->link ?? null;
+                    $link = $product->link;
                 @endphp
                 @if ($link && $link->url)
                     <a href="{{ $link?->url }}"
