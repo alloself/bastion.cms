@@ -3,20 +3,6 @@ import "swiper/css";
 import "cooltipz-css";
 import "baguettebox.js/dist/baguetteBox.min.css";
 
-// scripts
-import {
-    initArticlesItemSlider,
-    initTapeSlider,
-    initProductItemSlider,
-    initSlideShow,
-    initMainBannersSlider,
-} from "./scripts/initSliders";
-import { initScrollAnimate } from "./scripts/initScrollAnimate";
-import { initContactsMap } from "./scripts/initYandexMap";
-import { initThreeObjects } from "./scripts/initThreeObjects";
-import { initGallery } from "./scripts/initGallery";
-import { applyNightModeToWorkClocks } from "./utils/workClocksNightMode";
-
 // vue imports
 // @ts-ignore
 import { createApp } from "vue/dist/vue.esm-bundler.js";
@@ -115,30 +101,132 @@ const app = createApp({
 
 app.mount("#app");
 
+// Критические скрипты загружаем сразу после монтирования Vue
 document.addEventListener("DOMContentLoaded", () => {
-    try {
-        initArticlesItemSlider();
-        initProductItemSlider();
-        initSlideShow();
-        initMainBannersSlider();
-        initTapeSlider();
-        initGallery();
+    // Только самые критические функции
+    loadCriticalScripts();
+});
 
+// Все остальное загружаем после полной загрузки страницы
+window.addEventListener('load', () => {
+    // Используем максимальную задержку для предотвращения блокировки
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(loadNonCriticalScripts, { timeout: 5000 });
+    } else {
+        setTimeout(loadNonCriticalScripts, 1000);
+    }
+});
+
+// Критические скрипты (только UI)
+async function loadCriticalScripts() {
+    try {
+        const { applyNightModeToWorkClocks } = await import("./utils/workClocksNightMode");
         applyNightModeToWorkClocks();
     } catch (e) {
         console.log(e);
     }
-});
+}
 
-window.onload = () => {
+// Некритические скрипты (слайдеры, галереи, анимации)
+async function loadNonCriticalScripts() {
     try {
-        initScrollAnimate();
-        if (document.querySelector("[data-map]")) {
-            initContactsMap();
-            console.log("Запущена инициализация карт");
-        }
-        initThreeObjects();
+        // Загружаем слайдеры и галереи
+        await loadSlidersAndGallery();
+        
+        // Загружаем анимации с дополнительной задержкой
+        setTimeout(loadAnimations, 500);
+        
+        // Загружаем тяжелые 3D объекты в самом конце
+        setTimeout(loadHeavyAssets, 2000);
+        
     } catch (e) {
         console.log(e);
     }
-};
+}
+
+// Слайдеры и галереи
+async function loadSlidersAndGallery() {
+    try {
+        const [
+            { initArticlesItemSlider, initTapeSlider, initProductItemSlider, initSlideShow, initMainBannersSlider },
+            { initGallery }
+        ] = await Promise.all([
+            import("./scripts/initSliders"),
+            import("./scripts/initGallery")
+        ]);
+        
+        // Инициализируем только если элементы присутствуют
+        requestAnimationFrame(async () => {
+            initArticlesItemSlider();
+            initProductItemSlider();
+            initSlideShow();
+            initMainBannersSlider();
+            initTapeSlider();
+            
+            // Асинхронная инициализация галереи
+            await initGallery();
+        });
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+// Анимации скролла
+async function loadAnimations() {
+    try {
+        const { initScrollAnimate } = await import("./scripts/initScrollAnimate");
+        
+        // Используем requestIdleCallback для анимаций
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                initScrollAnimate();
+            });
+        } else {
+            setTimeout(initScrollAnimate, 100);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+// Самые тяжелые ресурсы загружаем в последнюю очередь
+async function loadHeavyAssets() {
+    try {
+        // Карты загружаем только при наличии элементов и с максимальной задержкой
+        if (document.querySelector("[data-map]")) {
+            setTimeout(async () => {
+                try {
+                    const { initContactsMap } = await import("./scripts/initYandexMap");
+                    await initContactsMap();
+                    console.log("Карты инициализированы");
+                } catch (e) {
+                    console.log("Ошибка загрузки карт:", e);
+                }
+            }, 1000);
+        }
+
+        // Оптимизированные Three.js объекты загружаем в самом конце с проверкой видимости
+        if (document.querySelector("[class*='three-lamp']")) {
+            setTimeout(async () => {
+                try {
+                    const { initOptimizedThreeObjects } = await import("./scripts/initOptimizedThreeObjects");
+                    await initOptimizedThreeObjects();
+                    console.log("Оптимизированные Three.js объекты инициализированы");
+                } catch (e) {
+                    console.log("Ошибка загрузки оптимизированных Three.js:", e);
+                    
+                    // Fallback к обычной версии при ошибке
+                    try {
+                        const { initThreeObjects } = await import("./scripts/initThreeObjects");
+                        await initThreeObjects();
+                        console.log("Fallback: обычные Three.js объекты инициализированы");
+                    } catch (fallbackError) {
+                        console.log("Ошибка fallback Three.js:", fallbackError);
+                    }
+                }
+            }, 3000);
+        }
+    } catch (e) {
+        console.log(e);
+    }
+}

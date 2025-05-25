@@ -1,9 +1,14 @@
-import Swiper from "swiper";
+import { Swiper } from "swiper";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { randomNumberBetween } from "../utils/utils";
 
-export function initArticlesItemSlider(): Swiper | Swiper[] {
-    const slider = new Swiper(".js-article-item-slider", {
+export function initArticlesItemSlider(): Swiper | Swiper[] | undefined {
+    const sliderElement = document.querySelector(".js-article-item-slider");
+    if (!sliderElement) {
+        return;
+    }
+
+    const slider = new Swiper(sliderElement as HTMLElement, {
         modules: [Pagination],
         speed: 600,
         spaceBetween: 20,
@@ -27,6 +32,7 @@ export function initTapeSlider(): Swiper | Swiper[] | undefined {
     if (!sliderElement) {
         return;
     }
+    
     const slider = new Swiper(sliderElement as HTMLElement, {
         slidesPerView: "auto",
         speed: 800,
@@ -44,8 +50,13 @@ export function initTapeSlider(): Swiper | Swiper[] | undefined {
     return slider;
 }
 
-export function initProductItemSlider(): Swiper | Swiper[] {
-    const slider = new Swiper(".js-product-item-slider", {
+export function initProductItemSlider(): Swiper | Swiper[] | undefined {
+    const sliderElement = document.querySelector(".js-product-item-slider");
+    if (!sliderElement) {
+        return;
+    }
+
+    const slider = new Swiper(sliderElement as HTMLElement, {
         modules: [Pagination, Navigation],
         speed: 600,
         spaceBetween: 20,
@@ -68,8 +79,13 @@ export function initProductItemSlider(): Swiper | Swiper[] {
     return slider;
 }
 
-export function initSlideShow(): Swiper | Swiper[] {
-    const slider = new Swiper(".js-slide-show", {
+export function initSlideShow(): Swiper | Swiper[] | undefined {
+    const sliderElement = document.querySelector(".js-slide-show");
+    if (!sliderElement) {
+        return;
+    }
+
+    const slider = new Swiper(sliderElement as HTMLElement, {
         modules: [Pagination, Navigation],
         speed: 600,
         spaceBetween: 0,
@@ -98,8 +114,13 @@ export function initSlideShow(): Swiper | Swiper[] {
     return slider;
 }
 
-export function initMainBannersSlider(): Swiper | Swiper[] {
-    const slider = new Swiper(".js-main-banner-slider", {
+export function initMainBannersSlider(): Swiper | Swiper[] | undefined {
+    const sliderElement = document.querySelector(".js-main-banner-slider");
+    if (!sliderElement) {
+        return;
+    }
+
+    const slider = new Swiper(sliderElement as HTMLElement, {
         modules: [Pagination, Navigation],
         speed: 600,
         spaceBetween: 0,

@@ -34,13 +34,24 @@
             </div>
         </div>
         <div class="lg:flex-1 lg:min-w-0">
-            <div id="pickup-points-map" style="height: 480px; width: 100%"></div>
+            <div 
+                id="pickup-points-map" 
+                style="height: 480px; width: 100%"
+                :class="{ 'opacity-50': isMapLoading }"
+            >
+                <div v-if="isMapLoading" class="flex items-center justify-center h-full">
+                    <div class="text-center">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand mx-auto mb-2"></div>
+                        <div class="text-sm text-gray-600">Загрузка карты...</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, watch, ref } from 'vue'
 import {
     IPickUpPoint,
     allPickUpPointsLength,
@@ -62,6 +73,41 @@ const props = withDefaults(
 )
 
 let map: Record<any, any> = {}
+const isMapLoading = ref(true)
+let isYandexMapsLoaded = false
+
+// Функция для ленивой загрузки Яндекс карт API
+async function loadYandexMapsAPI(): Promise<void> {
+    if (isYandexMapsLoaded) {
+        return Promise.resolve()
+    }
+
+    return new Promise((resolve, reject) => {
+        // Проверяем, не загружен ли уже API
+        if (typeof window !== 'undefined' && 'ymaps' in window && (window as any).ymaps?.ready) {
+            isYandexMapsLoaded = true
+            resolve()
+            return
+        }
+
+        // Создаем скрипт для загрузки API
+        const script = document.createElement('script')
+        script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU'
+        script.async = true
+        script.defer = true
+        
+        script.onload = () => {
+            isYandexMapsLoaded = true
+            resolve()
+        }
+        
+        script.onerror = () => {
+            reject(new Error('Не удалось загрузить Яндекс.Карты API'))
+        }
+
+        document.head.appendChild(script)
+    })
+}
 
 watch(currentLocation, () => {
     addMapMarkersByLocation()
@@ -84,7 +130,7 @@ function addMapMarkersByLocation() {
     })
 
     currentLocation.value.pickUpPoints?.forEach((point) => {
-        const markerPoint = new ymaps.Placemark(
+        const markerPoint = new (window as any).ymaps.Placemark(
             point.latlng,
             {
                 balloonContent: `
@@ -110,13 +156,6 @@ function addMapMarkersByLocation() {
                 hideIconOnBalloonOpen: false,
             }
         )
-
-        // markerPoint.events.add(['click'], function(event: any) {
-        //     map.setCenter(point.latlng, 16, {
-        //         duration: 400,
-        //         checkZoomRange: true
-        //     })
-        // })
 
         markerPoint.balloon.events.add(['click'], function (event: any) {
             try {
@@ -155,15 +194,28 @@ function onPointClick(point: IPickUpPoint) {
     })
 }
 
-onMounted(() => {
-    ymaps.ready(() => {
-        map = new ymaps.Map('pickup-points-map', {
-            center: currentLocation.value.latlng,
-            zoom: 10,
-            controls: [],
-        })
+onMounted(async () => {
+    try {
+        // Загружаем API асинхронно
+        await loadYandexMapsAPI()
+        
+        // Ждем готовности API
+        ;(window as any).ymaps.ready(() => {
+            map = new (window as any).ymaps.Map('pickup-points-map', {
+                center: currentLocation.value.latlng,
+                zoom: 10,
+                controls: [],
+            })
 
-        addMapMarkersByLocation()
-    })
+            addMapMarkersByLocation()
+            isMapLoading.value = false
+        })
+    } catch (error) {
+        console.error('Ошибка при загрузке карты:', error)
+        isMapLoading.value = false
+        if (props.showMessage) {
+            toast.show('error', 'Не удалось загрузить карту')
+        }
+    }
 })
 </script>

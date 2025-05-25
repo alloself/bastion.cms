@@ -2,14 +2,24 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
-const textureLoader = new THREE.TextureLoader();
-const cubeTextureLoader = new THREE.CubeTextureLoader();
-const glbLoader = new GLTFLoader();
-const dracoLoader = new DRACOLoader();
+// Ленивая инициализация загрузчиков
+let textureLoader = null;
+let cubeTextureLoader = null;
+let glbLoader = null;
+let dracoLoader = null;
 
-dracoLoader.setDecoderPath('/public/models/lamp/draco/');
-glbLoader.setDRACOLoader(dracoLoader);
-dracoLoader.preload();
+function initLoaders() {
+    if (!textureLoader) {
+        textureLoader = new THREE.TextureLoader();
+        cubeTextureLoader = new THREE.CubeTextureLoader();
+        glbLoader = new GLTFLoader();
+        dracoLoader = new DRACOLoader();
+        
+        dracoLoader.setDecoderPath('/public/models/lamp/draco/');
+        glbLoader.setDRACOLoader(dracoLoader);
+        dracoLoader.preload();
+    }
+}
 
 export class ThreeLampScene {
     scene = null;
@@ -22,6 +32,9 @@ export class ThreeLampScene {
     filePath = null;
     controls = null;
     orbitControlEnabled = false;
+    isInitialized = false;
+    isVisible = false;
+    animationId = null;
     modelInitialRotation = {
         y: 0,
         x: 0,
@@ -60,10 +73,53 @@ export class ThreeLampScene {
         this.texturePath = texturePath;
         this.filePath = filePath;
         this.renderElem = renderElem;
-        this.init();
+        
+        // Ленивая инициализация при появлении в viewport
+        this.setupIntersectionObserver();
+    }
+
+    setupIntersectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.isInitialized) {
+                    this.isVisible = true;
+                    // Задержка для предотвращения блокировки рендеринга
+                    requestIdleCallback(() => {
+                        this.init();
+                    }, { timeout: 2000 });
+                    observer.unobserve(this.renderElem);
+                } else if (!entry.isIntersecting && this.isInitialized) {
+                    this.isVisible = false;
+                    this.pauseAnimation();
+                } else if (entry.isIntersecting && this.isInitialized) {
+                    this.isVisible = true;
+                    this.resumeAnimation();
+                }
+            });
+        }, {
+            rootMargin: '50px',
+            threshold: 0.1
+        });
+
+        observer.observe(this.renderElem);
+    }
+
+    pauseAnimation() {
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+    }
+
+    resumeAnimation() {
+        if (!this.animationId && this.model) {
+            this.animateScene();
+        }
     }
 
     animateModelMove() {
+        if (!this.model || !this.isVisible) return;
+
         if (this.modelMoveAnimationSettings.direction === "right") {
             this.model.rotation.y += this.modelMoveAnimationSettings.value;
 
@@ -88,66 +144,95 @@ export class ThreeLampScene {
     }
 
     animateScene() {
+        if (!this.isVisible || !this.renderer || !this.scene || !this.camera) {
+            return;
+        }
+
         this.renderer.render(this.scene, this.camera);
         this.animateModelMove();
-        requestAnimationFrame(this.animateScene.bind(this));
+        this.animationId = requestAnimationFrame(this.animateScene.bind(this));
     }
 
     setLights() {
-        let directionalLightColor = '#ffffff';
-        let ambientLightColor = '#ffffff';
-        let hemiLightColors = ['#ffffff', '#ffffff'];
-
-        let light1 = new THREE.AmbientLight(ambientLightColor, 0.2);
-        let light2 = new THREE.HemisphereLight(hemiLightColors[0], hemiLightColors[1], 0.2);
-        let light3 = new THREE.DirectionalLight(directionalLightColor, 0.5);
-        let light4 = new THREE.DirectionalLight(directionalLightColor, 0.5);
-
-        light1.position.set(0, 1, 0);
-        light2.position.set(0, 1, 0);
-        light3.position.set(0, 1, 0);
-        light4.position.set(0, -4, 0);
-
-        this.scene.add(light1);
-        this.scene.add(light2);
-        this.scene.add(light3);
-        this.scene.add(light4);
+        // Упрощенное освещение для лучшей производительности
+        let ambientLight = new THREE.AmbientLight('#ffffff', 0.4);
+        let directionalLight = new THREE.DirectionalLight('#ffffff', 0.6);
+        
+        directionalLight.position.set(0, 1, 0);
+        
+        this.scene.add(ambientLight);
+        this.scene.add(directionalLight);
     }
 
-    setModelTexture() {
-        const texture = textureLoader.load(this.texturePath);
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(4, 1);
+    async setModelTexture() {
+        try {
+            const texture = await new Promise((resolve, reject) => {
+                textureLoader.load(
+                    this.texturePath,
+                    resolve,
+                    undefined,
+                    reject
+                );
+            });
+            
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(4, 1);
+            // Уменьшаем качество для производительности
+            texture.minFilter = THREE.LinearFilter;
+            texture.magFilter = THREE.LinearFilter;
 
-        this.model.traverse((child) => {
-            if (child.isMesh) {
-                child.material.map = texture; 
-                child.material.needsUpdate = true;
-            }
-        });
+            this.model.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.map = texture; 
+                    child.material.needsUpdate = true;
+                    // Отключаем тени для производительности
+                    child.castShadow = false;
+                    child.receiveShadow = false;
+                }
+            });
+        } catch (error) {
+            console.warn('Не удалось загрузить текстуру:', error);
+        }
     }
 
     /**
      * @param {Array<string>} imagePaths required array of 6 string items
      */
-    setCubeTextureEnv(imagePaths) {
-        let cubeTexture = cubeTextureLoader.load(imagePaths);
-        this.scene.environment = cubeTexture;
+    async setCubeTextureEnv(imagePaths) {
+        try {
+            const cubeTexture = await new Promise((resolve, reject) => {
+                cubeTextureLoader.load(imagePaths, resolve, undefined, reject);
+            });
+            this.scene.environment = cubeTexture;
+            this.envImages = [cubeTexture]; // Сохраняем для смены
+        } catch (error) {
+            console.warn('Не удалось загрузить environment текстуры:', error);
+        }
     }
 
     setRendered() {
         this.renderer = new THREE.WebGLRenderer({
-            antialias: true,
+            antialias: false, // Отключаем для производительности
             alpha: true,
+            powerPreference: "high-performance",
+            stencil: false,
+            depth: true
         });
+        
+        // Уменьшаем разрешение для производительности
+        const pixelRatio = Math.min(window.devicePixelRatio, 1.5);
+        this.renderer.setPixelRatio(pixelRatio);
+        
         this.renderer.setSize(
             this.renderElem.offsetWidth,
             this.renderElem.offsetHeight
         );
         this.renderElem.appendChild(this.renderer.domElement);
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        
+        // Отключаем тени для производительности
+        this.renderer.shadowMap.enabled = false;
+        this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     }
 
     setCamera() {
@@ -155,7 +240,7 @@ export class ThreeLampScene {
             40,
             this.renderElem.offsetWidth / this.renderElem.offsetHeight,
             1,
-            1000
+            100 // Уменьшаем дальность для производительности
         );
 
         this.camera.position.z = 10;
@@ -165,32 +250,76 @@ export class ThreeLampScene {
         this.scene = new THREE.Scene();
     }
 
-    loadModel() {
-        glbLoader.load(this.filePath, (gltf) => {
+    async loadModel() {
+        try {
+            const gltf = await new Promise((resolve, reject) => {
+                glbLoader.load(this.filePath, resolve, undefined, reject);
+            });
+            
             this.model = gltf.scene;
             this.model.rotation.x += this.modelInitialRotation.x;
             this.model.rotation.y += this.modelInitialRotation.y;
             this.model.rotation.z += this.modelInitialRotation.z;
-            this.setModelTexture();
+            
+            // Оптимизируем модель
+            this.model.traverse((child) => {
+                if (child.isMesh) {
+                    child.frustumCulled = true;
+                    child.matrixAutoUpdate = false;
+                }
+            });
+            
+            await this.setModelTexture();
             this.scene.add(this.model);
-            this.animateScene();
+            
+            // Запускаем анимацию только если элемент видим
+            if (this.isVisible) {
+                this.animateScene();
+            }
+            
             this.renderElem.classList.add("is-loaded");
-        });
+        } catch (error) {
+            console.warn('Не удалось загрузить 3D модель:', error);
+        }
     }
 
-    init() {
-        this.renderElem.innerHTML = "";
+    async init() {
+        if (this.isInitialized) return;
+        
+        try {
+            // Инициализируем загрузчики
+            initLoaders();
+            
+            this.renderElem.innerHTML = "";
+            this.setScene();
+            this.setCamera();
+            this.setRendered();
+            this.setLights();
+            
+            // Асинхронная загрузка ресурсов
+            await Promise.all([
+                this.setCubeTextureEnv(this.envImagePaths),
+                this.loadModel()
+            ]);
+            
+            this.isInitialized = true;
+        } catch (error) {
+            console.warn('Ошибка инициализации Three.js сцены:', error);
+        }
+    }
 
-        this.setScene();
-
-        this.setCamera();
-
-        this.setRendered();
-
-        this.setCubeTextureEnv(this.envImagePaths);
-
-        this.setLights();
-
-        this.loadModel();
+    dispose() {
+        this.pauseAnimation();
+        
+        if (this.renderer) {
+            this.renderer.dispose();
+            this.renderElem.removeChild(this.renderer.domElement);
+        }
+        
+        if (this.scene) {
+            this.scene.clear();
+        }
+        
+        this.isInitialized = false;
     }
 }
