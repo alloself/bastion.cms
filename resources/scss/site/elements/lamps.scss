@@ -1,16 +1,21 @@
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 100;
+    }
+}
+
 .three-lamp {
-    @apply
-        transform-gpu
-        transition-opacity
-        duration-[.9s]
-        opacity-0
+    @apply opacity-0
         pointer-events-none
-        absolute
-    ;
+        absolute;
+    transform: translate3d(0, 0, 0);
 
     &--main-right {
-        @apply
-            -z-[1]
+        @apply -z-[1]
             w-[340px]
             h-[340px]
             top-[20%]
@@ -23,13 +28,11 @@
             xl:h-[600px]
             xl:top-[0]
             xl:left-auto
-            xl:-right-[150px]
-        ;
+            xl:-right-[150px];
     }
 
     &--main-left {
-        @apply
-            -z-[1]
+        @apply -z-[1]
             h-[180px]
             w-[180px]
             top-0
@@ -41,13 +44,11 @@
             md:-translate-x-[70%]
             md:top-[20%]
             xl:top-[40%]
-            xl:-translate-x-[40%]
-        ;
+            xl:-translate-x-[40%];
     }
 
     &--main-banner {
-        @apply 
-            z-[20]
+        @apply z-[20]
             h-[230px]
             w-[230px]
             top-0
@@ -58,37 +59,31 @@
             xl:left-[110px]
             xl:-translate-y-[20%]
             xl:h-[360px]
-            xl:w-[360px]
-        ;
+            xl:w-[360px];
     }
 
     &--subscribe-left {
-        @apply 
-            -z-[1]
+        @apply -z-[1]
             w-[300px]
             h-[300px]
             left-0
             -translate-x-[65%]
-            blur-[7px]
-        ;
+            blur-[7px];
     }
 
     &--subscribe-right {
-        @apply 
-            -z-[1]
+        @apply -z-[1]
             right-0
             bottom-0
             translate-x-[40%]
             w-[620px]
             h-[620px]
             hidden
-            xl:block
-        ;
+            xl:block;
     }
 
     &--footer {
-        @apply 
-            -z-[1]
+        @apply -z-[1]
             w-[330px]
             h-[330px]
             left-0
@@ -100,13 +95,10 @@
             md:h-[360px]
             xl:top-[35%]
             xl:-translate-x-[140%]
-            xl:left-1/2
-        ;
+            xl:left-1/2;
     }
 
     &.is-loaded {
-        @apply 
-            opacity-100
-        ;
+        animation: fadeIn 0.7s ease-in-out forwards;
     }
 }

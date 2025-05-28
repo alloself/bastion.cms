@@ -126,10 +126,10 @@ export class ThreeLampScene {
         this.scene?.add(ambient, hemi, dir1, dir2);
     }
 
-    setModelTexture() {
+    async setModelTexture() {
         if (!this.model || !this.texturePath || !this.scene) return;
 
-        const texture = textureLoader.load(this.texturePath);
+        const texture = await textureLoader.loadAsync(this.texturePath);
         texture.wrapS = THREE.RepeatWrapping;
         texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(4, 1);
@@ -198,22 +198,23 @@ export class ThreeLampScene {
         this.scene = new THREE.Scene();
     }
 
-    loadModel() {
+    async loadModel() {
         if (!this.filePath || !this.scene) return;
 
-        glbLoader.load(this.filePath, (gltf: any) => {
-            this.model = gltf.scene;
-            if (!this.model) return;
+        const loadedModel = await glbLoader.loadAsync(this.filePath);
 
-            this.model.rotation.x += this.modelInitialRotation.x;
-            this.model.rotation.y += this.modelInitialRotation.y;
-            this.model.rotation.z += this.modelInitialRotation.z;
+        this.model = loadedModel.scene;
 
-            this.setModelTexture();
-            this.scene?.add(this.model);
-            this.animateScene();
-            this.renderElem?.classList.add("is-loaded");
-        });
+        if (!this.model) return;
+
+        this.model.rotation.x += this.modelInitialRotation.x;
+        this.model.rotation.y += this.modelInitialRotation.y;
+        this.model.rotation.z += this.modelInitialRotation.z;
+
+        await this.setModelTexture();
+        this.scene?.add(this.model);
+        this.animateScene();
+        this.renderElem?.classList.add("is-loaded");
     }
 
     init() {
