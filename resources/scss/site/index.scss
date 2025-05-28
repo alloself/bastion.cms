@@ -1,29 +1,29 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
+@use "tailwindcss/base";
+@use "tailwindcss/components";
 
-@import "./base/fonts";
-@import "./base/defaults";
-@import "./base/typography";
-@import "./base/animates";
+@use "@/scss/site/base/fonts";
+@use "@/scss/site/base/defaults";
+@use "@/scss/site/base/typography";
+@use "@/scss/site/base/animates";
 
-@import "./elements/button";
-@import "./elements/toasts";
-@import "./elements/tooltips";
-@import "./elements/decor-link";
-@import "./elements/forms";
-@import "./elements/svg-icon";
-@import "./elements/rounded-icon";
-@import "./elements/badge";
-@import "./elements/app-logo";
-@import "./elements/slider-controls";
-@import "./elements/pagination";
-@import "./elements/floating-block";
-@import "./elements/lamps";
-@import "./elements/yandex-map";
+@use "@/scss/site/elements/button";
+@use "@/scss/site/elements/toasts";
+@use "@/scss/site/elements/tooltips";
+@use "@/scss/site/elements/decor-link";
+@use "@/scss/site/elements/forms";
+@use "@/scss/site/elements/svg-icon";
+@use "@/scss/site/elements/rounded-icon";
+@use "@/scss/site/elements/badge";
+@use "@/scss/site/elements/app-logo";
+@use "@/scss/site/elements/slider-controls";
+@use "@/scss/site/elements/pagination";
+@use "@/scss/site/elements/floating-block";
+@use "@/scss/site/elements/lamps";
+@use "@/scss/site/elements/yandex-map";
 
-@import "tailwindcss/utilities";
+@use "tailwindcss/utilities";
 
-@import "/node_modules/flowbite-vue/dist/index.css";
+@use "/node_modules/flowbite-vue/dist/index.css";
 
 [v-cloak] {
     display: none;

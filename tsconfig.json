@@ -11,6 +11,7 @@
         "esModuleInterop": true,
         "lib": ["ESNext", "DOM"],
         "skipLibCheck": true,
+        "allowJs": true,
         "noEmit": true,
         "baseUrl": ".",
         "paths": {
@@ -20,10 +21,7 @@
             "@site/*": ["resources/ts/site/*"]
         },
         "types": ["vite/client"],
-        "typeRoots": [
-            "./node_modules/@types",
-            "./resources/ts/types"
-        ]
+        "typeRoots": ["./node_modules/@types", "./resources/ts/types"]
     },
     "include": [
         "resources/ts/**/*.ts",

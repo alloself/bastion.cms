@@ -1,4 +1,4 @@
-import { ThreeLampScene } from "@site/scripts/threeLampScene.js";
+import { ThreeLampScene } from "@site/scripts/threeLampScene";
 
 export async function initThreeObjects() {
     function getElementOffsetTop(selector: string) {
@@ -17,14 +17,14 @@ export async function initThreeObjects() {
 
     const mainRightLamp: Record<any, any> = new ThreeLampScene({
         filePath: `/public/models/lamp/lamp-draco.glb`,
-        texturePath: `/public/models/lamp/lamp-texture.jpg`,
+        texturePath: `/public/models/lamp/lamp-texture-resized.jpg`,
         envImagePaths: [
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp"
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
         ],
         renderElem: document.querySelector(".three-lamp--main-right"),
         modelInitialRotation: {
@@ -34,17 +34,16 @@ export async function initThreeObjects() {
         },
     } as any);
 
-
     const mainLeftLamp: Record<any, any> = new ThreeLampScene({
         filePath: `/public/models/lamp/lamp-draco.glb`,
-        texturePath: `/public/models/lamp/lamp-texture.jpg`,
+        texturePath: `/public/models/lamp/lamp-texture-resized.jpg`,
         envImagePaths: [
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp"
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
         ],
         renderElem: document.querySelector(".three-lamp--main-left"),
         modelInitialRotation: {
@@ -62,14 +61,14 @@ export async function initThreeObjects() {
 
     const mainBannerLamp: Record<any, any> = new ThreeLampScene({
         filePath: `/public/models/lamp/lamp-draco.glb`,
-        texturePath: `/public/models/lamp/lamp-texture.jpg`,
+        texturePath: `/public/models/lamp/lamp-texture-resized.jpg`,
         envImagePaths: [
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp"
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
         ],
         renderElem: document.querySelector(".three-lamp--main-banner"),
         modelInitialRotation: {
@@ -87,14 +86,14 @@ export async function initThreeObjects() {
 
     const subscribeLeftLamp: Record<any, any> = new ThreeLampScene({
         filePath: `/public/models/lamp/lamp-draco.glb`,
-        texturePath: `/public/models/lamp/lamp-texture.jpg`,
+        texturePath: `/public/models/lamp/lamp-texture-resized.jpg`,
         envImagePaths: [
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp",
-            "/public/models/lamp/env-13.webp"
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
+            "/public/models/lamp/env-4.jpg",
         ],
         renderElem: document.querySelector(".three-lamp--subscribe-left"),
         modelInitialRotation: {
@@ -112,14 +111,14 @@ export async function initThreeObjects() {
 
     const subscribeRightLamp: Record<any, any> = new ThreeLampScene({
         filePath: `/public/models/lamp/lamp-draco.glb`,
-        texturePath: `/public/models/lamp/lamp-texture.jpg`,
+        texturePath: `/public/models/lamp/lamp-texture-resized.jpg`,
         envImagePaths: [
-            "/public/models/lamp/env-3.jpg",
-            "/public/models/lamp/env-4.jpg",
-            "/public/models/lamp/env-7.jpg",
-            "/public/models/lamp/env-4.jpg",
-            "/public/models/lamp/env-9.jpg",
-            "/public/models/lamp/env-4.jpg"
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
         ],
         renderElem: document.querySelector(".three-lamp--subscribe-right"),
         modelInitialRotation: {
@@ -131,14 +130,14 @@ export async function initThreeObjects() {
 
     const footerLamp: Record<any, any> = new ThreeLampScene({
         filePath: `/public/models/lamp/lamp-draco.glb`,
-        texturePath: `/public/models/lamp/lamp-texture.jpg`,
+        texturePath: `/public/models/lamp/lamp-texture-resized.jpg`,
         envImagePaths: [
-            "/public/models/lamp/env-3.jpg",
-            "/public/models/lamp/env-4.jpg",
-            "/public/models/lamp/env-7.jpg",
-            "/public/models/lamp/env-4.jpg",
-            "/public/models/lamp/env-9.jpg",
-            "/public/models/lamp/env-4.jpg"
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
+            "/public/models/lamp/env-5.jpg",
         ],
         renderElem: document.querySelector(".three-lamp--footer"),
         modelInitialRotation: {
@@ -186,13 +185,18 @@ export async function initThreeObjects() {
                     }
 
                     if (
+                        subscribeRightLamp &&
                         subscribeRightLamp.model &&
                         window.scrollY > subscribeBlockOffsetTop
                     ) {
                         subscribeRightLamp.model.rotation.x -= deltaY * 0.002;
                     }
 
-                    if (footerLamp.model && window.scrollY > footerOffseTop) {
+                    if (
+                        footerLamp &&
+                        footerLamp.model &&
+                        window.scrollY > footerOffseTop
+                    ) {
                         footerLamp.model.rotation.x += deltaY * 0.0013;
                     }
                 }
@@ -204,59 +208,4 @@ export async function initThreeObjects() {
 
     document.removeEventListener("scroll", moveThreeObjectsOnScroll);
     document.addEventListener("scroll", moveThreeObjectsOnScroll);
-
-    // !!! TEMP: function for demo
-    function changeEnvImagesInterval(lampInstances: Record<any, any>[], interval: number = 4000) {
-
-        const randomBetween = (min: number, max: number) => {
-            return Math.floor(Math.random() * (max - min + 1) + min);
-        }
-
-        let cubeEnvImages = [
-            `/public/models/lamp/env-1.jpg`,
-            `/public/models/lamp/env-2.jpg`,
-            `/public/models/lamp/env-3.jpg`,
-            `/public/models/lamp/env-4.jpg`,
-            `/public/models/lamp/env-5.jpg`,
-            `/public/models/lamp/env-6.jpg`,
-            `/public/models/lamp/env-7.jpg`,
-            `/public/models/lamp/env-8.jpg`,
-            `/public/models/lamp/env-9.jpg`,
-            `/public/models/lamp/env-10.jpg`,
-        ];
-
-
-        let counter = 0;
-
-        setInterval(() => {
-
-            let imagePaths = [
-                cubeEnvImages[randomBetween(0, 9)],
-                cubeEnvImages[randomBetween(0, 9)],
-                cubeEnvImages[randomBetween(0, 9)],
-                cubeEnvImages[randomBetween(0, 9)],
-                cubeEnvImages[randomBetween(0, 9)],
-                cubeEnvImages[randomBetween(0, 9)],
-            ];
-
-            if (counter === cubeEnvImages.length) counter = 0;
-            // @ts-ignore
-            lampInstances.forEach(lamp => {
-                if (lamp.renderElem) {
-                    lamp.setCubeTextureEnv(imagePaths)
-                }
-            })
-            console.log('CUBE TEXTURE IMAGES:', imagePaths);
-            counter++;
-        }, interval);
-    }
-
-    /*changeEnvImagesInterval([
-        mainRightLamp, 
-        mainLeftLamp,
-        mainBannerLamp,
-        subscribeLeftLamp,
-        subscribeRightLamp,
-        footerLamp,
-    ], 5000);*/
 }
