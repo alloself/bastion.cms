@@ -3,6 +3,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 import { type ThemeDefinition, createVuetify } from 'vuetify'
 import { VTextField, VCheckbox, VFileInput, VTextarea, VDataTable, VDataTableServer, VCombobox, VSelect } from "vuetify/components";
+//@ts-ignore
 import { VTreeview } from 'vuetify/lib/labs/components';
 
 export const dark: ThemeDefinition = {

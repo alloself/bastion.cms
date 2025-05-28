@@ -140,7 +140,7 @@ export class ThreeLampScene {
                 if (mesh.material && "map" in mesh.material) {
                     // @ts-ignore
                     mesh.material.map = texture;
-                    // @ts-ignore
+                     //@ts-ignore
                     mesh.material.needsUpdate = true;
                 }
             }
