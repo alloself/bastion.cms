@@ -138,7 +138,9 @@ export class ThreeLampScene {
             if ((child as THREE.Mesh).isMesh) {
                 const mesh = child as THREE.Mesh;
                 if (mesh.material && "map" in mesh.material) {
+                    // @ts-ignore
                     mesh.material.map = texture;
+                    // @ts-ignore
                     mesh.material.needsUpdate = true;
                 }
             }
