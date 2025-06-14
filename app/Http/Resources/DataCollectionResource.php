@@ -37,7 +37,13 @@ class DataCollectionResource extends JsonResource
                 $this->whenLoaded('descendants', function ($entity) {
                     return $entity;
                 })
-            )
+            ),
+            'pivot' =>  [
+                'id' => $this->pivot->id ?? null,
+                'key' => $this->pivot->key ?? null,
+                'order' => $this->pivot->order ?? null,
+                'paginate' => $this->pivot->paginate ?? null,
+            ],
         ];
     }
 }

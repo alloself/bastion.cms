@@ -1,5 +1,5 @@
 <template>
-    <div class="flex items-center cursor-pointer" @click.prevent="clickHandler">
+    <div class="flex items-center">
         <div class="svg-icon mr-[2px]" :class="iconClass">
             <svg><use xlink:href="#geo"></use></svg>
         </div>

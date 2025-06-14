@@ -1,14 +1,15 @@
 @php
     // Проверяем, существует ли dataEntities и является ли он экземпляром пагинатора
-    $count = isset($entity->dataEntities) && method_exists($entity->dataEntities, 'total') 
-        ? $entity->dataEntities->total() 
-        : count($entity->dataEntities ?? []);
-    
+    $count =
+        isset($entity->dataEntities) && method_exists($entity->dataEntities, 'total')
+            ? $entity->dataEntities->total()
+            : count($entity->dataEntities ?? []);
+
     // Определяем, нужен ли префикс для параметров пагинации
     // Используем префикс только если есть явно указанный pivot.key
     $usePaginationPrefix = false;
     $paginationKey = '';
-    
+
     // Определяем ключ, только если есть pivot->key
     if (isset($parent) && isset($parent->pivot) && isset($parent->pivot->key) && !empty($parent->pivot->key)) {
         // Если у родителя есть pivot с ключом, используем его
@@ -19,47 +20,49 @@
         $paginationKey = $entity->pivot->key;
         $usePaginationPrefix = true;
     }
-    
+
     // Добавляем контекст, если коллекция находится внутри контент-блока с явным ключом
-    if ($usePaginationPrefix && isset($contentBlock) && isset($contentBlock->pivot) && isset($contentBlock->pivot->key) && !empty($contentBlock->pivot->key)) {
+    if (
+        $usePaginationPrefix &&
+        isset($contentBlock) &&
+        isset($contentBlock->pivot) &&
+        isset($contentBlock->pivot->key) &&
+        !empty($contentBlock->pivot->key)
+    ) {
         $paginationKey = $contentBlock->pivot->key . '_' . $paginationKey;
     }
-    
+
     // Приоритетно берем значения из объекта пагинации, если он доступен
     if (isset($entity->dataEntities) && method_exists($entity->dataEntities, 'currentPage')) {
         $currentPage = $entity->dataEntities->currentPage();
     } else {
         // Иначе берем из параметров запроса
-        $currentPage = $usePaginationPrefix 
-            ? request()->input("{$paginationKey}_page", 1) 
-            : request()->input("page", 1);
+        $currentPage = $usePaginationPrefix
+            ? request()->input("{$paginationKey}_page", 1)
+            : request()->input('page', 1);
     }
-    
+
     if (isset($entity->dataEntities) && method_exists($entity->dataEntities, 'perPage')) {
         $perPage = $entity->dataEntities->perPage();
     } else {
-        $perPage = $usePaginationPrefix 
+        $perPage = $usePaginationPrefix
             ? request()->input("{$paginationKey}_per_page", 15)
-            : request()->input("per_page", 15);
+            : request()->input('per_page', 15);
     }
-    
+
     // Получаем параметры сортировки
     // Приоритет отдаем sort_by_attribute, если он установлен
-    $sortByAttribute = $usePaginationPrefix 
-        ? request()->get($paginationKey . '_sort_by_attribute') 
+    $sortByAttribute = $usePaginationPrefix
+        ? request()->get($paginationKey . '_sort_by_attribute')
         : request()->get('sort_by_attribute');
-    
-    // Если нет sort_by_attribute, смотрим sort_by    
+
+    // Если нет sort_by_attribute, смотрим sort_by
     $sortBy = null;
     if (!$sortByAttribute) {
-        $sortBy = $usePaginationPrefix 
-            ? request()->get($paginationKey . '_sort_by') 
-            : request()->get('sort_by');
+        $sortBy = $usePaginationPrefix ? request()->get($paginationKey . '_sort_by') : request()->get('sort_by');
     }
-        
-    $order = $usePaginationPrefix 
-        ? request()->get($paginationKey . '_order', 'asc') 
-        : request()->get('order', 'asc');
+
+    $order = $usePaginationPrefix ? request()->get($paginationKey . '_order', 'asc') : request()->get('order', 'asc');
 @endphp
 <main class="py-12 lg:py-20">
     <div class="centered">
@@ -72,12 +75,13 @@
             <div class="xl:flex-1 xl:min-w-0">
                 <div class="flex mb-5 justify-between xl:justify-end">
                     <mobilefiltersburger class="xl:hidden"></mobilefiltersburger>
-                    <appsort v-cloak dropdown-class="right-0 origin-top-right" sort-key="{{ $paginationKey }}" 
-                        :use-prefix="{{$usePaginationPrefix ? 'true' : 'false'}}"
+                    <appsort v-cloak dropdown-class="right-0 origin-top-right" sort-key="{{ $paginationKey }}"
+                        :use-prefix="{{ $usePaginationPrefix ? 'true' : 'false' }}"
                         :sort-items="[
                             { text: 'По умолчанию', key: 'order', value: 'asc', current: true },
                             { text: 'По цене (возр.)', key: 'price', value: 'asc', attribute: 'price', current: false },
-                            { text: 'По цене (убыв.)', key: 'price', value: 'desc', attribute: 'price', current: false },
+                            { text: 'По цене (убыв.)', key: 'price', value: 'desc', attribute: 'price',
+                            current: false },
                             { text: 'По названию', key: 'name', value: 'asc', current: false }
                         ]">
                     </appsort>
@@ -109,16 +113,11 @@
                 @if (isset($entity->dataEntities) &&
                         method_exists($entity->dataEntities, 'lastPage') &&
                         $entity->dataEntities->lastPage() > 1)
-                    <pagination 
-                        search-key="{{ $paginationKey }}" 
-                        :use-prefix="{{$usePaginationPrefix ? 'true' : 'false'}}" 
-                        current="{{ $currentPage }}"
-                        :total="{{ $entity->dataEntities->total() }}"
-                        :per-page="{{ $perPage }}"
-                        :sort-by="'{{ $sortBy }}'"
-                        :sort-by-attribute="'{{ $sortByAttribute }}'"
-                        :order="'{{ $order }}'" 
-                        class="mt-10 lg:mt-14">
+                    <pagination search-key="{{ $paginationKey }}"
+                        :use-prefix="{{ $usePaginationPrefix ? 'true' : 'false' }}" current="{{ $currentPage }}"
+                        :total="{{ $entity->dataEntities->total() }}" :per-page="{{ $perPage }}"
+                        :sort-by="'{{ $sortBy }}'" :sort-by-attribute="'{{ $sortByAttribute }}'"
+                        :order="'{{ $order }}'" class="mt-10 lg:mt-14">
                     </pagination>
                 @endif
             </div>

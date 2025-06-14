@@ -35,6 +35,23 @@ trait HasDataEntities
             })
             ->toArray();
         
+        // Если передан пустой массив, удаляем все связи и связанные Link записи
+        if (empty($entities)) {
+            // Удаляем все связанные Link записи для текущих pivot записей
+            if (!empty($currentPivots)) {
+                $pivotIds = array_column($currentPivots, 'pivot_id');
+                $morphType = (new DataEntityable)->getMorphClass();
+                
+                Link::where('linkable_type', $morphType)
+                    ->whereIn('linkable_id', $pivotIds)
+                    ->delete();
+            }
+            
+            // Удаляем все связи
+            $this->dataEntities()->sync([]);
+            return;
+        }
+        
         // Создаем массив для хранения отношений
         $syncData = [];
         
@@ -79,6 +96,28 @@ trait HasDataEntities
                         }
                     }
                 }
+            }
+        }
+        
+        // Определяем какие pivot записи будут удалены
+        $newEntityIds = array_keys($syncData);
+        $currentEntityIds = array_keys($currentPivots);
+        $toDeleteEntityIds = array_diff($currentEntityIds, $newEntityIds);
+        
+        // Удаляем Link записи для pivot записей, которые будут удалены
+        if (!empty($toDeleteEntityIds)) {
+            $pivotIdsToDelete = [];
+            foreach ($toDeleteEntityIds as $entityId) {
+                if (isset($currentPivots[$entityId]['pivot_id'])) {
+                    $pivotIdsToDelete[] = $currentPivots[$entityId]['pivot_id'];
+                }
+            }
+            
+            if (!empty($pivotIdsToDelete)) {
+                $morphType = (new DataEntityable)->getMorphClass();
+                Link::where('linkable_type', $morphType)
+                    ->whereIn('linkable_id', $pivotIdsToDelete)
+                    ->delete();
             }
         }
         

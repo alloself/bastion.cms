@@ -86,7 +86,7 @@ class SiteController extends Controller
                 'X-Robots-Tag'   => 'index,follow'
             ]);
         } catch (\Throwable $e) {
-            Log::error('Rendering error: ' . $slug . ' : ' . $e->getMessage(), ['exception' => $e]);
+            dd($e);
             return $this->show404();
         }
     }

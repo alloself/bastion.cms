@@ -59,7 +59,9 @@ class Page extends BaseModel
         ],
       ],
       'dataCollections' => [
-        'descendants',
+        'descendants' => [
+          'link'
+        ],
         'images',
         'link',
         'attributes',

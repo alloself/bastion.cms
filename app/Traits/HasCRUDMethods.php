@@ -5,6 +5,7 @@ namespace App\Traits;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
 
 trait HasCRUDMethods
 {
@@ -35,23 +36,80 @@ trait HasCRUDMethods
     }
 
     /**
+     * Генерирует сайтмап при изменениях в модели Page
+     */
+    protected function triggerSitemapGeneration(): void
+    {
+        // Проверяем, является ли текущая модель страницей (Page)
+        if ($this instanceof \App\Models\Page) {
+            try {
+                // Запускаем генерацию сайтмапа синхронно
+                $exitCode = Artisan::call('sitemap:generate');
+                
+                if ($exitCode === 0) {
+                    Log::info('Успешно сгенерирован сайтмап после изменения страницы', [
+                        'page_id' => $this->id,
+                        'action' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] ?? 'unknown'
+                    ]);
+                } else {
+                    Log::warning('Команда генерации сайтмапа завершилась с ошибкой', [
+                        'page_id' => $this->id,
+                        'exit_code' => $exitCode
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Ошибка при запуске генерации сайтмапа', [
+                    'page_id' => $this->id,
+                    'error' => $e->getMessage()
+                ]);
+            }
+        }
+    }
+
+    /**
      * Синхронизирует отношения, вызывая соответствующий метод sync{Relation}.
      * Пустой массив тоже передаётся в метод синхронизации.
+     * Если отношение отсутствует в данных, передается пустой массив для очистки связей.
+     * Исключение: для 'link' метод не вызывается, если данные не переданы.
      *
      * @param array $relations
      */
     protected function syncRelations(array $relations): void
     {
-        foreach ($relations as $relation => $data) {
-            // проверяем, что отношение разрешено к синхронизации и метод существует
-            if (!in_array($relation, $this->syncableRelations, true)) {
-                continue;
-            }
-
+        $linkChanged = false;
+        
+        // Проходим по всем разрешенным отношениям
+        foreach ($this->syncableRelations as $relation) {
             $method = 'sync'.Str::studly($relation);
-            if (method_exists($this, $method) && is_array($data)) {
-                $this->{$method}($data);
+            
+            // Проверяем, что метод существует
+            if (method_exists($this, $method)) {
+                // Специальная обработка для link - не вызываем метод, если данные не переданы
+                if ($relation === 'link') {
+                    // Вызываем syncLink только если ключ 'link' присутствует в данных
+                    if (array_key_exists('link', $relations)) {
+                        $data = $relations['link'];
+                        // Вызываем метод синхронизации только если данные являются массивом
+                        if (is_array($data)) {
+                            $this->{$method}($data);
+                            $linkChanged = true;
+                        }
+                    }
+                } else {
+                    // Для остальных отношений получаем данные или пустой массив, если ключ отсутствует
+                    $data = $relations[$relation] ?? [];
+                    
+                    // Вызываем метод синхронизации только если данные являются массивом
+                    if (is_array($data)) {
+                        $this->{$method}($data);
+                    }
+                }
             }
+        }
+
+        // Генерируем сайтмап если изменилась ссылка у страницы
+        if ($linkChanged) {
+            $this->triggerSitemapGeneration();
         }
     }
 
@@ -64,6 +122,9 @@ trait HasCRUDMethods
         $relations = Arr::only($data, $instance->syncableRelations);
         $entity = static::query()->create(Arr::except($data, array_keys($relations)));
         $entity->syncRelations($relations);
+
+        // Генерируем сайтмап для страниц
+        $entity->triggerSitemapGeneration();
 
         return $entity;
     }
@@ -85,6 +146,21 @@ trait HasCRUDMethods
             $entity->getDataCollectionsTree();
         }
 
+        // Специальная обработка для ContentBlock - строим дерево children из descendants
+        if (in_array('children', $with, true) && $entity instanceof \App\Models\ContentBlock) {
+            if ($entity->relationLoaded('descendants') && $entity->descendants->isNotEmpty()) {
+                $entity->setRelation('children', $entity->descendants->toTree($entity->id));
+                $entity->unsetRelation('descendants');
+            } else {
+                $entity->setRelation('children', collect());
+            }
+        }
+
+        // Специальная обработка для dataEntities - загружаем link для pivot
+        if (in_array('dataEntities', $with, true) && method_exists($entity, 'loadDataEntityLinks')) {
+            $entity->loadDataEntityLinks();
+        }
+
         return $entity;
     }
 
@@ -97,15 +173,37 @@ trait HasCRUDMethods
         $this->update(Arr::except($data, array_keys($relations)));
         $this->syncRelations($relations);
 
+        // Генерируем сайтмап для страниц
+        $this->triggerSitemapGeneration();
+
         if (!empty($with)) {
             $this->load(static::prepareRelations($with));
         }
 
-        if (in_array('data_collections', $with, true) && method_exists($this, 'getDataCollectionsTree')) {
+        if (in_array('children', $with, true) && method_exists($this, 'getChildrenTree')) {
+            $this->getChildrenTree();
+        }
+
+        if (in_array('contentBlocks', $with, true) && method_exists($this, 'getContentBlocksTree')) {
+            $this->getContentBlocksTree();
+        }
+        if (in_array('dataCollections', $with, true) && method_exists($this, 'getDataCollectionsTree')) {
             $this->getDataCollectionsTree();
         }
-        if (in_array('content_blocks', $with, true) && method_exists($this, 'getContentBlocksTree')) {
-            $this->getContentBlocksTree();
+
+        // Специальная обработка для ContentBlock - строим дерево children из descendants
+        if (in_array('children', $with, true) && $this instanceof \App\Models\ContentBlock) {
+            if ($this->relationLoaded('descendants') && $this->descendants->isNotEmpty()) {
+                $this->setRelation('children', $this->descendants->toTree($this->id));
+                $this->unsetRelation('descendants');
+            } else {
+                $this->setRelation('children', collect());
+            }
+        }
+
+        // Специальная обработка для dataEntities - загружаем link для pivot
+        if (in_array('dataEntities', $with, true) && method_exists($this, 'loadDataEntityLinks')) {
+            $this->loadDataEntityLinks();
         }
 
         return $this;
@@ -134,6 +232,9 @@ trait HasCRUDMethods
      */
     public function deleteEntity(): bool
     {
+        // Генерируем сайтмап перед удалением для страниц
+        $this->triggerSitemapGeneration();
+
         if (method_exists($this, 'children') && $this->children()->count()) {
             $this->children()->delete();
         }

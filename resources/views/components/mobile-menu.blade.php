@@ -1,36 +1,18 @@
+@props(['navigation' => []])
+
 <offcanvas name="mobileMenu" v-cloak>
     <nav class="mb-8 w-[600px] max-w-full mx-auto">
         <ul class="text-[20px] leading-[1.1] flex flex-col">
-            <li class="border-b border-neutral-alpha">
-                <a 
-                    href="/ru/katalog" 
-                    class="block py-2 font-semibold [&.is-active-link]:text-brand hover:text-brand"
-                >Каталог</a>
-            </li>
-            <li class="border-b border-neutral-alpha">
-                <a 
-                    href="/ru/o-nas" 
-                    class="block py-2 font-semibold [&.is-active-link]:text-brand hover:text-brand"
-                >О нас</a>
-            </li>
-            <li class="border-b border-neutral-alpha">
-                <a 
-                    href="/ru/novosti" 
-                    class="block py-2 font-semibold [&.is-active-link]:text-brand hover:text-brand"
-                >Новости</a>
-            </li>
-            <li class="border-b border-neutral-alpha">
-                <a 
-                    href="/ru/delivery-and-payment" 
-                    class="block py-2 font-semibold [&.is-active-link]:text-brand hover:text-brand"
-                >Доставка и оплата</a>
-            </li>
-            <li class="border-b border-neutral-alpha">
-                <a 
-                    href="/ru/contacts" 
-                    class="block py-2 font-semibold [&.is-active-link]:text-brand hover:text-brand"
-                >Контакты</a>
-            </li>
+            @if(isset($navigation) && count($navigation))
+                @foreach ($navigation as $item)
+                    <li class="border-b border-neutral-alpha">
+                        <a href="{{ getAttributeByKey($item, 'link')?->pivot->value }}"
+                           class="block py-2 font-semibold [&.is-active-link]:text-brand hover:text-brand">
+                            {{ $item->name }}
+                        </a>
+                    </li>
+                @endforeach
+            @endif
         </ul>
     </nav>
     <div class="mt-auto flex flex-col items-center">

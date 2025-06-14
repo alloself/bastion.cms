@@ -31,6 +31,7 @@ class DataCollection extends BaseModel
     'link',
     'attributes',
     'images',
+    'dataEntities',
     'contentBlocks' => [
       'attributes',
       'link',
@@ -56,6 +57,9 @@ class DataCollection extends BaseModel
         'images',
         'link',
         'attributes',
+        'dataEntities' => [
+          'attributes',
+        ],
       ],
       'files',
       'images',

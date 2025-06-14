@@ -15,6 +15,24 @@ trait HasCRUD
     abstract public function model(): string;
 
     /**
+     * Фильтрует запрашиваемые связи через allowedRelations с поддержкой вложенных связей
+     */
+    protected function filterRelations(array $requestedWith): array
+    {
+        $allowedRelations = $this->allowedRelations();
+        $filteredWith = [];
+
+        foreach ($requestedWith as $relation) {
+            // Проверяем, есть ли связь в списке разрешенных
+            if (in_array($relation, $allowedRelations)) {
+                $filteredWith[] = $relation;
+            }
+        }
+
+        return $filteredWith;
+    }
+
+    /**
      * Получение списка сущностей
      */
     public function index(Request $request)
@@ -25,7 +43,9 @@ trait HasCRUD
             'page' => 'sometimes|integer|min:1'
         ]);
 
-        $with = $request->input('with', []);
+        // Фильтруем связи через allowedRelations
+        $requestedWith = $request->input('with', []);
+        $with = $this->filterRelations($requestedWith);
 
         $data = $request->has(['items_per_page', 'page'])
             ? $this->model()::getPaginateList($request->all(), $with)
@@ -44,9 +64,13 @@ trait HasCRUD
         return DB::transaction(function () use ($request) {
             $entity = $this->model()::createEntity($request->all());
 
+            // Фильтруем связи через allowedRelations
+            $requestedWith = $request->input('with', []);
+            $filteredWith = $this->filterRelations($requestedWith);
+
             $resourceClass = $this->resource();
 
-            return new $resourceClass($entity->load($request->input('with', [])));
+            return new $resourceClass($entity->load($filteredWith));
         });
     }
 
@@ -59,9 +83,13 @@ trait HasCRUD
             'with' => 'sometimes|array'
         ]);
 
+        // Фильтруем связи через allowedRelations
+        $requestedWith = $request->input('with', []);
+        $filteredWith = $this->filterRelations($requestedWith);
+
         $entity = $this->model()::showEntity(
             $id,
-            $request->input('with', [])
+            $filteredWith
         ) ?? throw new ModelNotFoundException();
         
         $resourceClass = $this->resource();
@@ -76,7 +104,12 @@ trait HasCRUD
     {
         return DB::transaction(function () use ($id, $request) {
             $entity = $this->model()::findOrFail($id);
-            $entity->updateEntity($request->all(), $request->input('with', []));
+            
+            // Фильтруем связи через allowedRelations
+            $requestedWith = $request->input('with', []);
+            $filteredWith = $this->filterRelations($requestedWith);
+            
+            $entity->updateEntity($request->all(), $filteredWith);
 
             $resourceClass = $this->resource();
 

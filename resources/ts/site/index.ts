@@ -15,7 +15,8 @@ import { initScrollAnimate } from "./scripts/initScrollAnimate";
 import { initContactsMap } from "./scripts/initYandexMap";
 import { initThreeObjects } from "./scripts/initThreeObjects";
 import { initGallery } from "./scripts/initGallery";
-import { applyNightModeToWorkClocks } from "./utils/workClocksNightMode";
+import { applyNightModeToWorkClocks, defaultWorkingHours } from "./utils/workClocksNightMode";
+import type { WorkingHoursConfig } from "./utils/workClocksNightMode";
 
 // vue imports
 // @ts-ignore
@@ -124,7 +125,20 @@ document.addEventListener("DOMContentLoaded", () => {
         initTapeSlider();
         initGallery();
 
+        // Можно использовать дефолтную конфигурацию
         applyNightModeToWorkClocks();
+        
+        // Или передать кастомную конфигурацию:
+        // const customWorkingHours: WorkingHoursConfig = {
+        //     0: { start: "12:00", end: "18:00", isWorkingDay: false }, // воскресенье
+        //     1: { start: "09:00", end: "21:00", isWorkingDay: true },  // понедельник
+        //     2: { start: "09:00", end: "21:00", isWorkingDay: true },  // вторник
+        //     3: { start: "09:00", end: "21:00", isWorkingDay: true },  // среда
+        //     4: { start: "09:00", end: "21:00", isWorkingDay: true },  // четверг
+        //     5: { start: "09:00", end: "21:00", isWorkingDay: true },  // пятница
+        //     6: { start: "10:00", end: "16:00", isWorkingDay: true },  // суббота
+        // };
+        // applyNightModeToWorkClocks(customWorkingHours);
     } catch (e) {
         console.log(e);
     }

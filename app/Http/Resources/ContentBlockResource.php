@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\AttributeResource;
+use App\Http\Resources\DataEntityResource;
 
 class ContentBlockResource extends JsonResource
 {
@@ -22,13 +23,12 @@ class ContentBlockResource extends JsonResource
             'order' => $this->order,
             'parent_id' => $this->parent_id,
             'template_id' => $this->template_id,
-            'children' => $this->whenLoaded('children'),
             'attributes' => $this->whenLoaded('attributes'),
             'template' => $this->whenLoaded('template'),
             'children' => self::collection($this->whenLoaded('children')),
             'images' => $this->whenLoaded('images'),
             'link' => $this->whenLoaded('link'),
-            'data_entities' => $this->whenLoaded('dataEntities'),
+            'data_entities' => DataEntityResource::collection($this->whenLoaded('dataEntities')),
             'data_collections' => DataCollectionResource::collection($this->whenLoaded('dataCollections')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
