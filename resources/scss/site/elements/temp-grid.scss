@@ -1,0 +1,9 @@
+.temp-grid-item {
+    &:nth-child(odd) {
+        @apply pl-0;
+        
+        @screen md {
+            @apply pl-4;
+        }
+    }
+} 
