@@ -16,4 +16,6 @@ class DataCollectionController extends BaseController
     {
         return DataCollectionResource::class;
     }
+
+
 }

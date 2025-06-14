@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DataEntity;
+use App\Http\Resources\DataEntityResource;
 
 class DataEntityController extends BaseController
 {
@@ -10,4 +11,11 @@ class DataEntityController extends BaseController
     {
         return DataEntity::class;
     }
+
+    protected function resource(): string
+    {
+        return DataEntityResource::class;
+    }
+
+
 }

@@ -38,12 +38,7 @@ class DataCollectionResource extends JsonResource
                     return $entity;
                 })
             ),
-            'pivot' =>  [
-                'id' => $this->pivot->id ?? null,
-                'key' => $this->pivot->key ?? null,
-                'order' => $this->pivot->order ?? null,
-                'paginate' => $this->pivot->paginate ?? null,
-            ],
+            'pivot' => $this->pivot
         ];
     }
 }

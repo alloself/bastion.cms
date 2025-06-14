@@ -16,10 +16,7 @@ abstract class BaseController extends Controller
 
     abstract public function model(): string;
 
-    protected function allowedRelations(): array
-    {
-        return [];
-    }
+
 
     protected function validationRules(): array
     {

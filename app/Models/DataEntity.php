@@ -12,6 +12,7 @@ use App\Traits\HasContentBlocks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Blade;
 use App\Models\ContentBlock;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property-read DataCollection|null $dataCollection Соответствующая dataCollection, установленная через transferDataCollectionInfoFromPivots
@@ -47,7 +48,6 @@ class DataEntity extends BaseModel
             ]
         ],
         'contentBlocks' => [
-            'attributes',
             'link',
             'template',
             'descendants' => [
@@ -59,6 +59,16 @@ class DataEntity extends BaseModel
             ],
             'files',
             'images',
+            'dataCollections' => [
+                'descendants' => [
+                    'link'
+                ],
+                'dataEntities' => [
+                    'attributes',
+                    'images',
+                    'dataEntityables.link'
+                ],
+            ],
         ]
     ];
 

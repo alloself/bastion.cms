@@ -17,23 +17,5 @@ class PageController extends BaseController
         return PageResource::class;
     }
     
-    protected function allowedRelations(): array
-    {
-        return [
-            'template',
-            'link',
-            'contentBlocks',
-            'contentBlocks.children',
-            'attributes',
-            'images',
-            'dataCollections',
-            'parent',
-            'parent.link',
-            'children',
-            'children.link',
-            'audits',
-            'audits.user',
-            'files'
-        ];
-    }
+
 }

@@ -17,17 +17,5 @@ class ContentBlockController extends BaseController
         return ContentBlockResource::class;
     }
     
-    protected function allowedRelations(): array
-    {
-        return [
-            'template',
-            'parent',
-            'children',
-            'attributes',
-            'images',
-            'link',
-            'dataEntities',
-            'dataCollections'
-        ];
-    }
+
 }
