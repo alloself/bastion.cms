@@ -24,6 +24,7 @@
                     density="compact"
                     hide-details
                     v-model="item.pivot.value"
+                    @update:model-value="() => onFieldUpdate()"
                 ></v-text-field>
             </template>
             <template #[`item.order`]="{ item }">
@@ -39,6 +40,7 @@
                     density="compact"
                     hide-details
                     v-model="item.pivot.key"
+                    @update:model-value="() => onFieldUpdate()"
                 ></v-text-field>
             </template>
             <template #[`item.url`]="{ item }">
@@ -53,6 +55,7 @@
                     return-object
                     hide-details
                     v-model="item.pivot.link"
+                    @update:model-value="() => onFieldUpdate()"
                 />
             </template>
             <template #[`item.preview`]="{ item }">
@@ -200,9 +203,31 @@ const onDeleteSelected = async () => {
 
 const onEditRelation = (id: string) => {
     editRelation(id, (item: T) => {
-        const updatedModel = [...modelValue];
-        updateTreeItem(updatedModel, item);
+        const updatedModel = modelValue.map(existingItem => {
+            if (existingItem.id === item.id) {
+                const hasValidPivotData = item.pivot && Object.values(item.pivot).some(value => 
+                    value !== null && value !== undefined && value !== ''
+                );
+                
+                return {
+                    ...existingItem,
+                    ...item,
+                    pivot: hasValidPivotData 
+                        ? {
+                            ...existingItem.pivot,
+                            ...item.pivot
+                        }
+                        : existingItem.pivot
+                };
+            }
+            return existingItem;
+        });
         emit("update:model-value", updatedModel);
     });
+};
+
+const onFieldUpdate = () => {
+    // Эмитируем обновленный modelValue, так как v-model уже изменил данные
+    emit("update:model-value", [...modelValue]);
 };
 </script>
