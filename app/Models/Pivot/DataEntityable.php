@@ -39,10 +39,18 @@ class DataEntityable extends MorphPivot
                 'files',
                 'images',
                 'dataCollections' => [
+                    'descendants' => [
+                        'link'
+                    ],
                     'attributes',
                     'link',
                     'template',
                     'images',
+                    'dataEntities' => [
+                        'attributes',
+                        'images',
+                        'dataEntityables.link'
+                    ],
                 ],
             ],
         ],
