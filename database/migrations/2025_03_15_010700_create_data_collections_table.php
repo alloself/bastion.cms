@@ -24,14 +24,11 @@ return new class extends Migration
             $table->foreignUuid('template_id')->nullable()->constrained();
             $table->foreignUuid('page_id')->nullable()->constrained();
 
-            // Добавляем индексы для nested set
             $table->index(['_lft', '_rgt'], 'nested_set_idx');
             
-            // Индекс для сортировки и поиска
             $table->index('order');
             $table->index('name');
             
-            // Индекс для поиска по parent_id
             $table->index('parent_id');
 
             $table->timestamps();

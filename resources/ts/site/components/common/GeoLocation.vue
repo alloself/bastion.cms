@@ -3,7 +3,7 @@
         <div class="svg-icon mr-[2px]" :class="iconClass">
             <svg><use xlink:href="#geo"></use></svg>
         </div>
-        <div>{{ currentLocation.city }}</div>
+        <div>Санкт-Петербург</div>
     </div>
 </template>
 

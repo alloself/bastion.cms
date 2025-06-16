@@ -27,45 +27,39 @@ class DataEntityService
         array $filters = []
     ): LengthAwarePaginator
     {
-        // Определяем, используем ли мы префикс
+
         $usePrefix = !empty($keyPrefix);
         
-        // Получаем параметры пагинации из запроса без его изменения
+
         if ($usePrefix) {
-            // Режим с префиксом
+
             $page = (int) $request->input("{$keyPrefix}_page", 1);
             $perPage = (int) $request->input("{$keyPrefix}_per_page", 15);
             $sortBy = $request->input("{$keyPrefix}_sort_by");
             $order = strtolower($request->input("{$keyPrefix}_order", 'asc'));
             $sortByAttribute = $request->input("{$keyPrefix}_sort_by_attribute");
             
-            // Для пагинатора будем использовать имя страницы с префиксом
+
             $pageName = "{$keyPrefix}_page";
         } else {
-            // Режим без префикса
+
             $page = (int) $request->input("page", 1);
             $perPage = (int) $request->input("per_page", 15);
             $sortBy = $request->input("sort_by");
             $order = strtolower($request->input("order", 'asc'));
             $sortByAttribute = $request->input("sort_by_attribute");
             
-            // Стандартное имя страницы для пагинатора
             $pageName = "page";
         }
         
 
         
-        // Проверка валидности параметров
         $page = max(1, $page);
-        $perPage = max(1, min($perPage, 15)); // Уменьшаем максимум
+        $perPage = max(1, min($perPage, 15)); 
         $order = in_array($order, ['asc', 'desc']) ? $order : 'asc';
         
-        // Получаем список ID коллекций (текущая + потомки)
         $collectionIds = $this->getCollectionWithDescendantIds($collection);
         
-
-        
-        // Создаем базовый запрос с использованием Eloquent
         $query = DataEntity::with([
             'attributes',
             'images',
@@ -86,7 +80,6 @@ class DataEntityService
               ->where('data_entityable_type', DataCollection::class);
         });
         
-        // Применяем дополнительные фильтры, если они переданы
         if (!empty($filters)) {
             foreach ($filters as $key => $value) {
                 if (is_array($value)) {
@@ -97,19 +90,15 @@ class DataEntityService
             }
         }
         
-        // Применяем фильтры из URL
+
         if ($usePrefix) {
             $this->applyUrlFiltersWithPrefix($query, $request, $keyPrefix);
         } else {
             $this->applyUrlFilters($query, $request);
         }
 
-        // Сортировка по атрибутам или обычным полям
         if ($sortByAttribute) {
-            // Сортировка по атрибуту
             if ($sortByAttribute === 'price') {
-                // Для цены используем подзапрос с числовой сортировкой
-                // Товары без цены или с некорректной ценой будут в конце
                 $query->select('data_entities.*')
                     ->selectSub(function ($subquery) {
                         $subquery->select('attributeables.value')
@@ -134,11 +123,10 @@ class DataEntityService
                             ELSE 1 
                         END', [DataEntity::class, 'price']);
                     }, 'has_no_price')
-                    ->orderBy('has_no_price', 'asc') // Сначала товары с ценой
+                    ->orderBy('has_no_price', 'asc') 
                     ->orderByRaw('CASE WHEN price_value IS NOT NULL THEN CAST(price_value AS DECIMAL(20,2)) END ' . $order)
                     ->orderBy('id', 'asc');
             } else {
-                // Сортировка по другим атрибутам
                 $query->select('data_entities.*')
                     ->join('attributeables', function ($join) {
                         $join->on('data_entities.id', '=', 'attributeables.attributeable_id')
@@ -154,9 +142,7 @@ class DataEntityService
                     ->distinct();
             }
         } else if ($sortBy) {
-            // Сортировка по полям модели
             if ($sortBy === 'pivot.order' || $sortBy === 'order') {
-                // Сортировка по порядку в pivot
                 $query->select('data_entities.*')
                     ->join('data_entityables', function ($join) use ($collectionIds) {
                         $join->on('data_entities.id', '=', 'data_entityables.data_entity_id')
@@ -167,17 +153,14 @@ class DataEntityService
                     ->orderBy('data_entities.id', 'asc')
                     ->distinct();
             } else {
-                // Обычная сортировка по полю модели
                 $query->orderBy($sortBy, $order)
                       ->orderBy('id', 'asc');
             }
         } else {
-            // Сортировка по умолчанию
             $query->orderBy('order', 'asc')
                   ->orderBy('id', 'asc');
         }
 
-        // Создаем пагинатор с учетом префикса
         $dataEntities = $query->paginate(
             $perPage, 
             ['*'], 
@@ -185,7 +168,6 @@ class DataEntityService
             $page
         );
         
-        // Добавляем параметры запроса к пагинатору
         $paginationParams = [];
         foreach ($request->all() as $param => $value) {
             if ($usePrefix) {

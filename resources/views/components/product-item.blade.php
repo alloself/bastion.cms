@@ -49,11 +49,11 @@
     <div class="text-[14px] text-dark font-semibold leading-[1.1] md:text-[20px]"> {{ $productLink?->title }}</div>
     <div
         class="flex flex-wrap justify-end gap-2.5 mt-1.5 text-[14px] font-semibold leading-[1.1] tracking-[-0.28px] md:text-[20px]">
-        @if ($priceOld)
-            <div class="opacity-40 line-through">{{ $priceOld }}</div>
+        @if ($priceOld && $priceOld != $price)
+            <div class="opacity-40 line-through">{{ number_format($priceOld, 0, ',', ' ') }} ₽</div>
         @endif
         @if ($price)
-            <div>{{ $price }}</div>
+            <div>{{ number_format($price, 0, ',', ' ') }} ₽</div>
         @endif
     </div>
 </div>

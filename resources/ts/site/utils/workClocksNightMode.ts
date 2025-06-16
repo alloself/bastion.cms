@@ -9,13 +9,13 @@ interface WorkingHoursConfig {
 
 // Дефолтная конфигурация рабочих часов
 const defaultWorkingHours: WorkingHoursConfig = {
-    0: { start: "10:00", end: "19:00", isWorkingDay: true }, // воскресенье
-    1: { start: "09:00", end: "21:00", isWorkingDay: true },  // понедельник
-    2: { start: "09:00", end: "21:00", isWorkingDay: true },  // вторник
-    3: { start: "09:00", end: "21:00", isWorkingDay: true },  // среда
-    4: { start: "09:00", end: "21:00", isWorkingDay: true },  // четверг
-    5: { start: "10:00", end: "20:00", isWorkingDay: true },  // пятница
-    6: { start: "10:00", end: "19:00", isWorkingDay: true }, // суббота
+    0: { start: "10:00", end: "22:00", isWorkingDay: true }, // воскресенье
+    1: { start: "10:00", end: "22:00", isWorkingDay: true },  // понедельник
+    2: { start: "10:00", end: "22:00", isWorkingDay: true },  // вторник
+    3: { start: "10:00", end: "22:00", isWorkingDay: true },  // среда
+    4: { start: "10:00", end: "22:00", isWorkingDay: true },  // четверг
+    5: { start: "10:00", end: "22:00", isWorkingDay: true },  // пятница
+    6: { start: "10:00", end: "22:00", isWorkingDay: true }, // суббота
 };
 
 /**
