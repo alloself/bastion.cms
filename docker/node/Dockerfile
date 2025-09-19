@@ -16,5 +16,4 @@ COPY . .
 # Открываем порт, на котором будет работать Vite
 EXPOSE 5173
 
-# Запускаем Vite-сервер
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["sh", "-c", "npm ci || npm install && npm run dev -- --host"]

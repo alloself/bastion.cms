@@ -22,7 +22,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 RUN docker-php-ext-install opcache bcmath
 
 # Создание пользователя с UID 1000
-RUN groupadd -g 1000 laravel && useradd -u 1000 -g laravel -m -s /bin/bash laravel
+RUN groupadd -g 1000 bastion && useradd -u 1000 -g bastion -m -s /bin/bash bastion
 
 # Установка рабочей директории
 WORKDIR /var/www/html
@@ -33,13 +33,13 @@ COPY . /var/www/html
 COPY ./docker/php/php.ini /usr/local/etc/php/php.ini
 
 # Настройка прав доступа для storage и bootstrap/cache
-RUN chown -R laravel:laravel /var/www/html/storage /var/www/html/bootstrap/cache
+RUN chown -R bastion:bastion /var/www/html/storage /var/www/html/bootstrap/cache
 RUN chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Установка Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Установка зависимостей Laravel
+# Установка зависимостей bastion
 RUN composer install
 
 EXPOSE 9000

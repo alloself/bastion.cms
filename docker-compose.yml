@@ -4,51 +4,51 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: laravel_app
+    container_name: bastion_app
     volumes:
       - ./:/var/www/html
       - ./docker/php/php.ini:/usr/local/etc/php/php.ini:cached
     environment:
       - DB_HOST=mysql
-      - DB_DATABASE=laravel
-      - DB_USERNAME=laravel
+      - DB_DATABASE=bastion
+      - DB_USERNAME=bastion
       - DB_PASSWORD=secret
     depends_on:
       - mysql
     networks:
-      - laravel_net
+      - bastion_net
 
   nginx:
     build:
       context: ./docker/nginx
       dockerfile: Dockerfile
-    container_name: laravel_nginx
+    container_name: bastion_nginx
     ports:
-      - "8443:443"   # HTTPS
+      - "8080:80"
     volumes:
       - ./:/var/www/html
     depends_on:
       - app
     networks:
-      - laravel_net
+      - bastion_net
 
   mysql:
     image: mysql:8.2.0
-    container_name: laravel_mysql
+    container_name: bastion_mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: secret
-      MYSQL_DATABASE: laravel
-      MYSQL_USER: laravel
+      MYSQL_DATABASE: bastion
+      MYSQL_USER: bastion
       MYSQL_PASSWORD: secret
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - laravel_net
+      - bastion_net
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: laravel_phpmyadmin
+    container_name: bastion_phpmyadmin
     restart: always
     ports:
       - "8001:80"
@@ -65,7 +65,7 @@ services:
     depends_on:
       - mysql
     networks:
-      - laravel_net
+      - bastion_net
 
   node:
     build:
@@ -82,5 +82,5 @@ volumes:
   mysql_data:
 
 networks:
-  laravel_net:
+  bastion_net:
     driver: bridge
