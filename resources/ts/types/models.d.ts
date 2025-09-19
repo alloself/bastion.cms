@@ -9,6 +9,10 @@ export interface Attribute {
   // relations
   attributeable?: Attribute
   audits?: AuditModel[]
+  // counts
+  audits_count: number
+  // exists
+  audits_exists: boolean
 }
 export type Attributefillable = Pick<Attribute, 'name' | 'key'>
 
@@ -31,12 +35,18 @@ export interface AuditModel {
   // relations
   auditable?: AuditModel
   user?: AuditModel
+  // counts
+  // exists
 }
 export type AuditModelfillable = Pick<AuditModel, >
 
 export interface BaseModel {
   // relations
   audits?: AuditModel[]
+  // counts
+  audits_count: number
+  // exists
+  audits_exists: boolean
 }
 export type BaseModelfillable = Pick<BaseModel, >
 
@@ -59,6 +69,30 @@ export interface ContentBlock {
   parent?: ContentBlock
   children?: ContentBlock[]
   link?: Link
+  images?: File[]
+  files?: File[]
+  data_entities?: DataEntity[]
+  data_collections?: DataCollection[]
+  attributes?: Attribute[]
+  // counts
+  audits_count: number
+  children_count: number
+  images_count: number
+  files_count: number
+  data_entities_count: number
+  data_collections_count: number
+  attributes_count: number
+  // exists
+  template_exists: boolean
+  audits_exists: boolean
+  parent_exists: boolean
+  children_exists: boolean
+  link_exists: boolean
+  images_exists: boolean
+  files_exists: boolean
+  data_entities_exists: boolean
+  data_collections_exists: boolean
+  attributes_exists: boolean
 }
 export type ContentBlockfillable = Pick<ContentBlock, 'name' | 'content' | 'order' | 'parent_id' | 'template_id'>
 
@@ -76,6 +110,8 @@ export interface DataCollection {
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null
+  // mutators
+  root: unknown
   // relations
   page?: Page
   template?: Template
@@ -88,6 +124,26 @@ export interface DataCollection {
   images?: File[]
   files?: File[]
   data_entities?: DataEntity[]
+  // counts
+  audits_count: number
+  children_count: number
+  content_blocks_count: number
+  attributes_count: number
+  images_count: number
+  files_count: number
+  data_entities_count: number
+  // exists
+  page_exists: boolean
+  template_exists: boolean
+  audits_exists: boolean
+  parent_exists: boolean
+  children_exists: boolean
+  link_exists: boolean
+  content_blocks_exists: boolean
+  attributes_exists: boolean
+  images_exists: boolean
+  files_exists: boolean
+  data_entities_exists: boolean
 }
 export type DataCollectionfillable = Pick<DataCollection, 'name' | 'meta' | 'parent_id' | 'page_id' | 'order' | 'template_id'>
 
@@ -103,12 +159,34 @@ export interface DataEntity {
   created_at: string | null
   updated_at: string | null
   deleted_at: string | null
+  // mutators
+  link: unknown
   // relations
   data_entityables?: DataEntityable[]
   variants?: DataEntity[]
+  template?: Template
   audits?: AuditModel[]
-  dataCollection?: DataCollection
-  dataCollectionLink?: Link
+  images?: File[]
+  files?: File[]
+  attributes?: Attribute[]
+  content_blocks?: ContentBlock[]
+  // counts
+  data_entityables_count: number
+  variants_count: number
+  audits_count: number
+  images_count: number
+  files_count: number
+  attributes_count: number
+  content_blocks_count: number
+  // exists
+  data_entityables_exists: boolean
+  variants_exists: boolean
+  template_exists: boolean
+  audits_exists: boolean
+  images_exists: boolean
+  files_exists: boolean
+  attributes_exists: boolean
+  content_blocks_exists: boolean
 }
 export type DataEntityfillable = Pick<DataEntity, 'name' | 'meta' | 'template_id' | 'content' | 'order' | 'parent_id'>
 
@@ -122,6 +200,10 @@ export interface File {
   updated_at: string | null
   // relations
   fileables?: Fileable[]
+  // counts
+  fileables_count: number
+  // exists
+  fileables_exists: boolean
 }
 export type Filefillable = Pick<File, 'url' | 'name' | 'extension'>
 
@@ -140,6 +222,10 @@ export interface Link {
   // relations
   linkable?: Link
   audits?: AuditModel[]
+  // counts
+  audits_count: number
+  // exists
+  audits_exists: boolean
 }
 export type Linkfillable = Pick<Link, 'title' | 'subtitle' | 'slug' | 'url'>
 
@@ -166,6 +252,25 @@ export interface Page {
   images?: File[]
   files?: File[]
   data_collections?: DataCollection[]
+  // counts
+  audits_count: number
+  children_count: number
+  content_blocks_count: number
+  attributes_count: number
+  images_count: number
+  files_count: number
+  data_collections_count: number
+  // exists
+  template_exists: boolean
+  link_exists: boolean
+  audits_exists: boolean
+  parent_exists: boolean
+  children_exists: boolean
+  content_blocks_exists: boolean
+  attributes_exists: boolean
+  images_exists: boolean
+  files_exists: boolean
+  data_collections_exists: boolean
 }
 export type Pagefillable = Pick<Page, 'index' | 'meta' | 'parent_id' | 'template_id'>
 
@@ -180,8 +285,32 @@ export interface Permission {
   roles?: Role[]
   users?: User[]
   permissions?: Permission[]
+  // counts
+  roles_count: number
+  users_count: number
+  permissions_count: number
+  // exists
+  roles_exists: boolean
+  users_exists: boolean
+  permissions_exists: boolean
 }
 export type Permissionfillable = Pick<Permission, >
+
+export interface Attributeable {
+  // columns
+  attributeable_type: string
+  attributeable_id: string
+  value: string | null
+  order: number
+  attribute_id: string
+  // relations
+  attributeable?: Attributeable
+  attribute?: Attribute
+  // counts
+  // exists
+  attribute_exists: boolean
+}
+export type Attributeablefillable = Pick<Attributeable, 'attribute_id' | 'attributeable_id' | 'attributeable_type' | 'value' | 'order'>
 
 export interface ContentBlockable {
 }
@@ -203,21 +332,20 @@ export interface DataEntityable {
   data_entityable?: DataEntityable
   data_entity?: DataEntity
   link?: Link
+  // counts
+  // exists
+  data_entity_exists: boolean
+  link_exists: boolean
 }
 export type DataEntityablefillable = Pick<DataEntityable, 'data_entity_id' | 'data_entityable_type' | 'data_entityable_id' | 'key' | 'order'>
 
 export interface Fileable {
-  // columns
-  id: string
-  fileable_type: string
-  fileable_id: string
-  type: string
-  key: string | null
-  order: number
-  file_id: string
   // relations
   fileable?: Fileable
   file?: File
+  // counts
+  // exists
+  file_exists: boolean
 }
 export type Fileablefillable = Pick<Fileable, 'file_id' | 'fileable_id' | 'fileable_type'>
 
@@ -231,6 +359,12 @@ export interface Role {
   // relations
   permissions?: Permission[]
   users?: User[]
+  // counts
+  permissions_count: number
+  users_count: number
+  // exists
+  permissions_exists: boolean
+  users_exists: boolean
 }
 export type Rolefillable = Pick<Role, >
 
@@ -243,7 +377,20 @@ export interface Template {
   created_at: string | null
   updated_at: string | null
   // relations
+  content_blocks?: ContentBlock[]
+  pages?: Page[]
   audits?: AuditModel[]
+  attributes?: Attribute[]
+  // counts
+  content_blocks_count: number
+  pages_count: number
+  audits_count: number
+  attributes_count: number
+  // exists
+  content_blocks_exists: boolean
+  pages_exists: boolean
+  audits_exists: boolean
+  attributes_exists: boolean
 }
 export type Templatefillable = Pick<Template, 'name' | 'value'>
 
@@ -262,5 +409,15 @@ export interface User {
   roles?: Role[]
   permissions?: Permission[]
   audits?: AuditModel[]
+  // counts
+  notifications_count: number
+  roles_count: number
+  permissions_count: number
+  audits_count: number
+  // exists
+  notifications_exists: boolean
+  roles_exists: boolean
+  permissions_exists: boolean
+  audits_exists: boolean
 }
 export type Userfillable = Pick<User, 'first_name' | 'last_name' | 'middle_name' | 'email' | 'password'>
