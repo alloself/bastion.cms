@@ -63,6 +63,7 @@ class SiteController extends Controller
     {
         $slug = '/' . trim($url, '/');
 
+
         try {
             $link = Link::where('url', $slug)->with([
                 'linkable' => function ($query) {
@@ -86,6 +87,7 @@ class SiteController extends Controller
                 'X-Robots-Tag'   => 'index,follow'
             ]);
         } catch (\Throwable $e) {
+            env('APP_DEBUG') && dd($e);
             Log::error('Rendering error: ' . $slug . ' : ' . $e->getMessage(), ['exception' => $e]);
             return $this->show404();
         }

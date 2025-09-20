@@ -21,6 +21,7 @@ class PageResource extends JsonResource
             'parent_id' => $this->parent_id,
             'template_id' => $this->template_id,
             'template' => new TemplateResource($this->whenLoaded('template')),
+            'parent' => new PageResource($this->whenLoaded('parent')),
             'link' => new LinkResource($this->whenLoaded('link')),
             'content_blocks' => ContentBlockResource::collection($this->whenLoaded('contentBlocks')),
             'attributes' => $this->attributes,

@@ -39,6 +39,7 @@ export const modules: IModule[] = [
             "images",
             "dataCollections",
             "template",
+            "parent.link",
         ],
     },
     {
