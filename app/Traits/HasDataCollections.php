@@ -6,6 +6,7 @@ use App\Models\DataCollection;
 use App\Models\Pivot\DataCollectionable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
 trait HasDataCollections
@@ -30,13 +31,13 @@ trait HasDataCollections
     {
         $mapped = [];
 
-        foreach ($values as $dataEntity) {
-            $mapped[$dataEntity['id']] = [
-                'key'      => $dataEntity['pivot']['key'],
-                'order'    => $dataEntity['pivot']['order'] ?? 0,
-                'paginate' => $dataEntity['pivot']['paginate'] ?? false,
-            ];
-        }
+		foreach ($values as $dataEntity) {
+			$mapped[$dataEntity['id']] = [
+				'key'      => Arr::get($dataEntity, 'pivot.key'),
+				'order'    => Arr::get($dataEntity, 'pivot.order', 0),
+				'paginate' => (bool) Arr::get($dataEntity, 'pivot.paginate', false),
+			];
+		}
 
         // Перезаписываем pivot-записи
         $this->dataCollections()->sync($mapped);

@@ -20,6 +20,13 @@ class DataCollectionResource extends JsonResource
             'name' => $this->name,
             'meta' => $this->meta,
             'order' => $this->order,
+            'pivot' => $this->whenPivotLoaded('data_collectionables', function () {
+                return [
+                    'key' => $this->pivot->key,
+                    'order' => $this->pivot->order,
+                    'paginate' => (bool) $this->pivot->paginate,
+                ];
+            }),
             'attributes' => $this->whenLoaded('attributes'),
             'images' => $this->whenLoaded('images'),
             'files' => $this->whenLoaded('files'),

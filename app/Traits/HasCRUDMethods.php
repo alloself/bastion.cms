@@ -101,10 +101,19 @@ trait HasCRUDMethods
             $this->load(static::prepareRelations($with));
         }
 
-        if (in_array('data_collections', $with, true) && method_exists($this, 'getDataCollectionsTree')) {
+        // children
+        if (in_array('children', $with, true) && method_exists($this, 'getChildrenTree')) {
+            $this->getChildrenTree();
+        }
+
+        // dataCollections
+        if ((in_array('data_collections', $with, true) || in_array('dataCollections', $with, true))
+            && method_exists($this, 'getDataCollectionsTree')) {
             $this->getDataCollectionsTree();
         }
-        if (in_array('content_blocks', $with, true) && method_exists($this, 'getContentBlocksTree')) {
+        // contentBlocks
+        if ((in_array('content_blocks', $with, true) || in_array('contentBlocks', $with, true))
+            && method_exists($this, 'getContentBlocksTree')) {
             $this->getContentBlocksTree();
         }
 

@@ -75,4 +75,21 @@ class ContentBlock extends BaseModel
       }
     });
   }
+
+  /**
+   * Формирует и загружает отношение children на основе загруженных descendants.
+   */
+  public function getChildrenTree(): self
+  {
+    $this->loadMissing('descendants');
+
+    if ($this->relationLoaded('descendants') && $this->descendants->isNotEmpty()) {
+      $this->setRelation('children', $this->descendants->toTree($this->id));
+      $this->unsetRelation('descendants');
+    } else {
+      $this->setRelation('children', collect());
+    }
+
+    return $this;
+  }
 }
