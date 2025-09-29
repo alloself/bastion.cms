@@ -1,0 +1,112 @@
+.app-team-slider {
+    $this: &;
+
+    @apply static px-10 md:px-5;
+
+    &__item,
+    &__item > *,
+    &__image img {
+        @apply transition-all duration-[0.4s];
+    }
+
+    &__image {
+        @apply mb-5 origin-bottom;
+        @apply scale-[0.6];
+
+        img {
+            @apply mx-auto block;
+        }
+    }
+
+    &__name {
+        @apply text-center;
+        @apply opacity-0 pointer-events-none;
+    }
+
+    &__func {
+        @apply text-center;
+        @apply opacity-0 pointer-events-none;
+    }
+
+    &__item {
+        @apply block;
+    }
+
+    .swiper-slide {
+        @apply h-auto flex flex-col justify-end;
+    }
+
+    .swiper-slide-active {
+        #{$this}__image {
+            @apply scale-100;
+        }
+
+        #{$this}__name {
+            @apply opacity-100 pointer-events-auto;
+        }
+
+        #{$this}__func {
+            @apply opacity-100 pointer-events-auto;
+        }
+    }
+}
+
+.slider-pagination {
+    @apply absolute 
+        z-[10] 
+        left-0 
+        right-0 
+        bottom-8
+        flex 
+        flex-wrap 
+        justify-center 
+        gap-1.5;
+
+    &__item {
+        @apply w-3
+            h-3
+            rounded-full
+            border-2
+            border-current
+            cursor-pointer
+            opacity-60
+            transition-all
+            duration-200;
+
+        &[class*="active"] {
+            @apply bg-current opacity-100 pointer-events-none;
+        }
+    }
+}
+
+.slider-prev,
+.slider-next {
+    @apply cursor-pointer
+        absolute
+        top-1/2
+        -translate-y-1/2
+        z-10
+        p-1
+        transition-all
+        duration-200
+        lg:p-3;
+
+    .svg-icon {
+        @apply w-8
+            h-8
+            block;
+    }
+
+    &[class*="disabled"] {
+        @apply pointer-events-none
+            opacity-40;
+    }
+}
+
+.slider-prev {
+    @apply left-0;
+}
+
+.slider-next {
+    @apply right-0;
+}

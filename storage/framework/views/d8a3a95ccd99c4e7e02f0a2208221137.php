@@ -1,0 +1,66 @@
+<?php
+    $team_list = getItemByPivotKey($contentBlock->dataCollections, 'team')?->dataEntities;
+    $metric_1 = getItemByPivotKey($contentBlock->dataEntities, 'metric_1');
+    $metric_2 = getItemByPivotKey($contentBlock->dataEntities, 'metric_2');
+    $link = getAttributeByKey($contentBlock, 'link')?->pivot->value;
+?>
+
+<section id='block-9ffeb9fa-9c32-44ed-8899-8fe5ea12f3d6' class="app-about-employees bg-stone bg-opacity-30 py-8">
+    <div class="centered">
+        <div class="flex flex-col gap-4 mb-6 lg:flex-row">
+            <div class="text-simple text-simple--dark lg:w-1/4"><?php echo e($contentBlock->link->subtitle); ?></div>
+            <h2 class="h4 mb-0 text-brand lg:w-3/4 lg:max-w-[75%]"><?php echo e($contentBlock->link->title); ?></р>
+        </div>
+        <div class="text-simple text-simple--dark lg:pl-4 lg:ml-[50%] lg:columns-2 lg:gap-5">
+            <?php echo $contentBlock->content; ?>
+
+        </div>
+
+        <?php if(isset($metric_1) && isset($metric_2)): ?>
+        <div class="mt-12 flex flex-col gap-8 md:gap-4 md:flex-row lg:mt-[150px] lg:pl-4 lg:ml-[50%]">
+            <?php if(isset($metric_1)): ?>
+            <div class="md:w-1/2">
+                <div class="text-brand font-medium mb-1 leading-[1.0] text-[120px] xl:text-[160px]"><?php echo e($metric_1->link->subtitle); ?></div>
+                <div class="text-label text-label--dark"><?php echo e($metric_1->link->title); ?></div>
+            </div>
+            <?php endif; ?>
+            <?php if(isset($metric_2)): ?>
+            <div class="md:w-1/2">
+                <div class="text-brand font-medium mb-1 leading-[1.0] text-[120px] xl:text-[160px]"><?php echo e($metric_2->link->subtitle); ?></div>
+                <div class="text-label text-label--dark"><?php echo e($metric_2->link->title); ?></div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if(isset($team_list) && count($team_list)): ?>
+        <div class="mt-8 pt-8 border-t border-brand border-opacity-20 grid gap-8 md:gap-5 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <?php $__currentLoopData = $team_list; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php
+                    $photo = getItemByPivotKey($item->images, 'photo')?->url;
+                ?>
+                <div>
+                    <div class="mb-5">
+                        <img class="w-full" src="<?php echo e($photo); ?>" alt="<?php echo e($item->link->title); ?>">
+                    </div>
+                    <div class="text-brand text-[18px] font-medium mb-1"><?php echo e($item->link->title); ?></div>
+                    <div class="text-label text-label--dark"><?php echo e($item->link->subtitle); ?></div>
+                </div>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        </div>
+        <?php endif; ?>
+
+        <div class="py-12 flex gap-1 justify-center">
+            <?php if(isset($link)): ?>
+                <a
+                    href="<?php echo e($link); ?>"
+                    class="app-button app-button--primary min-w-[200px]"
+                >Смотреть еще</a>
+                <a
+                    href="<?php echo e($link); ?>"
+                    class="app-button app-button--primary app-button--square"
+                >+</a>
+            <?php endif; ?>
+        </div>
+    </div>
+</section><?php /**PATH /var/www/storage/framework/views/a7fcc960028071a2c07b19e8e2f00a85.blade.php ENDPATH**/ ?>

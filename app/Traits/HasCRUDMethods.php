@@ -74,15 +74,9 @@ trait HasCRUDMethods
     public static function showEntity($id, array $with = []): self
     {
         $entity = static::with(static::prepareRelations($with))->findOrFail($id);
-        if (in_array('children', $with, true) && method_exists($entity, 'getChildrenTree')) {
-            $entity->getChildrenTree();
-        }
-
-        if (in_array('contentBlocks', $with, true) && method_exists($entity, 'getContentBlocksTree')) {
-            $entity->getContentBlocksTree();
-        }
-        if (in_array('dataCollections', $with, true) && method_exists($entity, 'getDataCollectionsTree')) {
-            $entity->getDataCollectionsTree();
+        // Универсальная пост-обработка загруженных отношений (деревья и т.п.)
+        if (method_exists($entity, 'postProcessRelations')) {
+            $entity->postProcessRelations($with);
         }
 
         return $entity;
@@ -101,21 +95,8 @@ trait HasCRUDMethods
             $this->load(static::prepareRelations($with));
         }
 
-        // children
-        if (in_array('children', $with, true) && method_exists($this, 'getChildrenTree')) {
-            $this->getChildrenTree();
-        }
-
-        // dataCollections
-        if ((in_array('data_collections', $with, true) || in_array('dataCollections', $with, true))
-            && method_exists($this, 'getDataCollectionsTree')) {
-            $this->getDataCollectionsTree();
-        }
-        // contentBlocks
-        if ((in_array('content_blocks', $with, true) || in_array('contentBlocks', $with, true))
-            && method_exists($this, 'getContentBlocksTree')) {
-            $this->getContentBlocksTree();
-        }
+        // Универсальная пост-обработка загруженных отношений (деревья и т.п.)
+        $this->postProcessRelations($with);
 
         return $this;
     }
@@ -147,5 +128,29 @@ trait HasCRUDMethods
             $this->children()->delete();
         }
         return $this->delete();
+    }
+
+    /**
+     * Универсальная пост-обработка загруженных отношений.
+     * Ищет и вызывает методы вида get{Relation}Tree() для базовых отношений из $with.
+     */
+    protected function postProcessRelations(array $with): void
+    {
+        $bases = [];
+        foreach ($with as $relation) {
+            $base = strpos($relation, '.') !== false ? strstr($relation, '.', true) : $relation;
+            if ($base !== null && $base !== '') {
+                $bases[$base] = true;
+            }
+        }
+
+        foreach (array_keys($bases) as $base) {
+            // Нормализуем: поддерживаем и snake_case, и camelCase
+            $studly = Str::studly(Str::snake($base));
+            $method = 'get'.$studly.'Tree';
+            if (method_exists($this, $method)) {
+                $this->{$method}();
+            }
+        }
     }
 }

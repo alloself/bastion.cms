@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\PageResource;
 use App\Models\Page;
 
 class PageController extends BaseController
@@ -16,11 +17,17 @@ class PageController extends BaseController
         return [
             'template',
             'link',
+            'parent.link',
             'contentBlocks',
             'contentBlocks.children',
             'attributes',
             'images',
             'dataCollections'
         ];
+    }
+
+    protected function resource(): string
+    {
+        return PageResource::class;
     }
 }

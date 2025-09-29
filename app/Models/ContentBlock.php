@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HandlesNestedParent;
 use App\Traits\HasAttributes;
 use App\Traits\HasDataCollections;
 use App\Traits\HasDataEntities;
@@ -15,7 +16,7 @@ use Illuminate\Support\Collection;
 
 class ContentBlock extends BaseModel
 {
-  use NodeTrait, HasLink, HasImages, HasDataEntities, HasDataCollections, HasAttributes;
+  use NodeTrait, HasLink, HasImages, HasDataEntities, HasDataCollections, HasAttributes, HandlesNestedParent;
 
   protected $fillable = ['name', 'content', 'order', 'parent_id', 'template_id'];
 

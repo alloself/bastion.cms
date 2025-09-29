@@ -35,7 +35,7 @@ function cleanEmptyValues<T>(data: T): T | undefined {
     }
 
     // Проверка примитивов на пустоту
-    if (data === null || data === undefined || data === "") {
+    if (data === undefined || data === "") {
         return undefined;
     }
 
@@ -62,7 +62,9 @@ export const client = axios.create({
 client.interceptors.request.use(
     (config) => {
         if (config.data) {
-            if (config.data instanceof Object) {
+            if (Array.isArray(config.data)) {
+                config.data = cleanEmptyValues(config.data);
+            } else if (typeof config.data === "object" && config.data !== null) {
                 if (!hasFile(config.data)) {
                     config.data = cleanEmptyValues(config.data);
                 } else {
@@ -71,7 +73,7 @@ client.interceptors.request.use(
                     Object.entries(config.data).forEach(([key, value]) => {
                         if (Array.isArray(value)) {
                             value.forEach((val) => formData.append(key, val));
-                        } else {
+                        } else if (value !== undefined && value !== null) {
                             formData.append(key, value as any);
                         }
                     });

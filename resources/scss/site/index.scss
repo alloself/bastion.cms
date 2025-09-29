@@ -1,6 +1,25 @@
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@tailwind base;
+@tailwind components;
+
+// base
+@import "@/scss/site/scss/base/fonts";
+@import "@/scss/site/scss/base/defaults";
+@import "@/scss/site/scss/base/typography";
+@import "@/scss/site/scss/base/animates";
+
+// elements
+@import "@/scss/site/scss/elements/svg-icon";
+@import "@/scss/site/scss/elements/button";
+@import "@/scss/site/scss/elements/notifications";
+@import "@/scss/site/scss/elements/decor-link";
+@import "@/scss/site/scss/elements/forms";
+@import "@/scss/site/scss/elements/sliders";
+@import "@/scss/site/scss/elements/stripes";
+@import "@/scss/site/scss/elements/service-card";
+
+// utilities
+@tailwind utilities;
+
 
 [v-cloak] {
     display: none;

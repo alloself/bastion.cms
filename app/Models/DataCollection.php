@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HandlesNestedParent;
 use App\Traits\HasAttributes;
 use App\Traits\HasContentBlocks;
 use App\Traits\HasDataEntities;
@@ -18,7 +19,7 @@ use App\Services\DataEntityService;
 
 class DataCollection extends BaseModel
 {
-  use HasFactory, NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages, HasDataEntities;
+  use HasFactory, NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages, HasDataEntities, HandlesNestedParent;
 
   protected $fillable = ['name', 'meta', 'parent_id', 'page_id', 'order', 'template_id'];
 
@@ -34,6 +35,20 @@ class DataCollection extends BaseModel
     'contentBlocks' => [
       'attributes',
       'link',
+      'dataCollections' => [
+        'descendants' => [
+          'link'
+        ],
+        'images',
+        'link',
+        'attributes',
+        'dataEntities' => [
+          'files',
+          'images',
+          'attributes',
+          'dataEntityables.link'
+        ],
+      ],
       'descendants' => [
         'attributes',
         'link',
@@ -47,15 +62,13 @@ class DataCollection extends BaseModel
           'descendants' => [
             'link'
           ],
+          'dataEntities' => [
+            'files',
+            'images',
+            'attributes',
+            'dataEntityables.link'
+          ],
         ],
-      ],
-      'dataCollections' => [
-        'descendants' => [
-          'link'
-        ],
-        'images',
-        'link',
-        'attributes',
       ],
       'files',
       'images',
@@ -231,8 +244,14 @@ class DataCollection extends BaseModel
       'footer' => $footer
     ], 0, $request);
 
+    $template = $this->template;
+
+    if ($template === null || $template->value === null) {
+      throw new \RuntimeException('Template is not defined for the data collection.');
+    }
+
     return Blade::render(
-      $this->template->value,
+      $template->value,
       [
         'entity' => $this,
         'header' => $header,

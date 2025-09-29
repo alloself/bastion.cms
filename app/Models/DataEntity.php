@@ -90,10 +90,10 @@ class DataEntity extends BaseModel
 
 
         $dataEntityable = $this->dataEntityables->first(function ($item) use ($pivot) {
-            return $item->data_entityable_id == $pivot->data_entityable_id && $item->data_entityable_type == $pivot->data_entityable_type;
+            return $item->data_entityable_id == $pivot?->data_entityable_id && $item->data_entityable_type == $pivot?->data_entityable_type;
         });
         
-        $link = $pivot->link ?? $dataEntityable?->link ?? $defaultLink?->link;
+        $link = $pivot?->link ?? $dataEntityable?->link ?? $defaultLink?->link;
 
         return $link;
     }

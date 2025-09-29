@@ -16,7 +16,7 @@ trait HasDataEntities
         return $this->morphToMany(DataEntity::class, 'data_entityable')
             ->using(DataEntityable::class)
             ->withPivot(['id', 'key', 'order'])
-            ->orderBy('order');
+            ->orderByDesc('data_entityables.order');
     }
 
     public function syncDataEntities(array $entities): void

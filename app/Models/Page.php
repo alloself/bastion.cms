@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HandlesNestedParent;
 use App\Traits\HasAttributes;
 use App\Traits\HasContentBlocks;
 use App\Traits\HasDataCollections;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Blade;
 
 class Page extends BaseModel
 {
-  use NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages, HasDataCollections;
+  use NodeTrait, HasLink, HasContentBlocks, HasAttributes, HasImages, HasDataCollections, HandlesNestedParent;
 
   protected $fillable = ['index', 'meta', 'parent_id', 'template_id'];
 
@@ -31,6 +32,7 @@ class Page extends BaseModel
       'attributes',
       'link',
       'dataEntities' => [
+        'files',
         'images',
         'attributes',
         'dataEntityables.link'
@@ -47,12 +49,14 @@ class Page extends BaseModel
           'link',
           'descendants',
           'dataEntities' => [
+            'files',
             'attributes',
             'images',
             'dataEntityables.link'
           ]
         ],
         'dataEntities' => [
+          'files',
           'images',
           'attributes',
           'dataEntityables.link'
@@ -64,6 +68,7 @@ class Page extends BaseModel
         'link',
         'attributes',
         'dataEntities' => [
+          'files',
           'attributes',
           'images',
           'dataEntityables.link'
@@ -117,10 +122,9 @@ class Page extends BaseModel
     return $this->morphOne(Link::class, 'linkable');
   }
 
-  public static function getRenderRelations(Request $request)
+  public static function getRenderRelations()
   {
-    $query->with(self::$renderRelations);
-    return $query;
+    return self::$renderRelations;
   }
 
   public function render(Request $request)

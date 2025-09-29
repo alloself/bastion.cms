@@ -21,7 +21,13 @@ function getItemsByPivotKey($array, $findKey)
 
 function getAttributeByKey($item, $findKey)
 {
-    return $item?->attributes?->first(function ($value, $key) use ($findKey) {
+    if ($item instanceof Collection) {
+        return $item->first(function ($value) use ($findKey) {
+            return $value->key === $findKey;
+        });
+    }
+
+    return $item?->attributes?->first(function ($value) use ($findKey) {
         return $value->key === $findKey;
     });
 }
@@ -38,6 +44,15 @@ function activeMenu($uri = '')
         $active = 'is-active-link';
     }
     return $active;
+}
+
+function isActivePage($uri = '')
+{
+    $urlPath = "/" . Request::segment(1);
+    if ($urlPath == $uri) {
+        return "is-active-link";
+    }
+    return "";
 }
 
 function getAttributeByName($array, $findKey)

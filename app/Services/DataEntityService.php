@@ -158,23 +158,32 @@ class DataEntityService
             if ($sortBy === 'pivot.order' || $sortBy === 'order') {
                 // Сортировка по порядку в pivot
                 $query->select('data_entities.*')
+                    ->selectRaw('MAX(data_entityables.order) as pivot_order')
                     ->join('data_entityables', function ($join) use ($collectionIds) {
                         $join->on('data_entities.id', '=', 'data_entityables.data_entity_id')
                              ->whereIn('data_entityables.data_entityable_id', $collectionIds)
                              ->where('data_entityables.data_entityable_type', '=', DataCollection::class);
                     })
-                    ->orderBy('data_entityables.order', $order)
-                    ->orderBy('data_entities.id', 'asc')
-                    ->distinct();
+                    ->groupBy('data_entities.id')
+                    ->orderBy('pivot_order', $order)
+                    ->orderBy('data_entities.id', 'asc');
             } else {
                 // Обычная сортировка по полю модели
                 $query->orderBy($sortBy, $order)
                       ->orderBy('id', 'asc');
             }
         } else {
-            // Сортировка по умолчанию
-            $query->orderBy('order', 'asc')
-                  ->orderBy('id', 'asc');
+            // Сортировка по умолчанию: по приоритету из pivot-таблицы (убывание)
+            $query->select('data_entities.*')
+                ->selectRaw('MAX(data_entityables.order) as pivot_order')
+                ->join('data_entityables', function ($join) use ($collectionIds) {
+                    $join->on('data_entities.id', '=', 'data_entityables.data_entity_id')
+                         ->whereIn('data_entityables.data_entityable_id', $collectionIds)
+                         ->where('data_entityables.data_entityable_type', '=', DataCollection::class);
+                })
+                ->groupBy('data_entities.id')
+                ->orderByDesc('pivot_order')
+                ->orderBy('data_entities.id', 'asc');
         }
 
         // Создаем пагинатор с учетом префикса

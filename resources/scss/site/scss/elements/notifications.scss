@@ -1,0 +1,116 @@
+.notifications-list-enter-active,
+.notifications-list-leave-active {
+    @apply transition-all duration-300 ease-[cubic-bezier(0.51,0.92,0.24,1.15)];
+}
+
+.notifications-container {
+    --notifications-primary-color: rgb(58 121 243);
+    --notifications-primary-text: #fff;
+    --notifications-info-color: rgb(56 189 248);
+    --notifications-info-text: #fff;
+    --notifications-success-color: rgb(34 197 94);
+    --notifications-success-text: #fff;
+    --notifications-warning-color: rgb(245 158 11);
+    --notifications-warning-text: #fff;
+    --notifications-danger-color: rgb(244 63 94);
+    --notifications-danger-text: #fff;
+    --notifications-width: 320px;
+    --notifications-container-z-index: 1040;
+    --notifications-container-gap: 12px;
+    --notifications-item-radius: 10px;
+    --notifications-item-padding: 8px;
+    --notifications-item-gap: 8px;
+    --notifications-item-label-text-size: 13px;
+    --notifications-item-title-text-size: 18px;
+    --notifications-item-desc-text-size: 16px;
+    --notifications-item-icon-size: 32px;
+
+    @apply flex
+        left-0
+        top-0
+        right-0
+        bottom-0
+        fixed
+        overflow-hidden
+        p-3
+        pointer-events-none
+        z-[var(--notifications-container-z-index)]
+        flex-col
+        gap-[var(--notifications-container-gap)];
+
+    &--left {
+        @apply items-start;
+
+        .notifications-list-enter-from,
+        .notifications-list-leave-to {
+            @apply opacity-0 -translate-x-full;
+        }
+    }
+
+    &--right {
+        @apply items-end;
+
+        .notifications-list-enter-from,
+        .notifications-list-leave-to {
+            @apply opacity-0 translate-x-full;
+        }
+    }
+}
+
+.notifications-item {
+    @apply pointer-events-auto
+        flex
+        shadow-lg
+        gap-[var(--notifications-item-gap)]
+        p-[var(--notifications-item-padding)]
+        rounded-[var(--notifications-item-radius)]
+        w-[var(--notifications-width)]
+        max-w-full
+        border-2
+        border-black
+        border-opacity-10;
+
+    &__icon {
+        @apply flex-none;
+
+        .svg-icon {
+            @apply w-[var(--notifications-item-icon-size)] h-[var(--notifications-item-icon-size)];
+        }
+    }
+
+    &__content {
+        @apply flex-1 min-w-0;
+    }
+
+    &__label {
+        @apply font-light text-[var(--notifications-item-label-text-size)] uppercase mb-1;
+    }
+
+    &__title {
+        @apply text-[var(--notifications-item-title-text-size)] font-bold mb-1;
+    }
+
+    &__text {
+        @apply text-[var(--notifications-item-desc-text-size)] font-normal;
+    }
+
+    &--primary {
+        @apply text-[var(--notifications-primary-text)] bg-[var(--notifications-primary-color)];
+    }
+
+    &--info {
+        @apply text-[var(--notifications-info-text)] bg-[var(--notifications-info-color)];
+    }
+
+    &--success {
+        @apply text-[var(--notifications-success-text)] bg-[var(--notifications-success-color)];
+    }
+
+    &--warning {
+        @apply text-[var(--notifications-warning-text)] bg-[var(--notifications-warning-color)];
+    }
+
+    &--danger {
+        @apply text-[var(--notifications-danger-text)] bg-[var(--notifications-danger-color)];
+    }
+}

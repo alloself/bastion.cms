@@ -1,0 +1,51 @@
+.app-button {
+    @apply select-none
+        flex-none
+        inline-flex
+        items-center
+        justify-center
+        outline-none
+        no-underline
+        text-[13px]
+        leading-[1.13]
+        font-medium
+        tracking-[-0.16px]
+        py-3
+        px-5
+        bg-transparent
+        border
+        border-transparent
+        transition-all
+        duration-100
+        focus-visible:scale-[1.05]
+        hover:no-underline
+        active:scale-[1.03];
+
+    &--primary {
+        @apply text-brand
+            bg-primary
+            hover:bg-opacity-90;
+    }
+
+    &--secondary {
+        @apply text-brand
+            bg-secondary
+            hover:bg-opacity-90;
+    }
+
+    &--light {
+        @apply text-dark
+            bg-light
+            hover:bg-opacity-90;
+    }
+
+    &--square {
+        @apply min-w-[41px] min-h-[41px] p-2;
+    }
+
+    &.disabled,
+    &[disabled] {
+        @apply opacity-50 
+            pointer-events-none;
+    }
+}

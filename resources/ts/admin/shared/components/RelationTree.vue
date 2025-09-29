@@ -134,6 +134,26 @@ const search = ref("");
 const expandAll = ref(false);
 const loading = ref(false);
 
+const appendUniqueItems = (current: T[], additions: T[]): T[] => {
+    if (!additions.length) {
+        return current;
+    }
+
+    const result = [...current];
+    const existingIds = new Set(result.map(({ id }) => id));
+
+    additions.forEach((item) => {
+        if (existingIds.has(item.id)) {
+            return;
+        }
+
+        existingIds.add(item.id);
+        result.push(item);
+    });
+
+    return result;
+};
+
 const toggleExpandAll = () => {
     expandAll.value = !expandAll.value;
 };
@@ -191,11 +211,16 @@ const { addRelation, editRelation, addExistingEntity, deleteSelected } =
 
 const onAddRelation = () => {
     addRelation((item: T) => {
-        const data = item;
-        if (morph) {
-            data.pivot = pivot || {};
-        }
-        emit("update:model-value", [...modelValue, data]);
+        const data = morph
+            ? {
+                  ...item,
+                  pivot: {
+                      ...(pivot || {}),
+                  },
+              }
+            : item;
+
+        emit("update:model-value", appendUniqueItems(modelValue, [data]));
     });
 };
 
@@ -231,30 +256,36 @@ const onItemClick = (item: T) => {
 
 const onAddExistingEntity = async (items: T[]) => {
     if (morph) {
-        emit("update:model-value", [
-            ...modelValue,
-            ...items.map((i) => {
-                return {
-                    ...i,
-                    pivot: pivot || {},
-                };
-            }),
-        ]);
+        const itemsWithPivot = items.map((i) => ({
+            ...i,
+            pivot: {
+                ...(pivot || {}),
+            },
+        }));
+
+        emit(
+            "update:model-value",
+            appendUniqueItems(modelValue, itemsWithPivot)
+        );
         return;
     }
 
     addExistingEntity(
         items,
         (results) => {
-            emit("update:model-value", [
-                ...modelValue,
-                ...results.map((i) => {
-                    return {
-                        ...i,
-                        pivot,
-                    };
-                }),
-            ]);
+            const itemsWithPivot = results.map((i) => ({
+                ...i,
+                pivot: pivot
+                    ? {
+                          ...pivot,
+                      }
+                    : pivot,
+            }));
+
+            emit(
+                "update:model-value",
+                appendUniqueItems(modelValue, itemsWithPivot)
+            );
         },
         loading
     );

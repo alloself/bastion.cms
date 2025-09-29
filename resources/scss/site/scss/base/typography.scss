@@ -1,0 +1,95 @@
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    @apply mt-0 
+        font-medium
+        mb-6
+        tracking-[-0.96px]
+        leading-[1.15];
+}
+
+.h1,
+h1 {
+    @apply text-[50px]
+        lg:text-[58px];
+}
+
+.h2,
+h2 {
+    @apply text-[32px]
+        lg:text-[42px];
+}
+
+.h3,
+h3 {
+    @apply text-[28px]
+        lg:text-[30px];
+}
+
+.h4,
+h4 {
+    @apply text-[22px]
+        lg:text-[28px];
+}
+
+.h5,
+h5 {
+    @apply text-[20px]
+        lg:text-[26px];
+}
+
+.h6,
+h6 {
+    @apply text-[18px]
+        lg:text-[24px];
+}
+
+p {
+    @apply my-4;
+}
+
+.text-simple {
+    @apply font-normal
+        text-[13px]
+        leading-[1.4];
+
+    p:first-child {
+        @apply mt-0;
+    }
+
+    p:last-child {
+        @apply mb-0;
+    }
+
+    &--dark {
+        @apply text-brand text-opacity-60;
+    }
+
+    &--light {
+        @apply text-light text-opacity-60;
+    }
+}
+
+.text-label {
+    @apply font-[400]
+        italic
+        text-[12px]
+        leading-[1.4];
+
+    &--dark {
+        @apply text-brand text-opacity-60;
+    }
+
+    &--light {
+        @apply text-light text-opacity-60;
+    }
+}

@@ -1,0 +1,135 @@
+.service-card {
+    $this: &;
+
+    @apply relative 
+        z-[1] 
+        p-5
+        min-h-[200px]
+        overflow-hidden
+        flex
+        flex-col
+        justify-between
+        text-white
+        lg:min-h-[560px]
+        md:p-7;
+
+    &__bg,
+    &__tooltip,
+    &__middle,
+    &__content {
+        @apply transition-all
+        duration-300;
+    }
+
+    &__bg {
+        @apply bg-cover
+        bg-no-repeat
+        bg-center 
+        absolute
+        inset-0 
+        -z-[1];
+    }
+
+    &__title {
+        @apply text-[22px]
+        mb-10
+        leading-[1.2]
+        lg:mb-14
+        lg:text-[28px]
+        lg:max-w-[72%];
+    }
+
+    &__middle {
+        @apply w-[60%]
+            h-[200px]
+            flex
+            items-center
+            justify-center
+            bg-stone-300
+            bg-opacity-15
+            backdrop-blur-[4px]
+            rounded-md
+            self-center
+            md:h-[266px];
+    }
+
+    &__icon {
+        @apply rounded-[inherit]
+            border
+            border-light
+            border-opacity-15
+            flex
+            items-center
+            justify-center
+            size-[64px]
+            md:size-[70px];
+
+        .svg-icon {
+            @apply size-8;
+        }
+    }
+
+    &__tooltip {
+        @apply size-[64px]
+            rounded-[4px]
+            flex
+            items-center
+            justify-center
+            mt-6
+            self-end
+            bg-light
+            lg:mt-10
+            lg:size-[70px];
+
+        .svg-icon {
+            @apply text-primary size-6;
+        }
+    }
+
+    &__content {
+        @apply p-[inherit]
+        absolute 
+        z-[2]
+        opacity-0
+        pointer-events-none
+        left-0
+        right-0
+        bottom-0
+        text-[16px]
+        font-medium
+        bg-dark
+        bg-opacity-20
+        translate-y-full
+        backdrop-blur-[4px];
+    }
+
+    &:hover {
+        #{$this}__bg {
+            @apply scale-[1.10];
+        }
+
+        #{$this}__content {
+            @apply opacity-100
+                translate-y-0  
+                pointer-events-auto;
+        }
+
+        #{$this}__middle {
+            @apply opacity-0 
+                pointer-events-none;
+        }
+
+        #{$this}__tooltip {
+            @apply opacity-0 
+                pointer-events-none;
+        }
+    }
+
+    &--noimage {
+        @apply text-brand bg-stone-100;
+
+        #{$this}__icon {
+            @apply border-brand border-opacity-15;
+        }
+    }
+}

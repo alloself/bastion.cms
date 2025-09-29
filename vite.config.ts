@@ -35,6 +35,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
+            vue: "vue/dist/vue.esm-browser.js",
             "@": fileURLToPath(new URL("./resources", import.meta.url)),
             "@admin": fileURLToPath(
                 new URL("./resources/ts/admin", import.meta.url)
